@@ -1,0 +1,13 @@
+node_modules
+dist
+build
+.env
+.DS_Store
+__pycache__
+*.pyc
+*.pyo
+venv
+.venv
+*.sqlite3
+ai_hub.db
+.git
