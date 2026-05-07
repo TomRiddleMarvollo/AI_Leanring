@@ -1,4 +1,5 @@
 import os
+import yaml
 import ollama
 from tools import search_web, fetch_content
 from database import SessionLocal, NewsItem, LearningModule
@@ -6,10 +7,32 @@ from sources import get_random_sources
 import json
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "llama3")
 
-# Set ollama client to point to host if needed, but normally ollama library picks up OLLAMA_HOST
-# or we can use the default global client.
+def get_file_path(env_var, local_rel_path):
+    path = os.getenv(env_var)
+    if path and os.path.exists(path):
+        return path
+    # Fallback for local run
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+    return os.path.join(base_dir, local_rel_path)
+
+config_path = get_file_path('CONFIG_PATH', 'config.yaml')
+try:
+    with open(config_path, 'r') as f:
+        config = yaml.safe_load(f)
+        DEFAULT_MODEL = config.get('model', 'llama3')
+except Exception as e:
+    print(f"Warning: Could not load config.yaml: {e}")
+    DEFAULT_MODEL = "llama3"
+
+prompt_path = get_file_path('PROMPT_PATH', 'prompts/system_prompts/default_system.txt')
+try:
+    with open(prompt_path, 'r') as f:
+        SYSTEM_PROMPT = f.read().strip()
+except Exception as e:
+    print(f"Warning: Could not load prompt file: {e}")
+    SYSTEM_PROMPT = "You are a helpful AI assistant. Answer the user strictly but concisely. If they want to practice prompt engineering, act as the requested persona."
+
 
 def summarize_news():
     """
@@ -115,7 +138,7 @@ def practice_chat(prompt: str) -> str:
     """
     try:
         response = ollama.chat(model=DEFAULT_MODEL, messages=[
-            {'role': 'system', 'content': 'You are a helpful AI assistant. Answer the user strictly but concisely. If they want to practice prompt engineering, act as the requested persona.'},
+            {'role': 'system', 'content': SYSTEM_PROMPT},
             {'role': 'user', 'content': prompt}
         ])
         return response['message']['content'].strip()

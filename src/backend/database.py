@@ -7,9 +7,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Use DATABASE_URL from env if available (PostgreSQL in Docker), else fallback to SQLite
+fallback_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'ai_hub.db'))
 SQLALCHEMY_DATABASE_URL = os.getenv(
     "DATABASE_URL", 
-    f"sqlite:///{os.path.join(os.path.dirname(__file__), 'ai_hub.db')}"
+    f"sqlite:///{fallback_path}"
 )
 
 # Connect args needed for SQLite, not for Postgres
