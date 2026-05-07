@@ -1,0 +1,2 @@
+model: "ollama/llama3"
+temperature: 0.7

@@ -1,0 +1,47 @@
+You are an expert AI software engineer. Your task is to rebuild the "Cloud-Native AI Learning Web Hub", a full-stack application designed to help users learn about AI, read summarized AI news, and practice prompt engineering.
+
+Please generate the entire application following these exact specifications:
+
+# 1. Architecture & Tech Stack
+- **Frontend**: React (built with Vite), modern Vanilla CSS (vibrant colors, glassmorphism, responsive design).
+- **Backend**: FastAPI (Python 3.11), SQLAlchemy, Uvicorn.
+- **Database**: PostgreSQL.
+- **AI Engine**: Ollama (running locally with models like `llama3`).
+- **Infrastructure**: Docker & Docker Compose to orchestrate Frontend, Backend, Database, and Ollama.
+
+# 2. Directory Structure (AI-First Template)
+You must structure the project as follows:
+```
+/AILearning
+├── ai_docs/                 # Technical documentation
+├── prompts/
+│   ├── system_prompts/      # Contains default_system.txt for AI persona
+│   └── user_prompts/        # Contains prompts like this one
+├── src/
+│   ├── frontend/            # React + Vite application
+│   └── backend/             # FastAPI application
+├── data/                    # Fallback SQLite DB if Postgres is unavailable
+├── tests/
+├── .env                     # Environment variables (e.g., DATABASE_URL)
+├── config.yaml              # AI configurations (model, temperature)
+├── docker-compose.yml       # Orchestrates frontend, backend, db, ollama
+└── README.md
+```
+
+# 3. Core Features
+- **News Feed**: A backend service that uses `duckduckgo-search` to find the latest AI news, crawls the content using `beautifulsoup4`, and uses Ollama to summarize it into <200 words. The frontend displays these as clean, readable cards.
+- **Learning Hub**: Generates bite-sized learning modules (e.g., Prompt Engineering best practices) using Ollama and stores them in PostgreSQL. The frontend displays these modules in a grid layout.
+- **Practice Area (Chat)**: A real-time chat interface where the user can converse with an AI assistant. The backend communicates with the Ollama container to generate responses based on a system prompt defined in `prompts/system_prompts/default_system.txt`.
+
+# 4. Configurations
+- The backend must read its AI model configuration (like `model: ollama/llama3` and `temperature: 0.7`) from the `config.yaml` at the root.
+- The `docker-compose.yml` should map ports (Frontend 80:80, Backend 8000:8000), set up depends_on relationships, and inject `.env` variables.
+
+# 5. UI/UX Aesthetics
+Make the frontend look premium:
+- Dark mode by default with deep blues/purples and subtle gradients.
+- Glassmorphism effects on cards and chat boxes.
+- Smooth CSS transitions and hover effects.
+- Clean typography using Google Fonts (e.g., Inter or Outfit).
+
+Please provide the code for all necessary files (Frontend components, Backend API routes, Dockerfiles, and docker-compose.yml) to recreate this exact system.
