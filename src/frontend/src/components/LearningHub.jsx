@@ -24,21 +24,19 @@ function LearningHub() {
   if (modules.length === 0) return <p>Chưa có bài học nào. Vui lòng bấm Cập nhật DL.</p>;
 
   return (
-    <div>
-      <h2>Học tập (Best Practices)</h2>
-      <div className="grid-container">
-        {modules.map((module) => (
-          <div key={module.id} className="glass-card" style={{ borderLeft: '4px solid var(--accent-color)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-              <BookOpen size={20} color="var(--accent-color)" />
-              <span style={{ fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                {module.category}
-              </span>
-            </div>
-            <h3>{module.title}</h3>
-            {/* Simple render of markdown-like text */}
-            <div style={{ whiteSpace: 'pre-wrap', color: '#cbd5e1', fontSize: '0.95rem' }}>
-              {module.content}
+    <div className="list-container">
+      <h2>Bài học Thực hành & Best Practices</h2>
+      <div>
+        {modules.map((mod) => (
+          <div key={mod.id} className="news-item">
+            <div className="news-thumbnail learning">AI GUIDE</div>
+            <div className="news-content">
+              <div className="news-title">{mod.title}</div>
+              <div className="news-summary" style={{ whiteSpace: 'pre-line' }}>{mod.content}</div>
+              <div className="news-meta">
+                <span className="badge learning">{mod.category}</span>
+                <span>{new Date(mod.created_at).toLocaleDateString()}</span>
+              </div>
             </div>
           </div>
         ))}

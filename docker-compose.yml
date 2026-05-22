@@ -17,18 +17,18 @@ services:
       timeout: 5s
       retries: 5
 
-  ollama:
-    image: ollama/ollama:latest
-    container_name: aihub_ollama
-    volumes:
-      - ollama_data:/root/.ollama
-    ports:
-      - "11434:11434"
-    restart: unless-stopped
-    # Optional: Automatically pull llama3 model on startup. 
-    # This might take time the first run.
-    entrypoint: >
-      /bin/sh -c "ollama serve & sleep 5 && ollama pull llama3 && wait"
+#   ollama:
+#     image: ollama/ollama:latest
+#     container_name: aihub_ollama
+#     volumes:
+#       - ollama_data:/root/.ollama
+#     ports:
+#       - "11434:11434"
+#     restart: unless-stopped
+#     # Optional: Automatically pull llama3 model on startup. 
+#     # This might take time the first run.
+#     entrypoint: >
+#       /bin/sh -c "ollama serve & sleep 5 && ollama pull llama3 && wait"
 
   backend:
     build: ./src/backend
@@ -37,25 +37,30 @@ services:
       - .env
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/aihub
+      - CONFIG_PATH=/app/config.yaml
+      - PROMPT_PATH=/app/prompts/system_prompts/default_system.txt
     volumes:
       - ./config.yaml:/app/config.yaml
       - ./prompts:/app/prompts
     depends_on:
       db:
         condition: service_healthy
-      ollama:
-        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8000:8000"
     restart: unless-stopped
 
   frontend:
     build: ./src/frontend
     container_name: aihub_frontend
     ports:
-      - "80:80"
+      - "7070:80"
     depends_on:
       - backend
     restart: unless-stopped
 
 volumes:
   postgres_data:
-  ollama_data:
+#   ollama_data:
+

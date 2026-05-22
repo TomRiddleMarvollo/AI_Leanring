@@ -35,7 +35,7 @@ AI_SOURCES = {
     "Media": [
         "twitter.com", "medium.com", "linkedin.com", "reddit.com/r/MachineLearning",
         "reddit.com/r/LocalLLaMA", "reddit.com/r/DeepLearning", "news.ycombinator.com",
-        "thegradient.pub", "lexfridman.com/podcast"
+        "thegradient.pub", "lexfridman.com/podcast", "deeplearning.ai/the-batch", "tldr.tech/ai", "arxiv.org/list/cs.AI/recent"
     ]
 }
 
