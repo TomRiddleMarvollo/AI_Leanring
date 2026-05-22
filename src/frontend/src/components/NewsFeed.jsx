@@ -23,26 +23,26 @@ function NewsFeed() {
   if (news.length === 0) return <p>Chưa có tin tức nào. Vui lòng bấm Cập nhật DL.</p>;
 
   return (
-    <div>
+    <div className="list-container">
       <h2>Tiến bộ AI mới nhất</h2>
-      <div className="grid-container">
+      <div>
         {news.map((item) => (
-          <div key={item.id} className="glass-card">
-            <h3>{item.title}</h3>
-            <p style={{ marginBottom: '1rem', fontSize: '0.9rem' }}>
-              {new Date(item.published_at).toLocaleDateString()}
-            </p>
-            <p>{item.summary}</p>
-            {item.url && (
-              <a 
-                href={item.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={{ display: 'inline-block', marginTop: '1rem', color: 'var(--accent-color)', textDecoration: 'none' }}
-              >
-                Đọc thêm &rarr;
+          <div key={item.id} className="news-item">
+            <div className="news-thumbnail">AI NEWS</div>
+            <div className="news-content">
+              <a href={item.url || '#'} target="_blank" rel="noopener noreferrer" className="news-title">
+                {item.title}
               </a>
-            )}
+              <p className="news-summary">{item.summary}</p>
+              <div className="news-meta">
+                <span className="badge">AI Tech</span>
+                <span className="star-rating">
+                  {'★'.repeat(item.rating || 0)}{'☆'.repeat(10 - (item.rating || 0))} 
+                  <span style={{ color: '#9ca3af', letterSpacing: 'normal', marginLeft: '4px' }}>({item.rating || 0}/10)</span>
+                </span>
+                <span>{new Date(item.published_at).toLocaleDateString()}</span>
+              </div>
+            </div>
           </div>
         ))}
       </div>

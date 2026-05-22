@@ -1,19 +1,47 @@
-from duckduckgo_search import DDGS
 import requests
-from bs4 import BeautifulSoup
+import xml.etree.ElementTree as ET
+import random
 import re
+from bs4 import BeautifulSoup
 
 def search_web(query: str, max_results: int = 5) -> list:
-    """
-    Searches the web using DuckDuckGo and returns a list of results.
-    """
+    import urllib.parse
+    results = []
     try:
-        with DDGS() as ddgs:
-            results = list(ddgs.text(query, max_results=max_results))
-            return results
+        response = requests.post(
+            'https://html.duckduckgo.com/html/', 
+            data={'q': query}, 
+            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"},
+            timeout=15
+        )
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        for result in soup.select('.result'):
+            a_tag = result.select_one('.result__a')
+            snippet_tag = result.select_one('.result__snippet')
+            
+            if not a_tag or not snippet_tag:
+                continue
+                
+            href = a_tag.get('href', '')
+            if 'uddg=' in href:
+                href = urllib.parse.unquote(href.split('uddg=')[1].split('&')[0])
+            elif href.startswith('//'):
+                href = 'https:' + href
+                
+            title = a_tag.text
+            snippet = snippet_tag.text
+            
+            if 'ad_domain' in href or not href.startswith('http'):
+                continue
+                
+            results.append({"title": title, "href": href, "body": snippet})
+            
+            if len(results) >= max_results:
+                break
     except Exception as e:
-        print(f"Error searching web for {query}: {e}")
-        return []
+        print(f"Error fetching DDG for query '{query}': {e}")
+    return results
 
 def fetch_content(url: str) -> str:
     """
