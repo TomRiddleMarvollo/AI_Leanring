@@ -681,20 +681,33 @@ function PracticeArea({
                 style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', userSelect: 'none' }}
                 title="Nhấn để ẩn/hiện danh sách dự án"
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Folder size={14} style={{ color: 'var(--accent-color)', opacity: 0.85 }} />
                   <span>Dự án thực hành</span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>({projects.length})</span>
                 </div>
-                {isProjectsExpanded ? <ChevronDown size={14} style={{ color: 'var(--text-muted)' }} /> : <ChevronRight size={14} style={{ color: 'var(--text-muted)' }} />}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }} onClick={(e) => e.stopPropagation()}>
+                  <button 
+                    onClick={handleAddProject} 
+                    className="sidebar-header-action-btn"
+                    title="Thêm Dự án mới"
+                  >
+                    <Plus size={13} />
+                  </button>
+                  <button 
+                    onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
+                    className="sidebar-header-action-btn"
+                    title="Thu gọn/Mở rộng"
+                  >
+                    {isProjectsExpanded ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+                  </button>
+                </div>
               </div>
               
               {isProjectsExpanded && (
                 <>
-                  <button onClick={handleAddProject} className="sidebar-btn-add">
-                    <Plus size={16} /> Thêm Dự án
-                  </button>
                   
-                  <div className="sidebar-list" style={{ marginTop: '0.8rem', maxHeight: '130px', overflowY: 'auto' }}>
+                  <div className="sidebar-list" style={{ marginTop: '0.8rem' }}>
                     {projects.map((proj) => (
                       <div 
                         key={proj.id} 
@@ -752,24 +765,33 @@ function PracticeArea({
                 style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', userSelect: 'none' }}
                 title="Nhấn để ẩn/hiện danh sách AI Agents"
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Brain size={14} style={{ color: 'var(--accent-color)', opacity: 0.85 }} />
                   <span>AI Agents thực hành</span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>({agents.length})</span>
                 </div>
-                {isAgentsExpanded ? <ChevronDown size={14} style={{ color: 'var(--text-muted)' }} /> : <ChevronRight size={14} style={{ color: 'var(--text-muted)' }} />}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }} onClick={(e) => e.stopPropagation()}>
+                  <button 
+                    onClick={() => handleOpenAgentModal()} 
+                    className="sidebar-header-action-btn"
+                    title="Tạo AI Agent mới"
+                  >
+                    <Plus size={13} />
+                  </button>
+                  <button 
+                    onClick={() => setIsAgentsExpanded(!isAgentsExpanded)}
+                    className="sidebar-header-action-btn"
+                    title="Thu gọn/Mở rộng"
+                  >
+                    {isAgentsExpanded ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+                  </button>
+                </div>
               </div>
               
               {isAgentsExpanded && (
                 <>
-                  <button 
-                    onClick={() => handleOpenAgentModal()} 
-                    className="sidebar-btn-add"
-                    style={{ marginTop: '0.5rem' }}
-                  >
-                    <Plus size={16} /> Tạo AI Agent
-                  </button>
                   
-                  <div className="sidebar-list" style={{ marginTop: '0.8rem', maxHeight: '150px', overflowY: 'auto' }}>
+                  <div className="sidebar-list" style={{ marginTop: '0.8rem' }}>
                     {agents.map((agent) => {
                       const IconComponent = iconMap[agent.icon] || Bot;
                       const isActive = activeChat && activeChat.agentId === agent.id;
@@ -831,34 +853,43 @@ function PracticeArea({
             </div>
 
             {/* Conversation Section */}
-            <div className="sidebar-section" style={{ flex: isConversationsExpanded ? 1 : 'none', overflowY: 'auto', display: 'flex', flexDirection: 'column', transition: 'flex 0.3s ease' }}>
+            <div className="sidebar-section" style={{ display: 'flex', flexDirection: 'column' }}>
               <div 
                 className="sidebar-title" 
                 onClick={() => setIsConversationsExpanded(!isConversationsExpanded)}
                 style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', userSelect: 'none' }}
                 title="Nhấn để ẩn/hiện danh sách cuộc trò chuyện"
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <MessageSquare size={14} style={{ color: 'var(--accent-color)', opacity: 0.85 }} />
                   <span>Danh sách cuộc trò chuyện</span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>
                     ({conversations.filter(c => c.projectId === activeProjectId).length})
                   </span>
                 </div>
-                {isConversationsExpanded ? <ChevronDown size={14} style={{ color: 'var(--text-muted)' }} /> : <ChevronRight size={14} style={{ color: 'var(--text-muted)' }} />}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }} onClick={(e) => e.stopPropagation()}>
+                  <button 
+                    onClick={handleAddConversation} 
+                    className="sidebar-header-action-btn"
+                    title="Cuộc trò chuyện mới"
+                    disabled={!activeProjectId}
+                  >
+                    <Plus size={13} />
+                  </button>
+                  <button 
+                    onClick={() => setIsConversationsExpanded(!isConversationsExpanded)}
+                    className="sidebar-header-action-btn"
+                    title="Thu gọn/Mở rộng"
+                  >
+                    {isConversationsExpanded ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+                  </button>
+                </div>
               </div>
               
               {isConversationsExpanded && (
                 <>
-                  <button 
-                    onClick={handleAddConversation} 
-                    className="sidebar-btn-add"
-                    style={{ background: 'transparent', border: '1px dashed var(--card-border)', flexShrink: 0 }}
-                    disabled={!activeProjectId}
-                  >
-                    <Plus size={16} /> Cuộc trò chuyện mới
-                  </button>
     
-                  <div className="conversations-list" style={{ marginTop: '0.8rem', flex: 1, overflowY: 'auto' }}>
+                  <div className="conversations-list" style={{ marginTop: '0.8rem' }}>
                     {conversations
                       .filter(c => c.projectId === activeProjectId)
                       .map((chat) => (
