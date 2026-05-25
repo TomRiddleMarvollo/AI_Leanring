@@ -98,6 +98,30 @@ function PracticeArea({
     localStorage.setItem('ai_learning_sidebar_collapsed', isSidebarCollapsed);
   }, [isSidebarCollapsed]);
 
+  // Collapsible sections within sidebar
+  const [isProjectsExpanded, setIsProjectsExpanded] = useState(() => {
+    return localStorage.getItem('ai_learning_projects_expanded') !== 'false';
+  });
+  const [isAgentsExpanded, setIsAgentsExpanded] = useState(() => {
+    return localStorage.getItem('ai_learning_agents_expanded') !== 'false';
+  });
+  const [isConversationsExpanded, setIsConversationsExpanded] = useState(() => {
+    return localStorage.getItem('ai_learning_conversations_expanded') !== 'false';
+  });
+
+  // Sync expanded section states to localStorage
+  useEffect(() => {
+    localStorage.setItem('ai_learning_projects_expanded', isProjectsExpanded);
+  }, [isProjectsExpanded]);
+
+  useEffect(() => {
+    localStorage.setItem('ai_learning_agents_expanded', isAgentsExpanded);
+  }, [isAgentsExpanded]);
+
+  useEffect(() => {
+    localStorage.setItem('ai_learning_conversations_expanded', isConversationsExpanded);
+  }, [isConversationsExpanded]);
+
   // Refs
   const chatHistoryRef = useRef(null);
   const textareaRef = useRef(null);
@@ -651,204 +675,245 @@ function PracticeArea({
 
             {/* Project Section */}
             <div className="sidebar-section">
-              <div className="sidebar-title">
-                <span>Dự án thực hành</span>
-                <span style={{ fontSize: '0.7rem', color: '#64748b' }}>({projects.length})</span>
+              <div 
+                className="sidebar-title" 
+                onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
+                style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', userSelect: 'none' }}
+                title="Nhấn để ẩn/hiện danh sách dự án"
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <span>Dự án thực hành</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>({projects.length})</span>
+                </div>
+                {isProjectsExpanded ? <ChevronDown size={14} style={{ color: 'var(--text-muted)' }} /> : <ChevronRight size={14} style={{ color: 'var(--text-muted)' }} />}
               </div>
-              <button onClick={handleAddProject} className="sidebar-btn-add">
-                <Plus size={16} /> Thêm Dự án
-              </button>
               
-              <div className="sidebar-list" style={{ marginTop: '0.8rem', maxHeight: '130px', overflowY: 'auto' }}>
-                {projects.map((proj) => (
-                  <div 
-                    key={proj.id} 
-                    onClick={() => selectProject(proj.id)}
-                    className={`sidebar-item ${activeProjectId === proj.id ? 'active' : ''}`}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: 0 }}>
-                      <Folder size={15} style={{ flexShrink: 0 }} />
-                      {editingId === proj.id && editType === 'project' ? (
-                        <input 
-                          type="text" 
-                          value={editingValue} 
-                          onChange={(e) => setEditingValue(e.target.value)}
-                          onBlur={saveRename}
-                          onKeyDown={(e) => e.key === 'Enter' && saveRename()}
-                          onClick={(e) => e.stopPropagation()}
-                          autoFocus
-                          style={{ background: 'var(--bg-color)', border: '1px solid var(--accent-color)', color: 'var(--text-color)', fontSize: '0.8rem', width: '100%', padding: '0.1rem 0.3rem', borderRadius: '4px' }}
-                        />
-                      ) : (
-                        <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{proj.name}</span>
-                      )}
-                    </div>
-                    
-                    {editingId !== proj.id && (
-                      <div className="sidebar-item-actions">
-                        <button 
-                          onClick={(e) => startEditing(proj.id, proj.name, 'project', e)} 
-                          className="sidebar-action-btn edit"
-                          title="Đổi tên"
-                        >
-                          <Edit3 size={12} />
-                        </button>
-                        <button 
-                          onClick={(e) => handleDeleteProject(proj.id, e)} 
-                          className="sidebar-action-btn"
-                          title="Xóa dự án"
-                        >
-                          <Trash2 size={12} />
-                        </button>
+              {isProjectsExpanded && (
+                <>
+                  <button onClick={handleAddProject} className="sidebar-btn-add">
+                    <Plus size={16} /> Thêm Dự án
+                  </button>
+                  
+                  <div className="sidebar-list" style={{ marginTop: '0.8rem', maxHeight: '130px', overflowY: 'auto' }}>
+                    {projects.map((proj) => (
+                      <div 
+                        key={proj.id} 
+                        onClick={() => selectProject(proj.id)}
+                        className={`sidebar-item ${activeProjectId === proj.id ? 'active' : ''}`}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: 0 }}>
+                          <Folder size={15} style={{ flexShrink: 0 }} />
+                          {editingId === proj.id && editType === 'project' ? (
+                            <input 
+                              type="text" 
+                              value={editingValue} 
+                              onChange={(e) => setEditingValue(e.target.value)}
+                              onBlur={saveRename}
+                              onKeyDown={(e) => e.key === 'Enter' && saveRename()}
+                              onClick={(e) => e.stopPropagation()}
+                              autoFocus
+                              style={{ background: 'var(--bg-color)', border: '1px solid var(--accent-color)', color: 'var(--text-color)', fontSize: '0.8rem', width: '100%', padding: '0.1rem 0.3rem', borderRadius: '4px' }}
+                            />
+                          ) : (
+                            <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{proj.name}</span>
+                          )}
+                        </div>
+                        
+                        {editingId !== proj.id && (
+                          <div className="sidebar-item-actions">
+                            <button 
+                              onClick={(e) => startEditing(proj.id, proj.name, 'project', e)} 
+                              className="sidebar-action-btn edit"
+                              title="Đổi tên"
+                            >
+                              <Edit3 size={12} />
+                            </button>
+                            <button 
+                              onClick={(e) => handleDeleteProject(proj.id, e)} 
+                              className="sidebar-action-btn"
+                              title="Xóa dự án"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
-              </div>
+                </>
+              )}
             </div>
 
             {/* AI Agents Section */}
             <div className="sidebar-section">
-              <div className="sidebar-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span>AI Agents thực hành</span>
-                <span style={{ fontSize: '0.7rem', color: '#64748b' }}>({agents.length})</span>
-              </div>
-              <button 
-                onClick={() => handleOpenAgentModal()} 
-                className="sidebar-btn-add"
-                style={{ marginTop: '0.5rem' }}
+              <div 
+                className="sidebar-title" 
+                onClick={() => setIsAgentsExpanded(!isAgentsExpanded)}
+                style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', userSelect: 'none' }}
+                title="Nhấn để ẩn/hiện danh sách AI Agents"
               >
-                <Plus size={16} /> Tạo AI Agent
-              </button>
-              
-              <div className="sidebar-list" style={{ marginTop: '0.8rem', maxHeight: '150px', overflowY: 'auto' }}>
-                {agents.map((agent) => {
-                  const IconComponent = iconMap[agent.icon] || Bot;
-                  const isActive = activeChat && activeChat.agentId === agent.id;
-                  return (
-                    <div 
-                      key={agent.id} 
-                      onClick={() => selectAgentForConversation(agent.id)}
-                      className={`sidebar-item ${isActive ? 'active' : ''}`}
-                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.4rem 0.6rem' }}
-                      title="Nhấn để Bật/Tắt Agent cho cuộc trò chuyện này"
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: 0 }}>
-                        <div className={`agent-avatar color-${agent.color || 'blue'}`}>
-                          <IconComponent size={14} />
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                          <span style={{ fontWeight: 600, fontSize: '0.82rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                            {agent.name}
-                          </span>
-                          <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                            {agent.system_prompt}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <div className="sidebar-item-actions">
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleOpenAgentModal(agent);
-                          }} 
-                          className="sidebar-action-btn edit"
-                          title="Chỉnh sửa"
-                        >
-                          <Edit3 size={12} />
-                        </button>
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteAgent(agent.id);
-                          }} 
-                          className="sidebar-action-btn"
-                          title="Xóa Agent"
-                        >
-                          <Trash2 size={12} />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-                {agents.length === 0 && (
-                  <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.75rem', padding: '1rem 0' }}>
-                    Chưa tạo Agent nào. Hãy tạo ngay!
-                  </div>
-                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <span>AI Agents thực hành</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>({agents.length})</span>
+                </div>
+                {isAgentsExpanded ? <ChevronDown size={14} style={{ color: 'var(--text-muted)' }} /> : <ChevronRight size={14} style={{ color: 'var(--text-muted)' }} />}
               </div>
+              
+              {isAgentsExpanded && (
+                <>
+                  <button 
+                    onClick={() => handleOpenAgentModal()} 
+                    className="sidebar-btn-add"
+                    style={{ marginTop: '0.5rem' }}
+                  >
+                    <Plus size={16} /> Tạo AI Agent
+                  </button>
+                  
+                  <div className="sidebar-list" style={{ marginTop: '0.8rem', maxHeight: '150px', overflowY: 'auto' }}>
+                    {agents.map((agent) => {
+                      const IconComponent = iconMap[agent.icon] || Bot;
+                      const isActive = activeChat && activeChat.agentId === agent.id;
+                      return (
+                        <div 
+                          key={agent.id} 
+                          onClick={() => selectAgentForConversation(agent.id)}
+                          className={`sidebar-item ${isActive ? 'active' : ''}`}
+                          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.4rem 0.6rem' }}
+                          title="Nhấn để Bật/Tắt Agent cho cuộc trò chuyện này"
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: 0 }}>
+                            <div className={`agent-avatar color-${agent.color || 'blue'}`}>
+                              <IconComponent size={14} />
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                              <span style={{ fontWeight: 600, fontSize: '0.82rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                {agent.name}
+                              </span>
+                              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                {agent.system_prompt}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div className="sidebar-item-actions">
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenAgentModal(agent);
+                              }} 
+                              className="sidebar-action-btn edit"
+                              title="Chỉnh sửa"
+                            >
+                              <Edit3 size={12} />
+                            </button>
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteAgent(agent.id);
+                              }} 
+                              className="sidebar-action-btn"
+                              title="Xóa Agent"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {agents.length === 0 && (
+                      <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.75rem', padding: '1rem 0' }}>
+                        Chưa tạo Agent nào. Hãy tạo ngay!
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Conversation Section */}
-            <div className="sidebar-section" style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
-              <div className="sidebar-title">
-                <span>Danh sách cuộc trò chuyện</span>
+            <div className="sidebar-section" style={{ flex: isConversationsExpanded ? 1 : 'none', overflowY: 'auto', display: 'flex', flexDirection: 'column', transition: 'flex 0.3s ease' }}>
+              <div 
+                className="sidebar-title" 
+                onClick={() => setIsConversationsExpanded(!isConversationsExpanded)}
+                style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', userSelect: 'none' }}
+                title="Nhấn để ẩn/hiện danh sách cuộc trò chuyện"
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <span>Danh sách cuộc trò chuyện</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>
+                    ({conversations.filter(c => c.projectId === activeProjectId).length})
+                  </span>
+                </div>
+                {isConversationsExpanded ? <ChevronDown size={14} style={{ color: 'var(--text-muted)' }} /> : <ChevronRight size={14} style={{ color: 'var(--text-muted)' }} />}
               </div>
               
-              <button 
-                onClick={handleAddConversation} 
-                className="sidebar-btn-add"
-                style={{ background: 'transparent', border: '1px dashed var(--card-border)' }}
-                disabled={!activeProjectId}
-              >
-                <Plus size={16} /> Cuộc trò chuyện mới
-              </button>
-
-              <div className="conversations-list" style={{ marginTop: '0.8rem', flex: 1, overflowY: 'auto' }}>
-                {conversations
-                  .filter(c => c.projectId === activeProjectId)
-                  .map((chat) => (
-                    <div 
-                      key={chat.id} 
-                      onClick={() => selectConversation(chat.id)}
-                      className={`sidebar-item ${activeConversationId === chat.id ? 'active' : ''}`}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: 0 }}>
-                        <MessageSquare size={15} style={{ flexShrink: 0 }} />
-                        {editingId === chat.id && editType === 'conversation' ? (
-                          <input 
-                            type="text" 
-                            value={editingValue} 
-                            onChange={(e) => setEditingValue(e.target.value)}
-                            onBlur={saveRename}
-                            onKeyDown={(e) => e.key === 'Enter' && saveRename()}
-                            onClick={(e) => e.stopPropagation()}
-                            autoFocus
-                            style={{ background: 'var(--bg-color)', border: '1px solid var(--accent-color)', color: 'var(--text-color)', fontSize: '0.8rem', width: '100%', padding: '0.1rem 0.3rem', borderRadius: '4px' }}
-                          />
-                        ) : (
-                          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{chat.name}</span>
-                        )}
-                      </div>
-                      
-                      {editingId !== chat.id && (
-                        <div className="sidebar-item-actions">
-                          <button 
-                            onClick={(e) => startEditing(chat.id, chat.name, 'conversation', e)} 
-                            className="sidebar-action-btn edit"
-                            title="Đổi tên"
-                          >
-                            <Edit3 size={12} />
-                          </button>
-                          <button 
-                            onClick={(e) => handleDeleteConversation(chat.id, e)} 
-                            className="sidebar-action-btn"
-                            title="Xóa hội thoại"
-                          >
-                            <Trash2 size={12} />
-                          </button>
+              {isConversationsExpanded && (
+                <>
+                  <button 
+                    onClick={handleAddConversation} 
+                    className="sidebar-btn-add"
+                    style={{ background: 'transparent', border: '1px dashed var(--card-border)', flexShrink: 0 }}
+                    disabled={!activeProjectId}
+                  >
+                    <Plus size={16} /> Cuộc trò chuyện mới
+                  </button>
+    
+                  <div className="conversations-list" style={{ marginTop: '0.8rem', flex: 1, overflowY: 'auto' }}>
+                    {conversations
+                      .filter(c => c.projectId === activeProjectId)
+                      .map((chat) => (
+                        <div 
+                          key={chat.id} 
+                          onClick={() => selectConversation(chat.id)}
+                          className={`sidebar-item ${activeConversationId === chat.id ? 'active' : ''}`}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: 0 }}>
+                            <MessageSquare size={15} style={{ flexShrink: 0 }} />
+                            {editingId === chat.id && editType === 'conversation' ? (
+                              <input 
+                                type="text" 
+                                value={editingValue} 
+                                onChange={(e) => setEditingValue(e.target.value)}
+                                onBlur={saveRename}
+                                onKeyDown={(e) => e.key === 'Enter' && saveRename()}
+                                onClick={(e) => e.stopPropagation()}
+                                autoFocus
+                                style={{ background: 'var(--bg-color)', border: '1px solid var(--accent-color)', color: 'var(--text-color)', fontSize: '0.8rem', width: '100%', padding: '0.1rem 0.3rem', borderRadius: '4px' }}
+                              />
+                            ) : (
+                              <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{chat.name}</span>
+                            )}
+                          </div>
+                          
+                          {editingId !== chat.id && (
+                            <div className="sidebar-item-actions">
+                              <button 
+                                onClick={(e) => startEditing(chat.id, chat.name, 'conversation', e)} 
+                                className="sidebar-action-btn edit"
+                                title="Đổi tên"
+                              >
+                                <Edit3 size={12} />
+                              </button>
+                              <button 
+                                onClick={(e) => handleDeleteConversation(chat.id, e)} 
+                                className="sidebar-action-btn"
+                                title="Xóa hội thoại"
+                              >
+                                <Trash2 size={12} />
+                              </button>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  ))}
-                
-                {conversations.filter(c => c.projectId === activeProjectId).length === 0 && (
-                  <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '2rem' }}>
-                    Chưa có hội thoại nào trong dự án này.
+                      ))}
+                    
+                    {conversations.filter(c => c.projectId === activeProjectId).length === 0 && (
+                      <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '2rem' }}>
+                        Chưa có hội thoại nào trong dự án này.
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
+                </>
+              )}
             </div>
           </>
         )}

@@ -246,7 +246,8 @@ h2 {
 
 .sidebar-section {
   padding: 1.2rem;
-  border-bottom: 1px solid var(--card-border);
+  border-bottom: 2px solid rgba(203, 213, 225, 0.7); /* Clearer, high-contrast premium borders */
+  transition: all 0.2s ease;
 }
 
 .sidebar-section:last-child {
@@ -269,6 +270,14 @@ h2 {
   align-items: center;
   border-left: 3px solid var(--accent-color);
   padding-left: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.sidebar-title:hover {
+  color: var(--accent-color);
+  opacity: 0.85;
 }
 
 .sidebar-btn-add {
