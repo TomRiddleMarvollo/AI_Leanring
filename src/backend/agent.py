@@ -252,13 +252,40 @@ def summarize_news():
 def fetch_best_practices():
     pass
 
-def practice_chat(prompt: str, provider: str = None, model_name: str = None, system_prompt: str = None) -> str:
+import base64
+import re
+
+_SAFE_FILE_TYPES = {
+    "text/plain", "text/markdown", "text/csv", "text/html",
+    "application/json", "application/xml", "text/xml",
+    "image/png", "image/jpeg", "image/gif", "image/webp",
+    "audio/mpeg", "audio/wav", "video/mp4",
+    "application/pdf",
+}
+_MAX_FILE_TEXT_CHARS = 12_000
+
+def _sanitize_file_text(text: str) -> str:
+    # Strip null bytes and limit length to prevent oversized prompts
+    text = text.replace("\x00", "")
+    return text[:_MAX_FILE_TEXT_CHARS]
+
+def practice_chat(prompt: str, provider: str = None, model_name: str = None, system_prompt: str = None, file_data: str = None, file_name: str = None, file_type: str = None) -> str:
     if not provider:
         provider = get_llm_provider()
     else:
         provider = provider.lower().strip()
         
     active_sys_prompt = system_prompt if system_prompt is not None else SYSTEM_PROMPT
+    
+    has_file = file_data is not None and file_name is not None and file_type is not None
+    is_binary = False
+
+    if has_file:
+        normalized_type = file_type.split(";")[0].strip().lower()
+        if normalized_type not in _SAFE_FILE_TYPES:
+            return f"Loại tệp '{normalized_type}' không được hỗ trợ."
+        file_type = normalized_type
+        is_binary = any(file_type.startswith(p) for p in ("image/", "audio/", "video/")) or file_type == "application/pdf"
         
     if provider == "gemini":
         try:
@@ -266,7 +293,32 @@ def practice_chat(prompt: str, provider: str = None, model_name: str = None, sys
                 model_name='gemini-2.5-flash',
                 system_instruction=active_sys_prompt
             )
-            response = model.generate_content(prompt)
+            
+            if has_file:
+                file_bytes = base64.b64decode(file_data)
+                if is_binary:
+                    # Use Gemini native multimodal capability
+                    file_part = {
+                        "mime_type": file_type,
+                        "data": file_bytes
+                    }
+                    contents = [file_part, prompt]
+                    response = model.generate_content(contents)
+                else:
+                    try:
+                        decoded_text = _sanitize_file_text(file_bytes.decode('utf-8'))
+                        augmented_prompt = f"Tài liệu đính kèm ({file_name}):\n```\n{decoded_text}\n```\n\nYêu cầu người dùng:\n{prompt}"
+                        response = model.generate_content(augmented_prompt)
+                    except Exception:
+                        file_part = {
+                            "mime_type": file_type,
+                            "data": file_bytes
+                        }
+                        contents = [file_part, prompt]
+                        response = model.generate_content(contents)
+            else:
+                response = model.generate_content(prompt)
+                
             return response.text.strip()
         except Exception as gemini_err:
             print(f"Gemini chat error: {gemini_err}. Falling back to Ollama...")
@@ -278,9 +330,22 @@ def practice_chat(prompt: str, provider: str = None, model_name: str = None, sys
                 active_model = model_name
             else:
                 active_model = get_active_model()
+                
+            active_prompt = prompt
+            if has_file:
+                file_bytes = base64.b64decode(file_data)
+                if is_binary:
+                    return f"Mô hình Local Ollama hiện tại chưa hỗ trợ phân tích trực tiếp các tệp tin nhị phân (PDF, Hình ảnh, Âm thanh, Video). Vui lòng chuyển sang mô hình Google Gemini ở dưới để phân tích tài liệu đính kèm '{file_name}'."
+                else:
+                    try:
+                        decoded_text = _sanitize_file_text(file_bytes.decode('utf-8'))
+                        active_prompt = f"Tài liệu đính kèm ({file_name}):\n```\n{decoded_text}\n```\n\nYêu cầu người dùng:\n{prompt}"
+                    except Exception:
+                        return f"Không thể giải mã văn bản của tệp '{file_name}'. Vui lòng đảm bảo tệp sử dụng định dạng mã hóa văn bản UTF-8 hoặc chuyển sang sử dụng Google Gemini."
+                        
             response = ollama_client.chat(model=active_model, messages=[
                 {'role': 'system', 'content': active_sys_prompt},
-                {'role': 'user', 'content': prompt}
+                {'role': 'user', 'content': active_prompt}
             ])
             return response['message']['content'].strip()
         except Exception as ollama_err:

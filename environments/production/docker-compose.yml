@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: aihub_db_prod
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-aihub_prod}
+    volumes:
+      - postgres_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB:-aihub_prod}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    networks:
+      - internal
+
+  backend:
+    build:
+      context: ../../src/backend
+      dockerfile: Dockerfile
+    container_name: aihub_backend_prod
+    env_file: .env
+    volumes:
+      - ../../config.yaml:/app/config.yaml:ro
+      - ../../prompts:/app/prompts:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    expose:
+      - "8000"              # không expose trực tiếp ra ngoài, qua nginx
+    restart: always
+    networks:
+      - internal
+    # Giới hạn resource để tránh OOM
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  frontend:
+    build:
+      context: ../../src/frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL}
+        - VITE_ENV=production
+    container_name: aihub_frontend_prod
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - internal
+      - external
+
+volumes:
+  postgres_prod:
+
+networks:
+  internal:
+    driver: bridge
+    internal: true       # backend & db không trực tiếp ra internet
+  external:
+    driver: bridge

@@ -21,7 +21,8 @@ import {
   X,
   Bot,
   Terminal,
-  Code
+  Code,
+  Paperclip
 } from 'lucide-react';
 
 const iconMap = {
@@ -125,6 +126,48 @@ function PracticeArea({
   // Refs
   const chatHistoryRef = useRef(null);
   const textareaRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  // File attachment state
+  const [attachedFile, setAttachedFile] = useState(null);
+
+  const handleAttachmentClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Dung lượng tệp tin quá lớn! Vui lòng chọn tệp dưới 10MB.");
+      e.target.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64Data = event.target.result.split(',')[1];
+      setAttachedFile({
+        name: file.name,
+        size: file.size,
+        type: file.type || 'application/octet-stream',
+        data: base64Data
+      });
+    };
+    reader.onerror = (err) => {
+      console.error("FileReader error:", err);
+      alert("Lỗi khi đọc tệp tin!");
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handleRemoveFile = () => {
+    setAttachedFile(null);
+  };
 
 
   // Fetch available models & agents on mount
@@ -514,10 +557,24 @@ function PracticeArea({
 
   const handleSend = async (e) => {
     if (e) e.preventDefault();
-    if (!input.trim() || loading || !activeConversationId || !activeConversation) return;
+    const hasInput = input.trim().length > 0;
+    if ((!hasInput && !attachedFile) || loading || !activeConversationId || !activeConversation) return;
 
-    const userMessageContent = input.trim();
+    let userMessageContent = input.trim();
+    if (!userMessageContent && attachedFile) {
+      userMessageContent = "Hãy phân tích tài liệu đính kèm này.";
+    }
+
+    let displayMessageContent = userMessageContent;
+    if (attachedFile) {
+      displayMessageContent += `\n\n📎 *[Đính kèm: ${attachedFile.name}]*`;
+    }
+
+    // Keep a local copy of attachedFile to use during API requests
+    const fileToSend = attachedFile;
+
     setInput('');
+    setAttachedFile(null);
     setLoading(true);
 
     // Get active custom agent
@@ -526,7 +583,7 @@ function PracticeArea({
     const resolvedModel = activeAgent ? (models.find(m => m.id === activeAgent.model_id) || activeModel) : activeModel;
 
     // 1. Create and append user message
-    const userMsg = { role: 'user', content: userMessageContent };
+    const userMsg = { role: 'user', content: displayMessageContent };
     const updatedMessagesWithUser = [...activeMessages, userMsg];
 
     // Update frontend state with User message
@@ -557,7 +614,10 @@ function PracticeArea({
         prompt: userMessageContent,
         provider: resolvedModel.provider,
         model_name: resolvedModel.provider === 'ollama' ? resolvedModel.model_name : null,
-        system_prompt: activeAgent ? activeAgent.system_prompt : null
+        system_prompt: activeAgent ? activeAgent.system_prompt : null,
+        file_data: fileToSend ? fileToSend.data : null,
+        file_name: fileToSend ? fileToSend.name : null,
+        file_type: fileToSend ? fileToSend.type : null
       });
 
       // 3. Construct AI response with the current answering model name
@@ -1113,7 +1173,38 @@ function PracticeArea({
 
         {/* Capsule Prompt Input */}
         <div className="workspace-input-container">
+          {attachedFile && (
+            <div className="workspace-file-preview animate-slide-up">
+              <Paperclip size={14} className="workspace-file-icon" />
+              <span className="file-name">{attachedFile.name}</span>
+              <span className="file-size">({Math.round(attachedFile.size / 1024)} KB)</span>
+              <button 
+                type="button" 
+                onClick={handleRemoveFile} 
+                className="workspace-file-remove-btn" 
+                title="Xóa tệp đính kèm"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          )}
+
           <form onSubmit={handleSend} className="workspace-input-capsule">
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileChange} 
+              style={{ display: 'none' }} 
+            />
+            <button 
+              type="button" 
+              onClick={handleAttachmentClick} 
+              className="workspace-attach-btn" 
+              title="Đính kèm tài liệu" 
+              disabled={loading || !activeConversationId}
+            >
+              <Plus size={18} />
+            </button>
             <textarea
               ref={textareaRef}
               rows={1}
@@ -1126,7 +1217,7 @@ function PracticeArea({
             />
             <button 
               type="submit" 
-              disabled={loading || !input.trim() || !activeConversationId}
+              disabled={loading || (!input.trim() && !attachedFile) || !activeConversationId}
               className="workspace-send-btn"
             >
               <Send size={16} />
