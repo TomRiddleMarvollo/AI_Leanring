@@ -2,7 +2,7 @@
 
 AI_SOURCES = {
     "Personal Sites": [
-        "karpathy.ai", "fast.ai", "yann.lecun.com", "fchollet.com", "sebastianraschka.com",
+        "andrewng.org", "karpathy.ai", "fast.ai", "yann.lecun.com", "fchollet.com", "sebastianraschka.com",
         "people.eecs.berkeley.edu/~jordan", "nlp.stanford.edu/~manning", "cs.stanford.edu/~pliang",
         "people.eecs.berkeley.edu/~russell", "lexfridman.com", "research.google/people/jeff",
         "deepmind.com/people/demis-hassabis", "iangoodfellow.com", "otoro.net", "rohinshah.com",

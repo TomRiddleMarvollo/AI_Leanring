@@ -1,7 +1,25 @@
+# Local env files (chứa secrets)
 .env
+src/backend/.env
+environments/production/.env
+environments/staging/.env
+
+# Cho phép commit env template/example
+!environments/dev/.env
+!environments/test/.env
+
+# Database
 ai_hub.db
+data/*.db
+
+# Python
 __pycache__/
 *.pyc
+*.pyo
+
+# Node
 node_modules/
 dist/
+
+# macOS
 .DS_Store

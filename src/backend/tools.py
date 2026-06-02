@@ -43,15 +43,39 @@ def search_web(query: str, max_results: int = 5) -> list:
         print(f"Error fetching DDG for query '{query}': {e}")
     return results
 
+def _is_safe_url(url: str) -> bool:
+    from urllib.parse import urlparse
+    import ipaddress
+    try:
+        parsed = urlparse(url)
+        if parsed.scheme not in ("http", "https"):
+            return False
+        host = parsed.hostname or ""
+        # Block private/loopback addresses (SSRF prevention)
+        try:
+            addr = ipaddress.ip_address(host)
+            if addr.is_private or addr.is_loopback or addr.is_link_local:
+                return False
+        except ValueError:
+            # hostname, not IP — block known internal names
+            if host in ("localhost", "metadata.google.internal") or host.endswith(".local"):
+                return False
+        return True
+    except Exception:
+        return False
+
 def fetch_content(url: str) -> str:
     """
     Fetches the textual content of a given URL.
     """
+    if not _is_safe_url(url):
+        print(f"Blocked potentially unsafe URL: {url}")
+        return ""
     try:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
-        response = requests.get(url, headers=headers, timeout=10)
+        response = requests.get(url, headers=headers, timeout=10, allow_redirects=False)
         response.raise_for_status()
         
         soup = BeautifulSoup(response.text, 'html.parser')

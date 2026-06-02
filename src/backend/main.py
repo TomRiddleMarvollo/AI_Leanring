@@ -1,5 +1,9 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 import os
@@ -10,15 +14,23 @@ from database import get_db, NewsItem, LearningModule, Project, Conversation, Me
 
 load_dotenv()
 
-app = FastAPI(title="AI Learning Web Hub API")
+ALLOWED_ORIGINS = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:5173,http://localhost:3000"
+).split(",")
 
-# Setup CORS to allow requests from the React frontend
+limiter = Limiter(key_func=get_remote_address)
+
+app = FastAPI(title="AI Learning Web Hub API")
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # For development, allow all. In production, specify the exact frontend URL.
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "DELETE"],
+    allow_headers=["Content-Type"],
 )
 
 from typing import Optional
@@ -28,6 +40,9 @@ class PracticeRequest(BaseModel):
     provider: Optional[str] = None
     model_name: Optional[str] = None
     system_prompt: Optional[str] = None
+    file_data: Optional[str] = None
+    file_name: Optional[str] = None
+    file_type: Optional[str] = None
 
 @app.get("/")
 def read_root():
@@ -87,8 +102,17 @@ def get_models():
     return models
 
 @app.post("/api/practice")
-def practice_with_ai(req: PracticeRequest):
-    response_text = practice_chat(req.prompt, req.provider, req.model_name, req.system_prompt)
+@limiter.limit("20/minute")
+def practice_with_ai(request: Request, req: PracticeRequest):
+    response_text = practice_chat(
+        req.prompt, 
+        req.provider, 
+        req.model_name, 
+        req.system_prompt,
+        req.file_data,
+        req.file_name,
+        req.file_type
+    )
     return {"response": response_text}
 
 @app.post("/api/agent/run", status_code=202)

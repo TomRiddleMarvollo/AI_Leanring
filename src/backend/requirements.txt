@@ -10,3 +10,4 @@ sqlalchemy==2.0.31
 psycopg2-binary==2.9.9
 PyYAML==6.0.1
 google-generativeai==0.5.4
+slowapi==0.1.9

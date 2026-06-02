@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: aihub_db_staging
+    environment:
+      POSTGRES_USER: stage_user
+      POSTGRES_PASSWORD: stage_pass
+      POSTGRES_DB: aihub_staging
+    volumes:
+      - postgres_staging:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U stage_user -d aihub_staging"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ../../src/backend
+      dockerfile: Dockerfile
+    container_name: aihub_backend_staging
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql://stage_user:stage_pass@db:5432/aihub_staging
+    volumes:
+      - ../../config.yaml:/app/config.yaml
+      - ../../prompts:/app/prompts
+    depends_on:
+      db:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8001:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ../../src/frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=https://staging-api.yourdomain.com
+        - VITE_ENV=staging
+    container_name: aihub_frontend_staging
+    ports:
+      - "7071:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_staging:
