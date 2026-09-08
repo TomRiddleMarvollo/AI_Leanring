@@ -61,10 +61,13 @@ def get_learning_modules(skip: int = 0, limit: int = 20, db: Session = Depends(g
 
 @app.get("/api/curriculum")
 def get_curriculum(db: Session = Depends(get_db)):
-    lessons = db.query(CurriculumLesson).order_by(CurriculumLesson.order_index.asc()).all()
-    # Seed the static curriculum on first request, same pattern as projects/agents below
-    if not lessons:
-        for i, item in enumerate(CURRICULUM_SEED):
+    # Sync CURRICULUM_SEED into the DB (insert new lessons, update edited ones)
+    # so editing curriculum_seed.py and restarting the backend is enough to
+    # publish content changes, no manual DB work needed.
+    existing = {lesson.id: lesson for lesson in db.query(CurriculumLesson).all()}
+    for i, item in enumerate(CURRICULUM_SEED):
+        lesson = existing.get(item["id"])
+        if lesson is None:
             db.add(CurriculumLesson(
                 id=item["id"],
                 level=item["level"],
@@ -73,9 +76,14 @@ def get_curriculum(db: Session = Depends(get_db)):
                 summary=item["summary"],
                 content=item["content"],
             ))
-        db.commit()
-        lessons = db.query(CurriculumLesson).order_by(CurriculumLesson.order_index.asc()).all()
-    return lessons
+        else:
+            lesson.level = item["level"]
+            lesson.order_index = i
+            lesson.title = item["title"]
+            lesson.summary = item["summary"]
+            lesson.content = item["content"]
+    db.commit()
+    return db.query(CurriculumLesson).order_by(CurriculumLesson.order_index.asc()).all()
 
 from fastapi import BackgroundTasks
 from agent import run_all_background_tasks, practice_chat, get_ollama_models
