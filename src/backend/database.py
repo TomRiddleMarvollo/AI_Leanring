@@ -42,6 +42,16 @@ class LearningModule(Base):
     category = Column(String) # e.g., "Prompt Engineering", "RAG"
     created_at = Column(DateTime, default=datetime.utcnow)
 
+class CurriculumLesson(Base):
+    __tablename__ = "curriculum_lessons"
+
+    id = Column(String, primary_key=True, index=True)
+    level = Column(String, index=True)  # "basic" | "prompting" | "advanced"
+    order_index = Column(Integer, default=0)
+    title = Column(String)
+    summary = Column(Text)
+    content = Column(Text)
+
 class Project(Base):
     __tablename__ = "projects"
 

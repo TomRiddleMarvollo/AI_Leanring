@@ -2,7 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { marked } from 'marked';
 import { BookOpen, ChevronDown, ChevronRight, GraduationCap } from 'lucide-react';
-import { CURRICULUM, LEVELS } from '../data/curriculum';
+
+// UI-only labels for curriculum levels; the actual lesson content lives in the DB.
+const LEVELS = [
+  { id: 'basic', label: 'Cơ bản' },
+  { id: 'prompting', label: 'Prompting' },
+  { id: 'advanced', label: 'Nâng cao' },
+];
 
 // Helper to render markdown safely (same pattern as PracticeArea)
 const renderMarkdown = (text) => {
@@ -18,8 +24,24 @@ const renderMarkdown = (text) => {
 function CurriculumSection() {
   const [activeLevel, setActiveLevel] = useState(LEVELS[0].id);
   const [expandedId, setExpandedId] = useState(null);
+  const [curriculum, setCurriculum] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const lessons = CURRICULUM.filter((lesson) => lesson.level === activeLevel);
+  useEffect(() => {
+    const fetchCurriculum = async () => {
+      try {
+        const response = await axios.get('/api/curriculum');
+        setCurriculum(response.data);
+      } catch (error) {
+        console.error("Error fetching curriculum:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCurriculum();
+  }, []);
+
+  const lessons = curriculum.filter((lesson) => lesson.level === activeLevel);
 
   const handleSelectLevel = (levelId) => {
     setActiveLevel(levelId);
@@ -41,6 +63,8 @@ function CurriculumSection() {
           </button>
         ))}
       </div>
+
+      {loading && <p>Đang tải khóa học...</p>}
 
       <div className="curriculum-list">
         {lessons.map((lesson, index) => {

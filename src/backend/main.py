@@ -10,7 +10,8 @@ import os
 from dotenv import load_dotenv
 
 # Import local modules
-from database import get_db, NewsItem, LearningModule, Project, Conversation, Message, Agent
+from database import get_db, NewsItem, LearningModule, Project, Conversation, Message, Agent, CurriculumLesson
+from curriculum_seed import CURRICULUM_SEED
 
 load_dotenv()
 
@@ -57,6 +58,24 @@ def get_news(skip: int = 0, limit: int = 20, db: Session = Depends(get_db)):
 def get_learning_modules(skip: int = 0, limit: int = 20, db: Session = Depends(get_db)):
     modules = db.query(LearningModule).order_by(LearningModule.created_at.desc()).offset(skip).limit(limit).all()
     return modules
+
+@app.get("/api/curriculum")
+def get_curriculum(db: Session = Depends(get_db)):
+    lessons = db.query(CurriculumLesson).order_by(CurriculumLesson.order_index.asc()).all()
+    # Seed the static curriculum on first request, same pattern as projects/agents below
+    if not lessons:
+        for i, item in enumerate(CURRICULUM_SEED):
+            db.add(CurriculumLesson(
+                id=item["id"],
+                level=item["level"],
+                order_index=i,
+                title=item["title"],
+                summary=item["summary"],
+                content=item["content"],
+            ))
+        db.commit()
+        lessons = db.query(CurriculumLesson).order_by(CurriculumLesson.order_index.asc()).all()
+    return lessons
 
 from fastapi import BackgroundTasks
 from agent import run_all_background_tasks, practice_chat, get_ollama_models
