@@ -10,7 +10,7 @@ import './index.css';
 // In dev mode without Nginx, we would need to configure vite.config.js server.proxy
 
 function App() {
-  const [activeTab, setActiveTab] = useState('news');
+  const [activeTab, setActiveTab] = useState('learning');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
