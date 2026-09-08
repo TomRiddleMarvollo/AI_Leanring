@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { marked } from 'marked';
-import { BookOpen, ChevronDown, ChevronRight, GraduationCap } from 'lucide-react';
+import { BookOpen, ChevronRight, GraduationCap, ArrowLeft } from 'lucide-react';
 
 // UI-only labels for curriculum levels; the actual lesson content lives in the DB.
 const LEVELS = [
@@ -21,9 +21,30 @@ const renderMarkdown = (text) => {
   }
 };
 
+function LessonDetail({ lesson, onBack }) {
+  return (
+    <div className="list-container curriculum-section">
+      <button className="curriculum-back-btn" onClick={onBack}>
+        <ArrowLeft size={18} />
+        Quay lại danh sách bài học
+      </button>
+      <h2 className="curriculum-detail-title">{lesson.title}</h2>
+      <p className="curriculum-item-summary curriculum-detail-summary">{lesson.summary}</p>
+      <div
+        className="curriculum-item-content curriculum-detail-content"
+        dangerouslySetInnerHTML={renderMarkdown(lesson.content)}
+      />
+      <button className="curriculum-back-btn curriculum-back-btn-bottom" onClick={onBack}>
+        <ArrowLeft size={18} />
+        Quay lại danh sách bài học
+      </button>
+    </div>
+  );
+}
+
 function CurriculumSection() {
   const [activeLevel, setActiveLevel] = useState(LEVELS[0].id);
-  const [expandedId, setExpandedId] = useState(null);
+  const [selectedLessonId, setSelectedLessonId] = useState(null);
   const [curriculum, setCurriculum] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,11 +63,16 @@ function CurriculumSection() {
   }, []);
 
   const lessons = curriculum.filter((lesson) => lesson.level === activeLevel);
+  const selectedLesson = curriculum.find((lesson) => lesson.id === selectedLessonId);
 
   const handleSelectLevel = (levelId) => {
     setActiveLevel(levelId);
-    setExpandedId(null);
+    setSelectedLessonId(null);
   };
+
+  if (selectedLesson) {
+    return <LessonDetail lesson={selectedLesson} onBack={() => setSelectedLessonId(null)} />;
+  }
 
   return (
     <div className="list-container curriculum-section">
@@ -67,30 +93,20 @@ function CurriculumSection() {
       {loading && <p>Đang tải khóa học...</p>}
 
       <div className="curriculum-list">
-        {lessons.map((lesson, index) => {
-          const isOpen = expandedId === lesson.id;
-          return (
-            <div key={lesson.id} className={`curriculum-item ${isOpen ? 'open' : ''}`}>
-              <button
-                className="curriculum-item-header"
-                onClick={() => setExpandedId(isOpen ? null : lesson.id)}
-              >
-                <span className="curriculum-item-number">{index + 1}</span>
-                <span className="curriculum-item-title-wrap">
-                  <span className="curriculum-item-title">{lesson.title}</span>
-                  <span className="curriculum-item-summary">{lesson.summary}</span>
-                </span>
-                {isOpen ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
-              </button>
-              {isOpen && (
-                <div
-                  className="curriculum-item-content"
-                  dangerouslySetInnerHTML={renderMarkdown(lesson.content)}
-                />
-              )}
-            </div>
-          );
-        })}
+        {lessons.map((lesson, index) => (
+          <button
+            key={lesson.id}
+            className="curriculum-item-header"
+            onClick={() => setSelectedLessonId(lesson.id)}
+          >
+            <span className="curriculum-item-number">{index + 1}</span>
+            <span className="curriculum-item-title-wrap">
+              <span className="curriculum-item-title">{lesson.title}</span>
+              <span className="curriculum-item-summary">{lesson.summary}</span>
+            </span>
+            <ChevronRight size={20} />
+          </button>
+        ))}
       </div>
     </div>
   );
