@@ -8,6 +8,9 @@ const LEVELS = [
   { id: 'basic', label: 'Cơ bản' },
   { id: 'prompting', label: 'Prompting' },
   { id: 'advanced', label: 'Nâng cao' },
+  { id: 'study', label: 'Học tập' },
+  { id: 'work', label: 'Làm việc' },
+  { id: 'planning', label: 'Lên kế hoạch' },
 ];
 
 // Helper to render markdown safely (same pattern as PracticeArea)
@@ -76,7 +79,7 @@ function CurriculumSection() {
 
   return (
     <div className="list-container curriculum-section">
-      <h2><GraduationCap size={22} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />Khóa học AI Cơ bản đến Nâng cao</h2>
+      <h2><GraduationCap size={22} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />Khóa học AI: Nền tảng & Ứng dụng Thực tế</h2>
 
       <div className="curriculum-tabs">
         {LEVELS.map((level) => (
