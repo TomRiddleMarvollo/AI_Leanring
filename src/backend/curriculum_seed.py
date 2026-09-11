@@ -2061,4 +2061,367 @@ nào bắt buộc phải xong trước mới làm được việc tiếp theo.
             },
         },
     },
+
+    # ── Vibe Coding (vibecoding) ───────────────────────────────────
+    {
+        "id": "vibecoding-1",
+        "level": "vibecoding",
+        "title": "Vibe Coding là gì? Lợi ích và rủi ro cần biết",
+        "summary": "Khái niệm lập trình bằng cách mô tả ý định cho AI, thay vì tự tay viết từng dòng code.",
+        "content": """## Vibe Coding là gì?
+
+"Vibe Coding" là cách làm việc trong đó bạn **mô tả ý định** (ví dụ: "thêm nút đăng xuất ở góc trên bên phải") cho một AI coding agent (như Claude Code, Cursor, GitHub Copilot...) để nó tự viết/sửa code, còn bạn tập trung vào **kiểm tra kết quả có đúng ý không**, thay vì gõ từng ký tự.
+
+> 🌱 **Ví dụ đời thường**: Giống việc bạn là kiến trúc sư mô tả bản vẽ cho đội thi công, thay vì tự tay xây từng viên gạch — nhưng bạn vẫn phải kiểm tra công trình có đúng bản vẽ và an toàn hay không.
+
+## Lợi ích
+
+- **Tốc độ**: viết tính năng, sửa bug, refactor nhanh hơn nhiều so với gõ tay hoàn toàn.
+- **Hạ rào cản**: người chưa rành cú pháp một ngôn ngữ vẫn tạo ra được sản phẩm chạy được.
+- **Rảnh tay cho tư duy cấp cao**: bạn tập trung vào "cái gì cần làm, tại sao", AI lo phần "làm thế nào".
+
+## Rủi ro cần biết
+
+- **Ảo tưởng về chất lượng**: code chạy được không có nghĩa là đúng, an toàn, hay dễ bảo trì.
+- **Mất kiểm soát dần**: nếu không đọc code AI viết, dần dần bạn sẽ không còn hiểu hệ thống của chính mình.
+- **Lỗ hổng bảo mật**: AI có thể viết code có lỗi injection, lộ secret, thiếu validate input nếu không được yêu cầu cẩn thận.
+
+> 💡 Vibe coding hiệu quả không phải là "giao hết cho AI rồi không quan tâm" — mà là biết dùng đúng lúc, đúng cách, và luôn giữ vai trò người kiểm duyệt cuối cùng. Các bài tiếp theo trong nhóm này đi vào từng kỹ thuật cụ thể, có ví dụ với Claude Code.""",
+    },
+    {
+        "id": "vibecoding-2",
+        "level": "vibecoding",
+        "title": "Đọc trước khi sửa: cho AI đủ ngữ cảnh",
+        "summary": "Nguyên tắc quan trọng nhất khi làm việc với coding agent — để nó đọc code hiện có trước khi viết code mới.",
+        "content": """## Nguyên tắc
+
+Coding agent không tự động "biết" codebase của bạn — nó chỉ thấy những gì được đọc vào ngữ cảnh. Yêu cầu sửa code mà không cho AI đọc file liên quan trước dễ dẫn đến: code không khớp style hiện có, phá vỡ quy ước đặt tên, hoặc tạo trùng lặp với hàm đã có sẵn.
+
+> 🌱 Đây chính là quy tắc **"Read before you write"** mà các coding agent có kỷ luật tốt (Claude Code trong đó) luôn cố gắng tuân theo mặc định — nhưng chủ động nhắc rõ ràng vẫn giúp ích, đặc biệt với các file/quy ước ít phổ biến.
+
+## Prompt mẫu
+
+```
+Trước khi sửa, hãy đọc [đường dẫn file/thư mục liên quan] để nắm
+quy ước đặt tên biến, cấu trúc component, và style code hiện có.
+
+Sau đó: [mô tả thay đổi bạn muốn]
+
+Giữ nguyên style hiện tại, đừng tự ý đổi cấu trúc không liên quan.
+```
+
+## Thử trực tiếp: không cho đọc code so với yêu cầu đọc trước
+
+{{PROMPT_LAB}}
+
+> 💡 Với dự án lớn, chỉ định đúng file/thư mục liên quan (thay vì "đọc hết cả repo") vừa nhanh hơn, vừa giúp AI tập trung đúng phạm vi cần sửa.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Không cho đọc code trước",
+                "prompt": "Thêm chức năng xóa bình luận vào ứng dụng của tôi.",
+                "reply": "Đã thêm hàm deleteComment() vào file mới comments.js, dùng fetch() trực tiếp, đặt tên biến theo camelCase.\n\n(AI tự đoán cấu trúc — có thể không khớp style dự án thật, ví dụ nếu dự án dùng axios thay vì fetch, hay đã có sẵn hàm dùng chung ở nơi khác)",
+            },
+            "good": {
+                "label": "Yêu cầu đọc code trước",
+                "prompt": "Trước khi sửa, hãy đọc src/components/CommentList.jsx và src/api/comments.js để nắm cách gọi API và style hiện có.\n\nSau đó thêm chức năng xóa bình luận, giữ đúng style hiện tại.",
+                "reply": "Đã đọc CommentList.jsx và comments.js — thấy dự án dùng axios và có sẵn hàm deleteRequest() dùng chung. Đã thêm deleteComment() vào comments.js theo đúng pattern đó, và nút xóa vào CommentList.jsx dùng đúng icon Trash2 đã import sẵn.",
+            },
+        },
+    },
+    {
+        "id": "vibecoding-3",
+        "level": "vibecoding",
+        "title": "Chia nhỏ yêu cầu, kiểm tra từng bước",
+        "summary": "Yêu cầu một lần quá lớn khiến AI dễ lạc hướng — chia nhỏ giúp kiểm soát chất lượng tốt hơn.",
+        "content": """## Nguyên tắc
+
+"Làm giúp tôi cả hệ thống đăng nhập/đăng ký/quên mật khẩu" là yêu cầu quá lớn để kiểm tra đúng-sai trong một lần. Càng nhiều thay đổi trong một lượt, càng khó phát hiện lỗi ẩn, và càng khó hoàn tác nếu có gì sai. Chia thành các bước nhỏ, kiểm tra kết quả mỗi bước trước khi đi tiếp — đúng tinh thần "incremental development" trong lập trình truyền thống.
+
+## Prompt mẫu
+
+```
+Chúng ta sẽ làm [tính năng lớn] theo từng bước, tôi sẽ kiểm tra sau
+mỗi bước trước khi đi tiếp.
+
+Bước 1: [phần nhỏ đầu tiên]
+
+Chỉ làm bước 1 trước, đừng làm các bước sau khi tôi chưa xác nhận.
+```
+
+## Thử trực tiếp: yêu cầu một lần quá lớn so với chia nhỏ từng bước
+
+{{PROMPT_LAB}}
+
+> 💡 Dấu hiệu một yêu cầu đang quá lớn: nếu bạn không thể mô tả "bằng chứng hoàn thành" của nó trong một câu ngắn gọn, có lẽ nên chia nhỏ thêm.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu một lần quá lớn",
+                "prompt": "Làm giúp tôi toàn bộ hệ thống đăng nhập, đăng ký, quên mật khẩu, và xác thực email.",
+                "reply": "Đã tạo 8 file mới: LoginForm.jsx, RegisterForm.jsx, ForgotPassword.jsx, EmailVerification.jsx, auth.py, email_service.py...\n\n(Quá nhiều thay đổi cùng lúc — nếu có lỗi ở đâu đó, rất khó xác định chính xác phần nào sai, và review hết chỗ này sẽ mất rất nhiều thời gian)",
+            },
+            "good": {
+                "label": "Chia nhỏ từng bước",
+                "prompt": "Chúng ta sẽ làm hệ thống đăng nhập theo từng bước. Bước 1: chỉ làm form đăng nhập (UI + validate input phía client), chưa cần nối API. Làm xong báo tôi kiểm tra trước khi sang bước 2.",
+                "reply": "Đã tạo LoginForm.jsx với validate email/password phía client. Đây là bước 1/4 — bạn kiểm tra UI và validate trước, tôi sẽ chờ xác nhận rồi mới làm bước 2 (nối API đăng nhập).",
+            },
+        },
+    },
+    {
+        "id": "vibecoding-4",
+        "level": "vibecoding",
+        "title": "Lập kế hoạch trước khi code việc lớn (Plan Mode)",
+        "summary": "Với thay đổi phức tạp, thống nhất kế hoạch trước khi để AI viết code — tránh code sai hướng rồi phải sửa lại.",
+        "content": """## Nguyên tắc
+
+Với việc nhỏ, để AI code luôn là hợp lý. Nhưng với thay đổi **phức tạp hoặc ảnh hưởng nhiều file**, code ngay dễ dẫn đến: chọn sai kiến trúc, bỏ sót trường hợp biên, hoặc làm khác hướng bạn thực sự muốn — và bạn chỉ phát hiện ra sau khi đã tốn công viết cả đống code. Tốt hơn: thống nhất kế hoạch bằng lời trước, rồi mới cho code.
+
+> 🌱 Claude Code có sẵn chế độ **"Plan Mode"** — khiến AI chỉ đọc, phân tích, và trình bày kế hoạch bằng chữ trước, không sửa file nào cho đến khi bạn duyệt kế hoạch đó.
+
+## Prompt mẫu
+
+```
+Đây là việc cần làm: [mô tả thay đổi lớn/phức tạp]
+
+Đừng viết code ngay. Trước tiên hãy trình bày kế hoạch: các file
+cần sửa, cách tiếp cận, và những điểm còn chưa rõ cần hỏi lại tôi.
+Tôi sẽ duyệt kế hoạch trước khi bạn bắt đầu code.
+```
+
+## Thử trực tiếp: yêu cầu code ngay so với yêu cầu lập kế hoạch trước
+
+{{PROMPT_LAB}}
+
+> 💡 Càng việc lớn/rủi ro cao (đổi kiến trúc, đụng vào dữ liệu, migration), càng nên dùng bước lập kế hoạch — chi phí thời gian bàn kế hoạch luôn rẻ hơn chi phí sửa lại code đã viết sai hướng.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu code ngay",
+                "prompt": "Refactor toàn bộ hệ thống quản lý state từ Redux sang Context API cho tôi.",
+                "reply": "Đã bắt đầu sửa 12 file...\n\n(AI code luôn theo cách hiểu riêng của nó — có thể chọn cấu trúc Context không phù hợp với cách bạn muốn tổ chức, và bạn chỉ phát hiện ra sau khi đã sửa xong 12 file)",
+            },
+            "good": {
+                "label": "Yêu cầu lập kế hoạch trước",
+                "prompt": "Tôi muốn refactor từ Redux sang Context API. Đừng code ngay — hãy trình bày kế hoạch: cần tách bao nhiêu Context, file nào bị ảnh hưởng, và rủi ro nào cần lưu ý. Tôi sẽ duyệt trước khi bạn code.",
+                "reply": "Kế hoạch: tách 3 Context (AuthContext, CartContext, UIContext) tương ứng 3 slice Redux hiện tại. Ảnh hưởng 9 file. Rủi ro: CartContext có logic tính toán phức tạp, cần giữ nguyên để tránh sai số liệu. Bạn xác nhận trước khi tôi bắt đầu nhé?",
+            },
+        },
+    },
+    {
+        "id": "vibecoding-5",
+        "level": "vibecoding",
+        "title": "Luôn review code AI viết trước khi chấp nhận",
+        "summary": "Code chạy được không có nghĩa là đúng — luôn dành thời gian đọc lại trước khi merge.",
+        "content": """## Nguyên tắc
+
+Cảm giác "chạy được, xong việc" rất dễ khiến bạn bấm chấp nhận thay đổi mà không đọc kỹ. Nhưng AI có thể viết code **chạy đúng ở trường hợp thường gặp nhưng sai ở trường hợp biên**, hoặc âm thầm thêm logic bạn không yêu cầu. Luôn dành ít nhất một lượt đọc lại diff trước khi chấp nhận, đặc biệt với code động đến dữ liệu, tiền bạc, hoặc bảo mật.
+
+## Prompt mẫu (yêu cầu AI tự giải thích trước khi bạn duyệt)
+
+```
+Trước khi tôi chấp nhận thay đổi này, hãy tóm tắt:
+1. Chính xác những gì đã thay đổi (file nào, hàm nào)
+2. Có giả định/đánh đổi nào tôi cần biết không
+3. Trường hợp nào có thể chưa được xử lý (edge case)
+```
+
+## Thử trực tiếp: chấp nhận ngay so với yêu cầu giải thích trước
+
+{{PROMPT_LAB}}
+
+> 💡 Đây cũng chính là lý do các đội ngũ vibe coding có kỷ luật vẫn giữ bước code review — dù người viết là AI hay con người, review vẫn là lưới an toàn cuối cùng.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Chấp nhận ngay không hỏi lại",
+                "prompt": "Cảm ơn, code chạy được rồi, merge luôn nhé.",
+                "reply": "Đã merge.\n\n(Bạn chấp nhận mà chưa biết code có xử lý trường hợp số lượng = 0, hay giá trị âm hay không — có thể ẩn chứa bug chưa lộ ra vì chưa gặp đúng tình huống)",
+            },
+            "good": {
+                "label": "Yêu cầu giải thích trước khi duyệt",
+                "prompt": "Trước khi tôi chấp nhận, tóm tắt chính xác những gì đã thay đổi, có giả định nào tôi cần biết, và trường hợp biên nào có thể chưa xử lý.",
+                "reply": "Đã sửa hàm calculateTotal() để cộng thêm phí ship. Giả định: phí ship luôn là số dương, chưa xử lý trường hợp số lượng sản phẩm = 0 (sẽ hiện phí ship dù giỏ hàng rỗng) — bạn có muốn tôi xử lý thêm case này không?",
+            },
+        },
+    },
+    {
+        "id": "vibecoding-6",
+        "level": "vibecoding",
+        "title": "Dùng Git để an toàn thử nghiệm với AI",
+        "summary": "Nhánh riêng và commit nhỏ giúp bạn dễ dàng hoàn tác nếu AI đi sai hướng.",
+        "content": """## Nguyên tắc
+
+Khi AI có thể sửa nhiều file cùng lúc, rủi ro lớn nhất là **khó hoàn tác** nếu hướng đi sai. Luôn làm việc trên nhánh riêng (không phải main/master), và commit thường xuyên theo từng bước nhỏ đã kiểm tra ổn — để có thể quay lại đúng điểm gần nhất nếu bước sau đó đi lệch hướng.
+
+> 🌱 Đây cũng là lý do các coding agent có kỷ luật tốt (Claude Code trong đó) mặc định không tự làm việc trực tiếp trên nhánh main/master, và không tự ý chạy các lệnh git nguy hiểm (`reset --hard`, force push, xóa branch...) mà không hỏi trước.
+
+## Prompt mẫu
+
+```
+Trước khi bắt đầu, tạo giúp tôi một nhánh mới tên [tên nhánh] từ
+[nhánh gốc].
+
+Sau mỗi bước nhỏ hoàn thành và tôi đã xác nhận ổn, hãy commit lại
+với message rõ ràng trước khi làm bước tiếp theo.
+```
+
+## Thử trực tiếp: làm trực tiếp trên main so với dùng branch + commit từng bước
+
+{{PROMPT_LAB}}
+
+> 💡 Nếu một coding agent đề nghị chạy lệnh git có thể phá huỷ dữ liệu (force push, reset --hard, xóa branch) mà bạn không nhớ đã yêu cầu — luôn dừng lại và hỏi rõ lý do trước khi đồng ý.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Làm trực tiếp, không branch/commit",
+                "prompt": "Sửa giúp tôi tính năng giỏ hàng, sửa xong luôn thể.",
+                "reply": "Đã sửa 5 file trực tiếp trên nhánh main.\n\n(Nếu một trong các thay đổi gây lỗi mà bạn không phát hiện ngay, rất khó biết chính xác thay đổi nào gây ra, và không có điểm mốc nào để quay lại)",
+            },
+            "good": {
+                "label": "Yêu cầu branch + commit từng bước",
+                "prompt": "Tạo nhánh mới 'fix-cart-bug' từ main trước khi bắt đầu. Sửa tính năng giỏ hàng theo từng bước nhỏ, commit sau mỗi bước tôi xác nhận ổn.",
+                "reply": "Đã tạo nhánh fix-cart-bug. Bước 1: sửa lỗi tính tổng tiền — bạn kiểm tra thử, nếu ổn tôi sẽ commit rồi làm bước 2 (sửa lỗi hiển thị số lượng).",
+            },
+        },
+    },
+    {
+        "id": "vibecoding-7",
+        "level": "vibecoding",
+        "title": "Tận dụng khả năng agent tự chạy và tự sửa lỗi",
+        "summary": "Coding agent hiện đại có thể tự chạy test/build và đọc lỗi — hãy để nó làm thay vì tự copy-paste lỗi qua lại.",
+        "content": """## Nguyên tắc
+
+Khác với chatbot chỉ trả lời chữ, một coding agent như Claude Code có thể **tự chạy lệnh** (test, build, lint) và đọc kết quả/lỗi trực tiếp — không cần bạn copy-paste log qua lại. Tận dụng khả năng này giúp vòng lặp sửa lỗi nhanh hơn nhiều so với việc bạn làm trung gian chuyển thông tin qua lại.
+
+## Prompt mẫu
+
+```
+Sau khi sửa, hãy tự chạy [lệnh test/build/lint tương ứng dự án] để
+kiểm tra thay đổi có gây lỗi gì không, và tự sửa nếu phát hiện lỗi.
+
+Chỉ báo tôi khi: (a) mọi thứ đã pass, hoặc (b) gặp lỗi bạn không
+chắc chắn cách sửa đúng.
+```
+
+## Thử trực tiếp: tự copy-paste lỗi qua lại so với để agent tự chạy và tự sửa
+
+{{PROMPT_LAB}}
+
+> 💡 Vẫn nên tự chạy lại thử ứng dụng thật (đặc biệt với thay đổi giao diện) — test tự động pass không đảm bảo trải nghiệm người dùng thực tế cũng ổn.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Tự copy-paste lỗi qua lại",
+                "prompt": "Sửa hàm này giúp tôi.\n\n[dán code]",
+                "reply": "Đã sửa theo yêu cầu.\n\n(Sau đó bạn tự chạy test, thấy lỗi, dán lỗi vào chat, chờ AI sửa, lặp lại nhiều lần — vòng lặp chậm vì bạn phải làm trung gian chuyển thông tin mỗi lần)",
+            },
+            "good": {
+                "label": "Để agent tự chạy và tự sửa",
+                "prompt": "Sửa hàm này giúp tôi, sau đó tự chạy test liên quan (npm test) để kiểm tra, và tự sửa nếu test fail. Chỉ báo tôi khi test đã pass hoặc bạn gặp lỗi không chắc cách sửa.\n\n[dán code]",
+                "reply": "Đã sửa hàm. Chạy npm test — phát hiện 1 test fail liên quan đến trường hợp rỗng, đã tự sửa và chạy lại — toàn bộ test đã pass.",
+            },
+        },
+    },
+    {
+        "id": "vibecoding-8",
+        "level": "vibecoding",
+        "title": "CLAUDE.md: dạy AI 'luật chơi' của dự án một lần, dùng mãi",
+        "summary": "Ghi lại quy ước dự án vào một file nhớ, thay vì nhắc lại từ đầu mỗi phiên làm việc.",
+        "content": """## Nguyên tắc
+
+Mỗi phiên chat mới với coding agent thường bắt đầu "từ số 0" — không nhớ style code, quy ước đặt tên, hay các ràng buộc riêng của dự án bạn đã từng nói ở phiên trước. Giải pháp: viết các quy tắc đó vào một **file hướng dẫn cố định** (Claude Code dùng file `CLAUDE.md` ở gốc dự án) — agent sẽ tự đọc file này ở đầu mỗi phiên làm việc, không cần bạn nhắc lại.
+
+## Ví dụ nội dung CLAUDE.md
+
+```
+# Quy ước dự án
+
+- Ngôn ngữ: TypeScript strict mode, không dùng `any`.
+- State management: dùng Zustand, không dùng Redux.
+- Styling: Tailwind CSS, không viết file CSS riêng.
+- Test: mỗi hàm public phải có unit test (Vitest).
+- Không tự ý thêm dependency mới khi chưa hỏi.
+- Commit message theo Conventional Commits (feat/fix/chore...).
+```
+
+## Thử trực tiếp: nhắc lại mỗi lần chat so với đã ghi sẵn trong CLAUDE.md
+
+{{PROMPT_LAB}}
+
+> 💡 Cập nhật CLAUDE.md dần theo thời gian — mỗi lần bạn phải sửa/nhắc AI cùng một quy ước nhiều lần, đó là dấu hiệu nên ghi nó vào file này luôn.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Nhắc lại quy ước mỗi lần chat",
+                "prompt": "Viết component Button mới cho tôi. Nhớ là dự án dùng TypeScript strict, Tailwind, không dùng any nhé.",
+                "reply": "Đã tạo Button.tsx theo đúng yêu cầu.\n\n(Ở phiên chat sau, nếu bạn quên nhắc lại các quy ước này, AI có thể quay về thói quen mặc định — dùng CSS module thay vì Tailwind chẳng hạn)",
+            },
+            "good": {
+                "label": "Đã ghi sẵn trong CLAUDE.md",
+                "prompt": "Viết component Button mới cho tôi.",
+                "reply": "Đã đọc CLAUDE.md — dự án dùng TypeScript strict, Tailwind, Zustand. Đã tạo Button.tsx tuân theo đúng các quy ước này mà không cần bạn nhắc lại.",
+            },
+        },
+    },
+    {
+        "id": "vibecoding-9",
+        "level": "vibecoding",
+        "title": "Ranh giới: việc gì nên tự làm, việc gì nên giao AI",
+        "summary": "Không phải việc gì cũng nên giao cho AI — nhận biết loại việc cần sự kiểm soát chặt của con người.",
+        "content": """## Nguyên tắc
+
+Vibe coding hiệu quả không có nghĩa là giao tất cả cho AI. Một số loại việc cần **con người trực tiếp kiểm soát** vì rủi ro cao hoặc cần phán đoán tinh tế mà AI dễ bỏ sót.
+
+## Bảng tham khảo
+
+| Nên để AI làm | Cần con người kiểm soát chặt |
+|---|---|
+| Viết code lặp lại, boilerplate | Quyết định kiến trúc lớn, khó đảo ngược |
+| Viết test case, sửa lỗi rõ ràng | Thao tác xóa dữ liệu, migration production |
+| Refactor có test bao phủ đầy đủ | Xử lý thông tin nhạy cảm (secret, PII) |
+| Giải thích/review code | Merge/deploy lên production |
+| Tìm kiếm, tổng hợp thông tin kỹ thuật | Quyết định pháp lý, bảo mật quan trọng |
+
+## Nguyên tắc thực hành
+
+1. **Việc càng khó hoàn tác, càng cần bạn tự tay xác nhận từng bước** — không để AI tự động chạy hết một mạch.
+2. **Luôn tự chạy/test lại** trước khi coi một thay đổi là "xong", đặc biệt với code chạm vào tiền, dữ liệu người dùng, hoặc bảo mật.
+3. **Giữ quyền quyết định cuối cùng** ở các lệnh nguy hiểm (xóa branch, force push, xóa dữ liệu...) — coding agent có kỷ luật tốt sẽ luôn hỏi trước khi làm việc này, đừng tắt cơ chế hỏi đó đi.
+
+> 💡 Càng làm việc nhiều với AI, ranh giới này sẽ càng rõ theo kinh nghiệm thực tế của bạn — không có công thức chung cho mọi dự án.""",
+    },
+    {
+        "id": "vibecoding-10",
+        "level": "vibecoding",
+        "title": "Song song hoá việc lớn với nhiều agent con (subagent)",
+        "summary": "Với việc có thể tách rời, giao cho nhiều agent làm song song thay vì một agent làm tuần tự.",
+        "content": """## Nguyên tắc
+
+Một số việc lớn thực ra là nhiều việc nhỏ **độc lập với nhau** (ví dụ: viết test cho 5 module không liên quan, hay khảo sát 3 thư viện khác nhau). Thay vì để một agent làm tuần tự từng việc, các coding agent hiện đại (Claude Code có tính năng "subagent") có thể **giao song song cho nhiều agent con**, mỗi agent phụ trách một phần, rút ngắn tổng thời gian đáng kể.
+
+> 🌱 **Ví dụ đời thường**: Giống việc giao 3 người khác nhau đi khảo sát 3 nhà cung cấp cùng lúc, thay vì một người đi lần lượt từng nơi.
+
+## Khi nào nên dùng
+
+- Các việc **thực sự độc lập**, không phụ thuộc kết quả của nhau.
+- Việc cần tìm kiếm/khảo sát nhiều nguồn khác nhau.
+- Viết test/docs cho nhiều module riêng biệt cùng lúc.
+
+## Khi nào KHÔNG nên dùng
+
+- Các bước phụ thuộc tuần tự (bước 2 cần kết quả của bước 1) — song song hoá sẽ gây xung đột hoặc lãng phí.
+- Việc cần một mạch tư duy nhất quán từ đầu đến cuối (ví dụ thiết kế kiến trúc tổng thể).
+
+## Thử trực tiếp: yêu cầu làm tuần tự so với yêu cầu xử lý song song
+
+{{PROMPT_LAB}}
+
+> 💡 Không phải lúc nào cũng cần song song hoá — với việc nhỏ hoặc phụ thuộc lẫn nhau, làm tuần tự vẫn đơn giản và ít rủi ro xung đột hơn.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu làm tuần tự",
+                "prompt": "Viết unit test cho 3 module: utils.js, api.js, và validators.js.",
+                "reply": "Đã viết test cho utils.js... tiếp theo api.js... tiếp theo validators.js.\n\n(Làm tuần tự từng module một dù chúng hoàn toàn độc lập — tốn nhiều thời gian hơn cần thiết)",
+            },
+            "good": {
+                "label": "Yêu cầu xử lý song song",
+                "prompt": "Ba việc sau độc lập với nhau: viết unit test cho utils.js, api.js, và validators.js. Hãy xử lý song song bằng các agent con riêng biệt rồi tổng hợp kết quả.",
+                "reply": "Đã giao 3 agent con xử lý song song 3 module. Cả 3 đã hoàn thành: utils.js (8 test case), api.js (12 test case), validators.js (6 test case) — tổng thời gian rút ngắn đáng kể so với làm tuần tự.",
+            },
+        },
+    },
 ]
