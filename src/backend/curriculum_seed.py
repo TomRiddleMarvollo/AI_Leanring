@@ -427,20 +427,9 @@ Yêu cầu AI **trình bày từng bước suy luận** trước khi đưa ra k�
 </svg>
 </div>
 
-**Không có CoT:**
-```
-Một cửa hàng có 23 quả táo. Bán 8 quả sáng nay, nhập thêm 15 quả buổi trưa.
-Chiều bán tiếp 12 quả. Hỏi cửa hàng còn bao nhiêu quả táo?
-→ AI có thể trả lời ẩu, đôi khi tính sai.
-```
+## Thử trực tiếp: cùng một bài toán, có và không có yêu cầu suy luận từng bước
 
-**Có CoT:**
-```
-... (đề bài như trên)
-Hãy giải từng bước một, ghi rõ phép tính ở mỗi bước, rồi mới kết luận.
-```
-
-Kết quả: AI liệt kê "23 - 8 = 15", "15 + 15 = 30", "30 - 12 = 18" → giảm mạnh khả năng tính nhầm vì mỗi bước đơn giản hơn cả bài toán.
+{{PROMPT_LAB}}
 
 ## Biến thể nâng cao
 
@@ -450,6 +439,18 @@ Kết quả: AI liệt kê "23 - 8 = 15", "15 + 15 = 30", "30 - 12 = 18" → gi�
 ## Khi nào nên dùng?
 
 Toán học, logic, debug code, lập kế hoạch nhiều bước, phân tích dữ liệu. Với câu hỏi đơn giản (tra cứu sự kiện, dịch thuật), CoT thường không cần thiết và làm câu trả lời dài dòng hơn.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Không có CoT",
+                "prompt": "Một cửa hàng có 23 quả táo. Bán 8 quả sáng nay, nhập thêm 15 quả buổi trưa.\nChiều bán tiếp 12 quả. Hỏi cửa hàng còn bao nhiêu quả táo?",
+                "reply": "Cửa hàng còn 22 quả táo.\n\n(Sai! AI trả lời tắt, tính nhầm thứ tự phép cộng/trừ vì không được yêu cầu trình bày từng bước)",
+            },
+            "good": {
+                "label": "Có CoT",
+                "prompt": "Một cửa hàng có 23 quả táo. Bán 8 quả sáng nay, nhập thêm 15 quả buổi trưa.\nChiều bán tiếp 12 quả. Hỏi cửa hàng còn bao nhiêu quả táo?\n\nHãy giải từng bước một, ghi rõ phép tính ở mỗi bước, rồi mới kết luận.",
+                "reply": "Bước 1: 23 - 8 = 15 (sau khi bán buổi sáng)\nBước 2: 15 + 15 = 30 (sau khi nhập thêm buổi trưa)\nBước 3: 30 - 12 = 18 (sau khi bán buổi chiều)\n\nVậy cửa hàng còn 18 quả táo.",
+            },
+        },
     },
     {
         "id": "prompting-4",
@@ -1080,20 +1081,23 @@ Yêu cầu: dưới 150 từ, có câu mở đầu và kết thúc lịch sự, 
 dùng ngôn ngữ sáo rỗng thừa thãi.
 ```
 
-## Ví dụ
+## Thử trực tiếp: yêu cầu mơ hồ so với yêu cầu đủ thông tin
 
-Input ý chính: "xin dời deadline dự án A thêm 3 ngày, lý do đối tác chậm gửi dữ liệu, cam kết bàn giao đúng chất lượng."
-
-Output:
-> Chào anh/chị [tên],
->
-> Em viết email này để xin phép dời deadline bàn giao dự án A thêm 3 ngày, dự kiến hoàn thành vào [ngày]. Nguyên nhân là phía đối tác chưa gửi đủ dữ liệu đầu vào cần thiết, dù nhóm đã chủ động nhắc nhở từ tuần trước.
->
-> Em cam kết vẫn đảm bảo chất lượng bàn giao như kế hoạch ban đầu. Rất mong anh/chị thông cảm và hỗ trợ.
->
-> Em cảm ơn anh/chị.
+{{PROMPT_LAB}}
 
 > 💡 Với email nhạy cảm (từ chối, phàn nàn, xin lỗi), luôn tự đọc lại và chỉnh sửa trước khi gửi — đừng gửi thẳng bản AI viết.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu mơ hồ",
+                "prompt": "Viết email xin dời deadline.",
+                "reply": "Kính gửi Anh/Chị,\n\nTôi viết email này để xin phép dời deadline dự án. Mong Anh/Chị xem xét và thông cảm.\n\nTrân trọng.\n\n(Chung chung — không rõ dự án nào, dời bao lâu, lý do gì, giọng văn có phù hợp với người nhận không)",
+            },
+            "good": {
+                "label": "Yêu cầu đủ thông tin",
+                "prompt": "Viết một email tiếng Việt gửi cho sếp, giọng văn chuyên nghiệp.\nMục đích: xin dời deadline dự án A thêm 3 ngày.\nCác ý cần có:\n- Lý do: đối tác chậm gửi dữ liệu đầu vào\n- Cam kết vẫn đảm bảo chất lượng bàn giao\nYêu cầu: dưới 150 từ, mở đầu và kết thúc lịch sự.",
+                "reply": "Chào anh/chị [tên],\n\nEm viết email này để xin phép dời deadline bàn giao dự án A thêm 3 ngày, dự kiến hoàn thành vào [ngày]. Nguyên nhân là phía đối tác chưa gửi đủ dữ liệu đầu vào cần thiết, dù nhóm đã chủ động nhắc nhở từ tuần trước.\n\nEm cam kết vẫn đảm bảo chất lượng bàn giao như kế hoạch ban đầu. Rất mong anh/chị thông cảm và hỗ trợ.\n\nEm cảm ơn anh/chị.",
+            },
+        },
     },
     {
         "id": "work-2",
@@ -1162,15 +1166,23 @@ Tôi đã thử: [những gì bạn đã kiểm tra/thử sửa]
 Hãy chỉ ra nguyên nhân có khả năng cao nhất trước, kèm cách sửa.
 ```
 
-## Ví dụ so sánh
+## Thử trực tiếp: mô tả mơ hồ so với mô tả đầy đủ
 
-**Mô tả mơ hồ** (khó debug đúng): *"API của tôi trả về lỗi 500, không biết tại sao."*
-
-**Mô tả đầy đủ** (dễ debug đúng): nêu rõ endpoint, đoạn code xử lý request, traceback đầy đủ có dòng lỗi cụ thể (ví dụ `KeyError: 'user_id'` tại dòng nào), và thông tin "tôi đã thử log request body ra thì thấy thiếu field user_id trong một số trường hợp".
-
-Với mô tả đầy đủ, AI có thể chỉ thẳng: cần validate input trước khi truy cập `request['user_id']`, thay vì đoán chung chung nhiều khả năng không liên quan.
+{{PROMPT_LAB}}
 
 > 💡 Luôn dán **nguyên văn** thông báo lỗi, đừng diễn giải lại bằng lời của bạn — nhiều chi tiết quan trọng (tên exception, số dòng) dễ bị mất khi tóm tắt.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Mô tả mơ hồ",
+                "prompt": "API của tôi trả về lỗi 500, không biết tại sao.",
+                "reply": "Lỗi 500 (Internal Server Error) có thể do nhiều nguyên nhân: lỗi trong code xử lý, mất kết nối database, thiếu biến môi trường, request không hợp lệ...\n\nBạn có thể cung cấp thêm: đoạn code liên quan, thông báo lỗi đầy đủ (traceback), và bạn đã thử kiểm tra gì chưa?",
+            },
+            "good": {
+                "label": "Mô tả đầy đủ",
+                "prompt": "Ngôn ngữ/Framework: Python 3.11, FastAPI\nEndpoint POST /users trả lỗi 500 khi tạo user mới.\n\nĐoạn code liên quan:\ndef create_user(data: dict):\n    return db.save(user_id=data['user_id'], name=data['name'])\n\nTraceback:\nKeyError: 'user_id'\n  File \"main.py\", line 42, in create_user\n\nTôi đã thử: log request body, thấy một số request gửi lên thiếu field user_id.",
+                "reply": "Nguyên nhân: bạn truy cập data['user_id'] trực tiếp mà không kiểm tra field có tồn tại — khi client gửi thiếu field này, Python raise KeyError và FastAPI trả về lỗi 500 thay vì một lỗi validation rõ ràng.\n\nCách sửa: dùng data.get('user_id') rồi validate, hoặc định nghĩa Pydantic model có user_id: str bắt buộc — FastAPI sẽ tự trả lỗi 422 rõ ràng thay vì crash.",
+            },
+        },
     },
     {
         "id": "work-4",
@@ -1499,7 +1511,11 @@ Hãy giúp tôi:
    có thể bắt đầu làm ngay trong tuần này
 ```
 
-## Ví dụ
+## Thử trực tiếp: hỏi cộc lốc so với dùng prompt mẫu đầy đủ
+
+{{PROMPT_LAB}}
+
+## Ví dụ phân tích chi tiết
 
 Mục tiêu mơ hồ: "Tôi muốn khỏe hơn."
 
@@ -1513,6 +1529,18 @@ Mục tiêu mơ hồ: "Tôi muốn khỏe hơn."
 Các bước hành động: Tuần 1-2 chạy 2km x 3 buổi/tuần → Tuần 3-4 tăng lên 3km → ... → Tuần 8 đạt 5km liên tục.
 
 > 💡 Nếu bước hành động đầu tiên vẫn cảm thấy "khó bắt đầu ngay hôm nay", hãy yêu cầu AI chia nhỏ tiếp bước đó — dấu hiệu nó vẫn chưa đủ cụ thể.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Hỏi cộc lốc",
+                "prompt": "Tôi muốn khỏe hơn. Giúp tôi lập kế hoạch.",
+                "reply": "Để khỏe hơn, bạn nên: ăn uống lành mạnh, tập thể dục đều đặn, ngủ đủ giấc, uống đủ nước, hạn chế căng thẳng...\n\n(Lời khuyên chung chung — không đo lường được, không có mốc thời gian, không biết bắt đầu từ đâu)",
+            },
+            "good": {
+                "label": "Dùng prompt mẫu",
+                "prompt": "Mục tiêu hiện tại của tôi (còn mơ hồ): \"Tôi muốn khỏe hơn.\"\nBối cảnh: hiện tại chạy được 2-3km, có thể tập 3 buổi/tuần.\n\nHãy giúp tôi:\n1. Biến mục tiêu trên thành 1 mục tiêu SMART cụ thể\n2. Chia thành 4-6 bước hành động, bắt đầu được ngay tuần này",
+                "reply": "Mục tiêu SMART: Chạy bộ liên tục 5km trong 8 tuần tới, tập tối thiểu 3 buổi/tuần.\n\nBước hành động:\nTuần 1-2: chạy 2km x 3 buổi/tuần\nTuần 3-4: tăng lên 3km\nTuần 5-6: tăng lên 4km\nTuần 7-8: đạt 5km liên tục",
+            },
+        },
     },
     {
         "id": "planning-3",
