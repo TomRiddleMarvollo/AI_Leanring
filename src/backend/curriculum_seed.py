@@ -489,6 +489,12 @@ Với mỗi vị trí, mô hình tính ra một danh sách xác suất cho các 
 - **Temperature thấp (0 – 0.3)**: gần như luôn chọn từ có xác suất cao nhất → câu trả lời **ổn định, nhất quán, ít sáng tạo**. Phù hợp: trả lời dữ kiện, code, phân loại dữ liệu, tóm tắt.
 - **Temperature cao (0.7 – 1.2+)**: sẵn sàng chọn cả những từ xác suất thấp hơn → câu trả lời **đa dạng, sáng tạo hơn**, nhưng cũng dễ lạc đề/kém chính xác hơn. Phù hợp: viết sáng tạo, brainstorm, thơ văn.
 
+## Thử trực tiếp: cùng yêu cầu, khác cách "ra lệnh" độ sáng tạo
+
+Nhiều ứng dụng (kể cả không gian Thực hành của app này) không cho bạn chỉnh trực tiếp Temperature — nhưng bạn có thể **yêu cầu bằng lời** để đạt hiệu ứng tương tự:
+
+{{PROMPT_LAB}}
+
 ## Top-p (Nucleus Sampling)
 
 Thay vì xét toàn bộ từ vựng, Top-p chỉ giữ lại **tập từ nhỏ nhất có tổng xác suất ≥ p** rồi mới chọn ngẫu nhiên trong tập đó.
@@ -505,6 +511,18 @@ Thông thường chỉ cần chỉnh **một trong hai** (giữ cái còn lại 
 | Viết code, trả lời tra cứu, tóm tắt | 0 – 0.3 |
 | Chat trợ lý thông thường | 0.5 – 0.7 |
 | Viết quảng cáo, sáng tác, brainstorm | 0.8 – 1.2 |""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu trung tính (giống Temperature thấp)",
+                "prompt": "Viết một khẩu hiệu quảng cáo cho quán cà phê.",
+                "reply": "\"Cà phê ngon, giá tốt, phục vụ tận tâm.\"\n\n(An toàn nhưng khá khuôn mẫu — giống kiểu câu bạn đã thấy ở hàng trăm quán khác)",
+            },
+            "good": {
+                "label": "Yêu cầu đa dạng, táo bạo (giống Temperature cao)",
+                "prompt": "Viết 5 khẩu hiệu quảng cáo cho quán cà phê, mỗi câu theo một phong cách hoàn toàn khác nhau (hài hước, thơ mộng, táo bạo, tối giản, gây tò mò). Đừng ngại thử ý tưởng khác lạ.",
+                "reply": "1. (Hài hước) \"Cà phê ở đây đậm hơn cả deadline của bạn.\"\n2. (Thơ mộng) \"Một ngụm cà phê, một khoảng lặng giữa phố xá vội vã.\"\n3. (Táo bạo) \"Không ngon, không lấy tiền. Chấm hết.\"\n4. (Tối giản) \"Cà phê. Đúng nghĩa.\"\n5. (Gây tò mò) \"Bí quyết trong tách cà phê này, có lẽ bạn sẽ muốn hỏi lại lần hai.\"",
+            },
+        },
     },
     {
         "id": "advanced-1",
@@ -721,13 +739,23 @@ Giải thích của tôi:
 [dán phần bạn tự giải thích vào đây]
 ```
 
-## Ví dụ
+## Thử trực tiếp: hỏi xác nhận thường so với dùng prompt Feynman
 
-Chủ đề: "Tại sao bầu trời có màu xanh". Bạn viết: *"Vì ánh sáng mặt trời chiếu vào bầu khí quyển và bị tán xạ nên ta thấy màu xanh."*
-
-AI có thể phản hồi: "Bạn chưa giải thích **tại sao** lại tán xạ ra màu xanh cụ thể chứ không phải màu khác — gợi ý: liên quan đến bước sóng ánh sáng. Câu hỏi: nếu bầu khí quyển dày hơn nhiều, bạn dự đoán màu bầu trời sẽ thay đổi thế nào?"
+{{PROMPT_LAB}}
 
 > 💡 Mẹo: đừng đọc đáp án AI đưa ra ngay — thử tự trả lời câu hỏi "tại sao" trước, rồi mới xin AI chấm.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Hỏi xác nhận thường",
+                "prompt": "Giải thích của tôi về \"tại sao bầu trời có màu xanh\": Vì ánh sáng mặt trời chiếu vào bầu khí quyển và bị tán xạ nên ta thấy màu xanh. Đúng không?",
+                "reply": "Đúng rồi! Giải thích khá ổn.\n\n(AI chỉ xác nhận qua loa — không chỉ ra được rằng bạn chưa giải thích TẠI SAO lại tán xạ ra màu xanh cụ thể, lỗ hổng kiến thức vẫn còn nguyên)",
+            },
+            "good": {
+                "label": "Dùng prompt Feynman",
+                "prompt": "Tôi vừa học về hiện tượng tán xạ ánh sáng. Tôi sẽ giải thích lại cho bạn như thể bạn hoàn toàn chưa biết gì.\n\nSau khi đọc xong, hãy chỉ ra tối đa 3 chỗ tôi giải thích chưa rõ/sai, và đặt 2-3 câu hỏi \"tại sao\" để kiểm tra tôi hiểu sâu hay chỉ nhớ bề mặt.\n\nChủ đề: Tại sao bầu trời có màu xanh\nGiải thích của tôi: Vì ánh sáng mặt trời chiếu vào bầu khí quyển và bị tán xạ nên ta thấy màu xanh.",
+                "reply": "Bạn chưa giải thích tại sao lại tán xạ ra màu xanh cụ thể chứ không phải màu khác — gợi ý: liên quan đến bước sóng ánh sáng.\n\nCâu hỏi: nếu bầu khí quyển dày hơn nhiều, bạn dự đoán màu bầu trời sẽ thay đổi thế nào?",
+            },
+        },
     },
     {
         "id": "study-2",
@@ -757,19 +785,23 @@ phần tóm tắt.
 Nội dung: [dán bài giảng/chương sách vào đây]
 ```
 
-## Ví dụ
+## Thử trực tiếp: tóm tắt thường so với khung Cornell Notes
 
-Đầu vào: đoạn văn dài về quang hợp. Đầu ra:
-
-| Từ khóa / Câu hỏi | Nội dung chi tiết |
-|---|---|
-| Quang hợp diễn ra ở đâu? | Chủ yếu ở lục lạp của tế bào lá |
-| Nguyên liệu đầu vào là gì? | CO₂, nước, ánh sáng mặt trời |
-| Sản phẩm tạo ra? | Glucose và khí oxy |
-
-**Tóm tắt**: Quang hợp là quá trình cây xanh chuyển ánh sáng, nước và CO₂ thành glucose và oxy, diễn ra chủ yếu ở lục lạp.
+{{PROMPT_LAB}}
 
 > 💡 Ôn bài bằng cách che cột phải, chỉ nhìn cột trái và tự nhớ lại nội dung — đúng tinh thần chủ động ôn tập của Cornell Notes.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu tóm tắt thường",
+                "prompt": "Tóm tắt đoạn văn sau về quang hợp giúp tôi.\n\n[đoạn văn về quang hợp]",
+                "reply": "Quang hợp là quá trình cây xanh sử dụng ánh sáng mặt trời, nước và CO2 để tạo ra glucose và oxy, diễn ra chủ yếu ở lục lạp của tế bào lá.\n\n(Chỉ có một đoạn tóm tắt liền mạch — không có cấu trúc từ khóa/câu hỏi để bạn tự ôn tập chủ động)",
+            },
+            "good": {
+                "label": "Dùng khung Cornell Notes",
+                "prompt": "Hãy chuyển đoạn ghi chú sau thành định dạng Cornell Notes:\n- Cột \"Từ khóa/Câu hỏi\": 5-8 từ khóa hoặc câu hỏi ôn tập\n- Cột \"Nội dung chi tiết\": diễn giải ngắn gọn\n- \"Tóm tắt\": 2-3 câu cuối bài\n\nNội dung: [đoạn văn về quang hợp]",
+                "reply": "Từ khóa/Câu hỏi → Nội dung chi tiết:\nQuang hợp diễn ra ở đâu? → Chủ yếu ở lục lạp của tế bào lá\nNguyên liệu đầu vào là gì? → CO2, nước, ánh sáng mặt trời\nSản phẩm tạo ra? → Glucose và khí oxy\n\nTóm tắt: Quang hợp là quá trình cây xanh chuyển ánh sáng, nước và CO2 thành glucose và oxy, diễn ra chủ yếu ở lục lạp.",
+            },
+        },
     },
     {
         "id": "study-3",
@@ -795,12 +827,9 @@ Yêu cầu:
 Tài liệu: [dán nội dung cần ôn tập]
 ```
 
-## Ví dụ
+## Thử trực tiếp: câu hỏi gộp nhiều ý so với flashcard atomic
 
-| Mặt trước | Mặt sau |
-|---|---|
-| HTTP status 404 nghĩa là gì? | Không tìm thấy tài nguyên được yêu cầu |
-| Sự khác biệt giữa PUT và PATCH? | PUT thay thế toàn bộ resource, PATCH chỉ cập nhật một phần |
+{{PROMPT_LAB}}
 
 ## Cách dùng hiệu quả
 
@@ -809,6 +838,18 @@ Tài liệu: [dán nội dung cần ôn tập]
 3. Ngày 4, ngày 7, ngày 14: lặp lại — khoảng cách giữa các lần ôn giãn dần ra.
 
 > 💡 Có thể xin AI xuất thêm định dạng CSV (`câu hỏi,đáp án`) để import thẳng vào ứng dụng flashcard như Anki, Quizlet.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu chung chung",
+                "prompt": "Tạo câu hỏi ôn tập từ đoạn tài liệu về HTTP status codes và REST API methods giúp tôi.",
+                "reply": "1. HTTP status codes và REST API methods là gì, chúng khác nhau ra sao, cho ví dụ minh họa mỗi loại?\n\n(Một câu hỏi gộp quá nhiều khái niệm — khó tự chấm đúng/sai rõ ràng, không đúng tinh thần flashcard atomic của Spaced Repetition)",
+            },
+            "good": {
+                "label": "Dùng prompt mẫu (atomic)",
+                "prompt": "Từ tài liệu sau, hãy tạo flashcard ôn tập dạng hỏi-đáp. Mỗi flashcard chỉ kiểm tra MỘT khái niệm duy nhất, không gộp nhiều ý.\n\nTài liệu: [về HTTP status codes và REST methods]",
+                "reply": "Mặt trước → Mặt sau:\nHTTP status 404 nghĩa là gì? → Không tìm thấy tài nguyên được yêu cầu\nSự khác biệt giữa PUT và PATCH? → PUT thay thế toàn bộ resource, PATCH chỉ cập nhật một phần",
+            },
+        },
     },
     {
         "id": "study-4",
@@ -834,15 +875,23 @@ Quy tắc:
 Chủ đề trọng tâm: [liệt kê 2-3 chủ đề bạn muốn được hỏi]
 ```
 
-## Ví dụ (phỏng vấn vị trí Backend Developer)
+## Thử trực tiếp: hỏi chung chung so với đóng vai giám khảo
 
-> **AI**: Câu 1: Sự khác biệt giữa `SQL` và `NoSQL`, khi nào bạn chọn cái nào?
->
-> **Bạn**: SQL có schema cố định, NoSQL linh hoạt hơn...
->
-> **AI**: 6/10. Bạn chưa nêu được ví dụ cụ thể use-case nào phù hợp NoSQL hơn (ví dụ dữ liệu phi cấu trúc, cần scale ngang nhanh). Câu 2: ...
+{{PROMPT_LAB}}
 
 > 💡 Luyện xong, đổi vai: nhờ AI cho bạn nhận xét chung "nếu là giám khảo thật, họ sẽ đánh giá phần thể hiện của bạn thế nào?" để có góc nhìn tổng thể.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Hỏi chung chung",
+                "prompt": "Hỏi tôi vài câu phỏng vấn Backend Developer.",
+                "reply": "Được, đây là vài câu hỏi phỏng vấn Backend Developer phổ biến:\n1. SQL vs NoSQL khác nhau thế nào?\n2. REST API là gì?\n3. Bạn xử lý lỗi trong hệ thống ra sao?\n\n(AI liệt kê hết một lượt — không mô phỏng đúng áp lực hỏi-đáp trực tiếp, và không chấm điểm câu trả lời của bạn)",
+            },
+            "good": {
+                "label": "Đóng vai giám khảo",
+                "prompt": "Đóng vai giám khảo tuyển dụng vị trí Backend Developer.\nHỏi tôi lần lượt từng câu, mỗi lần CHỈ một câu. Sau mỗi câu trả lời, chấm điểm /10 và chỉ rõ thiếu sót trước khi hỏi tiếp.\nChủ đề trọng tâm: SQL vs NoSQL, REST API, xử lý lỗi",
+                "reply": "Câu 1: Sự khác biệt giữa SQL và NoSQL, khi nào bạn chọn cái nào?\n\n(AI chỉ hỏi đúng một câu, chờ bạn trả lời rồi mới chấm điểm và hỏi tiếp — đúng áp lực phỏng vấn thật)",
+            },
+        },
     },
     {
         "id": "study-5",
@@ -870,14 +919,23 @@ Quy tắc:
 Bắt đầu hội thoại đi.
 ```
 
-## Ví dụ
+## Thử trực tiếp: chỉ xin sửa câu so với đóng vai tình huống thực tế
 
-> **Bạn**: "I want a coffee, no sugar please, and make it big size."
->
-> **AI**: "Sure! One large coffee, no sugar. Anything else?"
-> 📝 Sửa: "Can I get a large coffee with no sugar, please?" — cách nói này tự nhiên và lịch sự hơn khi gọi đồ ở quán.
+{{PROMPT_LAB}}
 
 > 💡 Sau vài lượt, đổi tình huống (phỏng vấn, khiếu nại, thuyết trình) để luyện đa dạng ngữ cảnh, không chỉ một kịch bản quen thuộc.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Chỉ xin sửa câu",
+                "prompt": "Sửa câu này giúp tôi: \"I want a coffee, no sugar please, and make it big size.\"",
+                "reply": "Câu đúng hơn: \"Can I get a large coffee with no sugar, please?\"\n\n(Chỉ sửa lỗi đơn lẻ — không có ngữ cảnh hội thoại liên tục để luyện phản xạ nói thực tế)",
+            },
+            "good": {
+                "label": "Đóng vai tình huống thực tế",
+                "prompt": "Hãy đóng vai một nhân viên phục vụ tại quán cà phê ở London, chỉ nói tiếng Anh. Nếu tôi viết sai ngữ pháp, thêm dòng \"📝 Sửa: [câu đúng]\" sau câu trả lời trong vai.\n\nBắt đầu hội thoại đi.",
+                "reply": "\"Hi there! What can I get for you today?\"\n\n(AI nhập vai và sẽ tự sửa lỗi ngay trong luồng hội thoại khi bạn trả lời — luyện phản xạ liên tục thay vì chỉ sửa một câu rời rạc)",
+            },
+        },
     },
     {
         "id": "study-6",
@@ -903,13 +961,23 @@ Giải thích khái niệm "[khái niệm]" theo 3 cấp độ:
 Mỗi mức tối đa 4-5 câu.
 ```
 
-## Ví dụ: "Blockchain là gì?"
+## Thử trực tiếp: hỏi thẳng so với yêu cầu 3 cấp độ
 
-- 🧒 Giống một cuốn sổ ghi chép mà ai cũng có một bản y hệt — muốn sửa một dòng thì phải sửa ở tất cả các cuốn cùng lúc, nên gần như không ai gian lận được.
-- 🎓 Là một cấu trúc dữ liệu dạng chuỗi khối, mỗi khối chứa hash của khối trước, được đồng thuận xác nhận bởi nhiều node phân tán...
-- 🔬 Các cơ chế đồng thuận (PoW, PoS...) đánh đổi giữa bảo mật, phi tập trung và khả năng mở rộng (Blockchain Trilemma)...
+{{PROMPT_LAB}}
 
 > 💡 Nếu vẫn thấy mơ hồ ở cấp độ 2, quay lại hỏi sâu thêm câu hỏi cụ thể ngay tại cấp độ đó, đừng nhảy lên cấp độ 3 vội.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Hỏi thẳng, không chỉ định cấp độ",
+                "prompt": "Blockchain là gì?",
+                "reply": "Blockchain là một cấu trúc dữ liệu dạng chuỗi khối, mỗi khối chứa hash của khối trước, được đồng thuận xác nhận bởi nhiều node phân tán, đảm bảo tính minh bạch và chống giả mạo.\n\n(Dùng thuật ngữ chuyên môn ngay từ đầu — người mới khó hình dung, người đã biết lại thấy quá sơ sài)",
+            },
+            "good": {
+                "label": "Yêu cầu giải thích 3 cấp độ",
+                "prompt": "Giải thích khái niệm \"Blockchain\" theo 3 cấp độ: (1) như cho trẻ 10 tuổi, (2) như cho sinh viên năm nhất, (3) như trao đổi giữa hai chuyên gia. Mỗi mức tối đa 4-5 câu.",
+                "reply": "🧒 Giống một cuốn sổ ghi chép mà ai cũng có một bản y hệt — muốn sửa một dòng thì phải sửa ở tất cả các cuốn cùng lúc.\n\n🎓 Là một cấu trúc dữ liệu dạng chuỗi khối, mỗi khối chứa hash của khối trước, được xác nhận bởi nhiều node phân tán.\n\n🔬 Các cơ chế đồng thuận (PoW, PoS...) đánh đổi giữa bảo mật, phi tập trung và khả năng mở rộng (Blockchain Trilemma).",
+            },
+        },
     },
     {
         "id": "study-7",
@@ -937,16 +1005,23 @@ Hãy lập lộ trình theo từng tuần, mỗi tuần gồm:
 Tuần cuối cùng phải hướng tới hoàn thành mục tiêu cuối đã nêu.
 ```
 
-## Ví dụ (rút gọn): "Học Python trong 8 tuần, 5h/tuần, mục tiêu làm được project quản lý chi tiêu cá nhân"
+## Thử trực tiếp: yêu cầu thiếu bối cảnh so với đủ bối cảnh
 
-| Tuần | Chủ đề | Checkpoint |
-|---|---|---|
-| 1 | Cú pháp cơ bản, biến, kiểu dữ liệu | Viết chương trình tính tiền điện đơn giản |
-| 2 | Cấu trúc điều khiển, vòng lặp | Viết chương trình đoán số |
-| ... | ... | ... |
-| 8 | Ghép nối toàn bộ project | Hoàn thành app quản lý chi tiêu chạy được |
+{{PROMPT_LAB}}
 
 > 💡 Sau mỗi tuần thực tế, quay lại báo cáo với AI bạn đã làm được gì/khó ở đâu, xin điều chỉnh lộ trình tuần sau — đừng theo lộ trình cứng nhắc nếu thực tế lệch tiến độ.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu thiếu bối cảnh",
+                "prompt": "Tôi muốn học Python. Giúp tôi lộ trình học.",
+                "reply": "Bạn nên bắt đầu với cú pháp cơ bản, sau đó học cấu trúc dữ liệu, rồi lập trình hướng đối tượng, cuối cùng làm project thực hành.\n\n(Chung chung — không rõ học trong bao lâu, mỗi tuần bao nhiêu giờ, không có checkpoint để tự kiểm tra tiến độ)",
+            },
+            "good": {
+                "label": "Yêu cầu đủ bối cảnh",
+                "prompt": "Tôi muốn học Python trong 8 tuần.\nTrình độ hiện tại: chưa biết gì.\nThời gian rảnh: 5 giờ/tuần.\nMục tiêu cuối: làm được project quản lý chi tiêu cá nhân.\n\nHãy lập lộ trình theo từng tuần, mỗi tuần có checkpoint tự kiểm tra.",
+                "reply": "Tuần 1: Cú pháp cơ bản, biến, kiểu dữ liệu → Checkpoint: viết chương trình tính tiền điện đơn giản\nTuần 2: Cấu trúc điều khiển, vòng lặp → Checkpoint: viết chương trình đoán số\n...\nTuần 8: Ghép nối toàn bộ project → Checkpoint: hoàn thành app quản lý chi tiêu chạy được",
+            },
+        },
     },
     {
         "id": "study-8",
@@ -973,17 +1048,23 @@ phải đáp án) trước khi hỏi tiếp.
 Vấn đề tôi đang gặp: [mô tả vấn đề/bài toán]
 ```
 
-## Ví dụ
+## Thử trực tiếp: hỏi thẳng so với dùng prompt Socratic
 
-> **Bạn**: "Tại sao code của tôi bị lỗi 'index out of range'?"
->
-> **AI**: "Bạn nghĩ vòng lặp của bạn đang chạy từ giá trị nào đến giá trị nào? Và mảng của bạn có bao nhiêu phần tử?"
->
-> **Bạn**: (tự kiểm tra) "À, vòng lặp chạy đến index bằng độ dài mảng, nhưng index cuối cùng phải nhỏ hơn độ dài 1 đơn vị!"
->
-> **AI**: "Chính xác! Bạn đã tìm ra nguyên nhân."
+{{PROMPT_LAB}}
 
 > 💡 Kỹ thuật này đặc biệt hiệu quả khi debug code hoặc giải bài tập — bạn nhớ lâu hơn nhiều so với việc được đưa đáp án ngay.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Hỏi thẳng",
+                "prompt": "Tại sao code của tôi bị lỗi 'index out of range'?",
+                "reply": "Lỗi này xảy ra khi vòng lặp của bạn truy cập index vượt quá độ dài mảng — có thể do dùng <= thay vì < trong điều kiện vòng lặp.\n\n(AI đưa đáp án ngay — bạn nhớ được câu trả lời nhưng không tự rèn kỹ năng suy luận để tự tìm lỗi tương tự lần sau)",
+            },
+            "good": {
+                "label": "Dùng prompt Socratic",
+                "prompt": "Tôi đang gặp lỗi 'index out of range'. Đừng đưa đáp án trực tiếp — hãy đặt từng câu hỏi dẫn dắt (mỗi lần một câu) để tôi tự suy luận ra nguyên nhân.\n\nVấn đề: code của tôi bị lỗi 'index out of range' khi lặp qua một mảng.",
+                "reply": "Bạn nghĩ vòng lặp của bạn đang chạy từ giá trị nào đến giá trị nào? Và mảng của bạn có bao nhiêu phần tử?\n\n(AI đặt câu hỏi dẫn dắt thay vì trả lời ngay — buộc bạn tự suy luận ra nguyên nhân)",
+            },
+        },
     },
     {
         "id": "study-9",
@@ -1011,18 +1092,23 @@ Nếu tài liệu không đề cập rõ mục nào, ghi "Không đề cập" �
 Tài liệu: [dán abstract hoặc đoạn trích vào đây]
 ```
 
-## Ví dụ
+## Thử trực tiếp: tóm tắt tự do so với khung 5 câu hỏi
 
-Đầu vào: abstract của một bài báo giả định về mô hình dự đoán thời tiết bằng AI.
-
-Đầu ra mẫu:
-1. **Vấn đề**: Dự báo thời tiết ngắn hạn (24h) chính xác hơn ở khu vực địa hình phức tạp.
-2. **Phương pháp**: Kết hợp dữ liệu vệ tinh với mạng nơ-ron tích chập (CNN).
-3. **Kết quả chính**: Giảm 15% sai số so với mô hình truyền thống.
-4. **Hạn chế**: Chỉ thử nghiệm ở một khu vực địa lý, chưa rõ khả năng tổng quát hoá.
-5. **Vì sao quan trọng**: Có thể cải thiện cảnh báo sớm thiên tai ở vùng núi.
+{{PROMPT_LAB}}
 
 > 💡 Chỉ dùng cách này để **quyết định có nên đọc sâu hay không** — với tài liệu quan trọng, vẫn nên tự đọc kỹ phần Kết quả và Phương pháp, không hoàn toàn dựa vào tóm tắt AI.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Tóm tắt tự do",
+                "prompt": "Tóm tắt bài báo này giúp tôi.\n\n[abstract về mô hình dự đoán thời tiết bằng AI]",
+                "reply": "Bài báo trình bày một mô hình AI mới để dự đoán thời tiết, sử dụng dữ liệu vệ tinh và học sâu, cho kết quả khá tốt.\n\n(Mơ hồ — không rõ phương pháp cụ thể, cải thiện bao nhiêu %, hay hạn chế của nghiên cứu là gì)",
+            },
+            "good": {
+                "label": "Dùng khung 5 câu hỏi",
+                "prompt": "Đọc đoạn trích sau và trả lời theo khung: Vấn đề / Phương pháp / Kết quả chính / Hạn chế / Vì sao quan trọng. Ghi \"Không đề cập\" nếu thiếu thông tin.\n\n[abstract về mô hình dự đoán thời tiết bằng AI]",
+                "reply": "1. Vấn đề: Dự báo thời tiết ngắn hạn (24h) chính xác hơn ở khu vực địa hình phức tạp.\n2. Phương pháp: Kết hợp dữ liệu vệ tinh với mạng nơ-ron tích chập (CNN).\n3. Kết quả chính: Giảm 15% sai số so với mô hình truyền thống.\n4. Hạn chế: Chỉ thử nghiệm ở một khu vực địa lý.\n5. Vì sao quan trọng: Có thể cải thiện cảnh báo sớm thiên tai ở vùng núi.",
+            },
+        },
     },
     {
         "id": "study-10",
@@ -1126,18 +1212,23 @@ Yêu cầu:
 Ghi chú họp: [dán nội dung vào đây]
 ```
 
-## Ví dụ
+## Thử trực tiếp: tóm tắt thường so với trích xuất action items
 
-Từ ghi chú họp lộn xộn về việc ra mắt tính năng mới, AI có thể trích ra:
-
-| Việc cần làm | Người phụ trách | Hạn chót | Ưu tiên |
-|---|---|---|---|
-| Hoàn thiện thiết kế UI màn hình thanh toán | Lan | Thứ Sáu tuần này | Cao |
-| Viết test case cho luồng thanh toán | Chưa rõ — cần xác nhận lại | — | Trung bình |
-
-**Vấn đề còn bỏ ngỏ**: chưa thống nhất được ngân sách quảng cáo cho đợt ra mắt.
+{{PROMPT_LAB}}
 
 > 💡 Gửi ngay bảng này vào nhóm chat sau họp — càng sớm càng giảm khả năng "quên" việc đã thống nhất.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu tóm tắt thường",
+                "prompt": "Tóm tắt cuộc họp này giúp tôi.\n\n[ghi chú họp về ra mắt tính năng thanh toán mới]",
+                "reply": "Cuộc họp bàn về việc ra mắt tính năng thanh toán mới, có thảo luận về thiết kế UI, testing, và ngân sách quảng cáo.\n\n(Tóm tắt chung chung — không biết ai làm gì, hạn chót nào, việc gì đã thực sự chốt)",
+            },
+            "good": {
+                "label": "Dùng prompt trích xuất action items",
+                "prompt": "Đây là ghi chú cuộc họp. Hãy trích xuất thành bảng: Việc cần làm | Người phụ trách | Hạn chót | Ưu tiên. Chỉ liệt kê việc THỰC SỰ được thống nhất.\n\nGhi chú: [về ra mắt tính năng thanh toán mới]",
+                "reply": "Việc cần làm → Người phụ trách → Hạn chót → Ưu tiên:\nHoàn thiện thiết kế UI màn hình thanh toán → Lan → Thứ Sáu tuần này → Cao\nViết test case cho luồng thanh toán → Chưa rõ, cần xác nhận lại → — → Trung bình\n\nVấn đề còn bỏ ngỏ: chưa thống nhất ngân sách quảng cáo cho đợt ra mắt.",
+            },
+        },
     },
     {
         "id": "work-3",
@@ -1211,15 +1302,23 @@ Code:
 [dán code]
 ```
 
-## Ví dụ
+## Thử trực tiếp: review chung chung so với chỉ định rõ góc nhìn
 
-Đánh dấu chỉ cần review "Bảo mật" cho một endpoint nhận input người dùng, AI có thể phản hồi tập trung:
-
-> **Dòng 14**: Query SQL được ghép chuỗi trực tiếp từ `request.args['id']` → có nguy cơ SQL Injection. Đề xuất: dùng parameterized query (`cursor.execute("... WHERE id = %s", (id,))`) thay vì f-string.
-
-Thay vì lan man góp ý cả về đặt tên biến hay style code — vốn không phải điều bạn đang cần lúc này.
+{{PROMPT_LAB}}
 
 > 💡 Với code liên quan bảo mật/dữ liệu nhạy cảm, luôn coi gợi ý AI là điểm khởi đầu để kiểm tra kỹ hơn, không phải kết luận cuối cùng.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Review chung chung",
+                "prompt": "Review giúp tôi đoạn code này.\n\ndef get_user(request):\n    id = request.args['id']\n    query = f\"SELECT * FROM users WHERE id = {id}\"\n    return db.execute(query)",
+                "reply": "Code khá ngắn gọn. Bạn có thể cân nhắc đặt tên biến rõ ràng hơn, thêm docstring, và xử lý trường hợp thiếu tham số.\n\n(Phản hồi lan man — bỏ sót lỗi bảo mật nghiêm trọng nhất trong đoạn code: SQL Injection)",
+            },
+            "good": {
+                "label": "Chỉ định rõ: review Bảo mật",
+                "prompt": "Review đoạn code sau, CHỈ tập trung vào Bảo mật (injection, validate input...). Nêu rõ dòng nào, vấn đề gì, đề xuất sửa cụ thể.\n\ndef get_user(request):\n    id = request.args['id']\n    query = f\"SELECT * FROM users WHERE id = {id}\"\n    return db.execute(query)",
+                "reply": "Dòng 3: Query SQL được ghép chuỗi trực tiếp từ request.args['id'] → nguy cơ SQL Injection nghiêm trọng.\n\nĐề xuất: dùng parameterized query — db.execute(\"SELECT * FROM users WHERE id = %s\", (id,)) thay vì f-string.",
+            },
+        },
     },
     {
         "id": "work-5",
@@ -1248,27 +1347,23 @@ với ngôn ngữ, không cần diễn giải thêm ngoài khung trên.
 Code: [dán hàm/API cần viết docs]
 ```
 
-## Ví dụ
+## Thử trực tiếp: yêu cầu docs chung chung so với dùng khung hợp đồng
 
-Từ một hàm Python `def create_user(email: str, password: str) -> User`, AI có thể sinh:
-
-```
-'''Tạo người dùng mới trong hệ thống.
-
-Args:
-    email (str): Email người dùng, bắt buộc, phải đúng định dạng email.
-    password (str): Mật khẩu, tối thiểu 8 ký tự.
-
-Returns:
-    User: Đối tượng người dùng vừa được tạo, gồm id và email.
-
-Raises:
-    ValueError: Nếu email đã tồn tại trong hệ thống.
-    ValidationError: Nếu email sai định dạng hoặc password quá ngắn.
-'''
-```
+{{PROMPT_LAB}}
 
 > 💡 Sau khi AI sinh docs, luôn đối chiếu lại với code thật — đảm bảo AI không "đoán" thêm ca lỗi không tồn tại hoặc bỏ sót ca lỗi thật sự có trong code.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu docs chung chung",
+                "prompt": "Viết docs cho hàm này giúp tôi.\n\ndef create_user(email: str, password: str) -> User:\n    ...",
+                "reply": "Hàm create_user dùng để tạo người dùng mới, nhận vào email và password, trả về đối tượng User.\n\n(Thiếu thông tin quan trọng: ràng buộc của email/password là gì, và hàm raise lỗi gì trong trường hợp nào)",
+            },
+            "good": {
+                "label": "Dùng khung hợp đồng đầy đủ",
+                "prompt": "Viết tài liệu kỹ thuật cho hàm sau theo khung: Mục đích / Input (kiểu, bắt buộc, ràng buộc) / Output / Ca lỗi (exception, điều kiện gây ra).\n\ndef create_user(email: str, password: str) -> User:\n    ...",
+                "reply": "Mục đích: Tạo người dùng mới trong hệ thống.\nInput: email (str, bắt buộc, đúng định dạng email), password (str, tối thiểu 8 ký tự).\nOutput: User — đối tượng vừa tạo, gồm id và email.\nCa lỗi: ValueError nếu email đã tồn tại; ValidationError nếu email sai định dạng hoặc password quá ngắn.",
+            },
+        },
     },
     {
         "id": "work-6",
@@ -1295,16 +1390,23 @@ Hãy lên outline gồm [số lượng] slide, mỗi slide gồm:
 Slide đầu là mở đầu gây chú ý, slide cuối là kêu gọi hành động rõ ràng.
 ```
 
-## Ví dụ (rút gọn)
+## Thử trực tiếp: yêu cầu thiếu bối cảnh so với đủ bối cảnh
 
-| Slide | Thông điệp chính | Nội dung hỗ trợ |
-|---|---|---|
-| 1 | 30% khách hàng rời bỏ vì thời gian phản hồi chậm | Số liệu khảo sát gần nhất |
-| 2 | Giải pháp X giảm thời gian phản hồi từ 2 ngày xuống 2 giờ | So sánh trước/sau, demo ngắn |
-| ... | ... | ... |
-| N | Cần duyệt ngân sách Y để triển khai trong Q3 | Lời kêu gọi hành động cụ thể |
+{{PROMPT_LAB}}
 
 > 💡 Nếu một slide không có nổi "một thông điệp chính" rõ ràng — đó là dấu hiệu nên tách thành 2 slide hoặc bỏ bớt nội dung.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu thiếu bối cảnh",
+                "prompt": "Giúp tôi làm outline slide thuyết trình về sản phẩm mới.",
+                "reply": "Slide 1: Giới thiệu công ty\nSlide 2: Vấn đề thị trường\nSlide 3: Giải pháp\nSlide 4: Cảm ơn\n\n(Outline chung chung — không rõ đối tượng nghe, thời lượng, hay thông điệp chính từng slide là gì)",
+            },
+            "good": {
+                "label": "Yêu cầu đủ bối cảnh",
+                "prompt": "Tôi cần thuyết trình về tính năng phản hồi khách hàng tự động cho ban giám đốc, thời lượng 10 phút, mục tiêu thuyết phục đầu tư.\n\nHãy lên outline 6 slide, mỗi slide có tiêu đề, thông điệp chính (1 câu), 2-3 ý hỗ trợ.",
+                "reply": "Slide 1: \"30% khách hàng rời bỏ vì thời gian phản hồi chậm\" — số liệu khảo sát gần nhất.\nSlide 2: \"Giải pháp X giảm thời gian phản hồi từ 2 ngày xuống 2 giờ\" — so sánh trước/sau.\n...\nSlide 6: \"Cần duyệt ngân sách Y để triển khai trong Q3\" — lời kêu gọi hành động cụ thể.",
+            },
+        },
     },
     {
         "id": "work-7",
@@ -1332,13 +1434,23 @@ Giới hạn toàn bộ trong khoảng 150 từ.
 Dữ liệu: [dán bảng số liệu — có thể dán trực tiếp dạng CSV/bảng]
 ```
 
-## Ví dụ
+## Thử trực tiếp: phân tích chung chung so với dùng prompt TL;DR
 
-> **Insight 1**: Doanh số tháng 6 giảm 18% so với tháng 5, riêng ở nhóm khách hàng mới.
-> → Ý nghĩa: có thể chiến dịch marketing thu hút khách mới đang kém hiệu quả hơn, không phải vấn đề giữ chân khách cũ.
-> → Đề xuất: kiểm tra lại hiệu suất kênh marketing tháng 6 trước khi cắt giảm ngân sách chung.
+{{PROMPT_LAB}}
 
 > 💡 Luôn tự kiểm tra lại các con số quan trọng AI trích ra — với dữ liệu lớn, AI có thể đọc nhầm hàng/cột hoặc tính sai phần trăm.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu phân tích chung chung",
+                "prompt": "Phân tích bảng doanh số này giúp tôi.\n\n[bảng doanh số theo tháng]",
+                "reply": "Doanh số các tháng có biến động, tháng 6 thấp hơn tháng 5 một chút, các tháng khác tương đối ổn định.\n\n(Không có con số cụ thể, không có ý nghĩa hay đề xuất hành động — sếp đọc xong vẫn không biết nên làm gì)",
+            },
+            "good": {
+                "label": "Dùng prompt TL;DR",
+                "prompt": "Đây là bảng doanh số theo tháng. Hãy phân tích và viết tóm tắt dạng TL;DR: 3 insight nổi bật, mỗi insight nêu ý nghĩa, và 1-2 đề xuất hành động. Giới hạn 150 từ.\n\nDữ liệu: [bảng doanh số theo tháng]",
+                "reply": "Insight 1: Doanh số tháng 6 giảm 18% so với tháng 5, riêng ở nhóm khách hàng mới.\n→ Ý nghĩa: có thể chiến dịch marketing thu hút khách mới đang kém hiệu quả hơn.\n→ Đề xuất: kiểm tra hiệu suất kênh marketing tháng 6 trước khi cắt giảm ngân sách chung.",
+            },
+        },
     },
     {
         "id": "work-8",
@@ -1366,14 +1478,23 @@ Hãy đóng vai một người nghe khó tính, hoài nghi. Đặt ra:
 Đừng khen ý tưởng, hãy tập trung tìm điểm yếu.
 ```
 
-## Ví dụ
+## Thử trực tiếp: hỏi xin nhận xét so với dùng prompt phản biện
 
-Với kế hoạch "ra mắt tính năng mới trong 2 tháng", AI có thể phản biện:
-
-> 1. "Nếu đối tác cung cấp dữ liệu chậm trễ như đợt trước, kế hoạch 2 tháng còn khả thi không? Bạn có phương án dự phòng nào?"
-> 2. "Ngân sách marketing dự kiến dựa trên giả định tỷ lệ chuyển đổi 5% — con số này lấy từ đâu, có đủ tin cậy không?"
+{{PROMPT_LAB}}
 
 > 💡 Sau khi nhận danh sách câu hỏi, tự viết câu trả lời cho từng câu — đây chính là phần chuẩn bị giá trị nhất, không phải danh sách câu hỏi.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Hỏi xin nhận xét chung",
+                "prompt": "Tôi định ra mắt tính năng mới trong 2 tháng. Ý tưởng này có ổn không?",
+                "reply": "Nghe khá ổn! Kế hoạch 2 tháng là hợp lý cho một tính năng vừa phải, chúc bạn triển khai thành công.\n\n(AI chỉ khen xã giao — không tìm ra lỗ hổng nào để bạn chuẩn bị trước khi trình bày thật)",
+            },
+            "good": {
+                "label": "Dùng prompt phản biện khó tính",
+                "prompt": "Tôi sắp trình bày kế hoạch \"ra mắt tính năng mới trong 2 tháng\" cho ban giám đốc.\n\nHãy đóng vai người nghe khó tính, hoài nghi. Đặt ra 3-5 câu hỏi hóc búa nhất có thể bị hỏi, chỉ rõ điểm yếu mỗi câu nhắm vào. Đừng khen, đừng trả lời hộ.",
+                "reply": "1. \"Nếu đối tác cung cấp dữ liệu chậm trễ như đợt trước, kế hoạch 2 tháng còn khả thi không? Phương án dự phòng là gì?\"\n2. \"Ngân sách marketing dựa trên giả định tỷ lệ chuyển đổi 5% — con số này lấy từ đâu, đủ tin cậy không?\"",
+            },
+        },
     },
     {
         "id": "work-9",
@@ -1404,23 +1525,25 @@ Luôn trả lời theo cấu trúc:
 Thông tin đầu vào lần này: {{input}}
 ```
 
-## Ví dụ: Template viết mô tả sản phẩm cho shop online
+## Thử trực tiếp: viết lại từ đầu so với dùng template có sẵn
 
-```
-Bạn là copywriter chuyên viết mô tả sản phẩm thương mại điện tử,
-giọng văn gần gũi, tạo cảm giác muốn mua ngay nhưng không nói quá.
+{{PROMPT_LAB}}
 
-Với mỗi sản phẩm, luôn viết theo cấu trúc:
-1. Một câu mở đầu gây chú ý
-2. 3 gạch đầu dòng lợi ích chính (không phải tính năng khô khan)
-3. Một câu kêu gọi hành động
-
-Sản phẩm lần này: {{tên sản phẩm, đặc điểm chính, giá}}
-```
-
-Mỗi lần có sản phẩm mới, chỉ cần thay phần `{{...}}` — không cần viết lại toàn bộ hướng dẫn phong cách.
+Mỗi lần có sản phẩm mới, chỉ cần thay phần biến số — không cần viết lại toàn bộ hướng dẫn phong cách.
 
 > 💡 Lưu các template này lại (ví dụ làm Custom Agent trong ứng dụng) thay vì gõ lại từ đầu mỗi lần — tiết kiệm thời gian và giữ output nhất quán.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Viết lại từ đầu mỗi lần",
+                "prompt": "Viết mô tả sản phẩm cho áo thun cotton, giá 199k.",
+                "reply": "Áo thun cotton thoáng mát, giá chỉ 199k, phù hợp mặc hàng ngày.\n\n(Lần sau có sản phẩm mới, bạn lại phải nghĩ lại từ đầu giọng văn và cấu trúc — dễ ra kết quả không nhất quán giữa các lần)",
+            },
+            "good": {
+                "label": "Dùng template có sẵn",
+                "prompt": "Bạn là copywriter chuyên viết mô tả sản phẩm thương mại điện tử, giọng văn gần gũi. Luôn viết theo cấu trúc: (1) câu mở đầu gây chú ý, (2) 3 lợi ích chính, (3) câu kêu gọi hành động.\n\nSản phẩm lần này: Áo thun cotton, thoáng mát, giá 199k.",
+                "reply": "Ngày hè mà thiếu chiếc áo thun này thì thật đáng tiếc!\n- Chất cotton 100%, thoáng mát cả ngày dài\n- Form dáng basic, phối đồ nào cũng hợp\n- Giá chỉ 199k — quá hời để có ngay vài chiếc\n\nĐặt ngay hôm nay để không bỏ lỡ!\n\n(Lần sau chỉ cần đổi phần \"Sản phẩm lần này\" — giọng văn và cấu trúc luôn nhất quán)",
+            },
+        },
     },
     {
         "id": "work-10",
@@ -1445,13 +1568,23 @@ Sau đó gợi ý 3-5 nguồn thông tin loại nào (không cần link cụ th�
 đáng tin cậy để tôi tự tra cứu số liệu thật.
 ```
 
-## Ví dụ khung SWOT (rút gọn, ngành F&B)
+## Thử trực tiếp: hỏi thẳng số liệu so với chỉ hỏi khung phân tích
 
-- **Điểm mạnh** cần kiểm tra: đối thủ có lợi thế về vị trí cửa hàng, giá, hay thương hiệu?
-- **Điểm yếu** cần kiểm tra: đánh giá khách hàng trên các nền tảng review có điểm chung nào bị phàn nàn không?
-- Nguồn nên tra cứu thật: báo cáo ngành từ đơn vị nghiên cứu thị trường uy tín, đánh giá công khai trên Google Maps/app đặt đồ ăn, báo cáo tài chính công khai (nếu là công ty niêm yết).
+{{PROMPT_LAB}}
 
 > 🚩 **Luôn tự kiểm chứng**: bất kỳ con số cụ thể nào (thị phần %, doanh thu, số lượng khách hàng) do AI đưa ra mà không trích nguồn rõ ràng — coi như chưa được xác minh, không đưa thẳng vào báo cáo chính thức.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Hỏi thẳng số liệu cụ thể",
+                "prompt": "Thị phần của đối thủ X trong ngành F&B tại Việt Nam là bao nhiêu?",
+                "reply": "Theo một số ước tính, đối thủ X chiếm khoảng 23% thị phần ngành F&B tại Việt Nam.\n\n🚩 (Con số này không có nguồn — rất có thể AI đang \"bịa\" ra một số nghe hợp lý. Tuyệt đối không dùng số liệu kiểu này khi chưa kiểm chứng!)",
+            },
+            "good": {
+                "label": "Chỉ hỏi khung phân tích",
+                "prompt": "Tôi đang phân tích đối thủ X trong ngành F&B. Hãy giúp tôi lập khung phân tích SWOT gồm các câu hỏi cụ thể cần trả lời (không cần điền số liệu), rồi gợi ý loại nguồn đáng tin cậy để tôi tự tra cứu số liệu thật.",
+                "reply": "Điểm mạnh cần kiểm tra: đối thủ có lợi thế về vị trí cửa hàng, giá, hay thương hiệu?\nĐiểm yếu cần kiểm tra: đánh giá khách hàng có điểm chung nào bị phàn nàn không?\n\nNguồn nên tra cứu thật: báo cáo ngành từ đơn vị nghiên cứu thị trường uy tín, đánh giá công khai trên Google Maps, báo cáo tài chính công khai (nếu niêm yết).",
+            },
+        },
     },
 
     # ── Lên kế hoạch (planning) ──────────────────────────────────
@@ -1479,15 +1612,23 @@ Hãy chia thành các milestone, mỗi milestone gồm:
 Milestone cuối cùng phải trùng với deadline tổng.
 ```
 
-## Ví dụ (rút gọn): Ra mắt website mới trong 6 tuần
+## Thử trực tiếp: yêu cầu thiếu cấu trúc so với dùng prompt milestone
 
-| Milestone | Ngày | Bằng chứng hoàn thành | Rủi ro chính |
-|---|---|---|---|
-| Chốt thiết kế UI/UX | Tuần 2 | File thiết kế được duyệt bởi stakeholder | Chờ phản hồi duyệt kéo dài |
-| Hoàn thành phát triển | Tuần 5 | Website chạy được trên môi trường staging | Phát sinh yêu cầu ngoài phạm vi ban đầu |
-| Ra mắt chính thức | Tuần 6 | Website live trên domain thật | Lỗi phát sinh phút chót khi go-live |
+{{PROMPT_LAB}}
 
 > 💡 Sau mỗi milestone, dành 15 phút nhìn lại: đúng tiến độ hay không, nếu trễ thì điều chỉnh milestone tiếp theo ngay, đừng đợi đến cuối dự án mới xử lý.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu thiếu cấu trúc",
+                "prompt": "Tôi có dự án ra mắt website mới, deadline 6 tuần. Giúp tôi lập kế hoạch.",
+                "reply": "Bạn nên bắt đầu với thiết kế, sau đó phát triển, rồi kiểm thử, cuối cùng ra mắt.\n\n(Chung chung — không có mốc thời gian cụ thể, không có \"bằng chứng hoàn thành\" rõ ràng để biết có đang trễ hay không)",
+            },
+            "good": {
+                "label": "Dùng prompt milestone",
+                "prompt": "Tôi có dự án: ra mắt website mới, deadline tổng: 6 tuần.\nNguồn lực: 1 designer, 2 developer.\n\nHãy chia thành milestone, mỗi milestone gồm tên, ngày dự kiến, bằng chứng hoàn thành cụ thể, rủi ro chính.",
+                "reply": "Chốt thiết kế UI/UX → Tuần 2 → File thiết kế được duyệt bởi stakeholder → Rủi ro: chờ phản hồi duyệt kéo dài\nHoàn thành phát triển → Tuần 5 → Website chạy được trên staging → Rủi ro: phát sinh yêu cầu ngoài phạm vi\nRa mắt chính thức → Tuần 6 → Website live trên domain thật → Rủi ro: lỗi phát sinh phút chót",
+            },
+        },
     },
     {
         "id": "planning-2",
@@ -1571,17 +1712,23 @@ Tính tỷ lệ % mỗi nhóm so với thu nhập, so sánh với khung tham kh�
 Đây chỉ là công cụ tổ chức số liệu, không cần đưa ra lời khuyên đầu tư.
 ```
 
-## Ví dụ kết quả
+## Thử trực tiếp: hỏi không cấu trúc so với dùng khung 50/30/20
 
-| Nhóm | Số tiền | % thu nhập | Khung tham khảo |
-|---|---|---|---|
-| Thiết yếu | 12.000.000đ | 60% | 50% |
-| Cá nhân/Giải trí | 6.000.000đ | 30% | 30% |
-| Tiết kiệm | 2.000.000đ | 10% | 20% |
-
-→ Nhận xét: nhóm Thiết yếu đang cao hơn khung tham khảo 10%, nhóm Tiết kiệm đang thấp hơn 10% — có thể xem lại các khoản thiết yếu (ví dụ tiền nhà, hoá đơn) có khoản nào tối ưu được không.
+{{PROMPT_LAB}}
 
 > 💡 Đây là công cụ giúp bạn **nhìn rõ số liệu**, quyết định cắt giảm/đầu tư khoản nào vẫn nên dựa trên hoàn cảnh thực tế và, nếu cần, ý kiến chuyên gia.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Hỏi không có cấu trúc",
+                "prompt": "Đây là chi tiêu tháng của tôi: tiền nhà 8tr, ăn uống 4tr, giải trí 6tr, tiết kiệm 2tr. Có ổn không?",
+                "reply": "Có vẻ ổn, miễn bạn thấy thoải mái với cách chi tiêu này.\n\n(Nhận xét mơ hồ — không so sánh với khung tham khảo nào, không chỉ ra rõ nhóm nào đang lệch)",
+            },
+            "good": {
+                "label": "Dùng khung 50/30/20",
+                "prompt": "Đây là danh sách chi tiêu tháng của tôi (thu nhập: 20.000.000đ): nhà ở 8tr, ăn uống 4tr, giải trí 6tr, tiết kiệm 2tr.\n\nHãy phân loại vào 3 nhóm Thiết yếu/Cá nhân-giải trí/Tiết kiệm, tính % so với thu nhập, so sánh khung 50/30/20, chỉ ra nhóm lệch nhiều nhất. Đây chỉ là công cụ tổ chức số liệu, không cần đưa lời khuyên đầu tư.",
+                "reply": "Thiết yếu: 12tr (60%, khung 50%) — cao hơn 10%\nCá nhân/Giải trí: 6tr (30%, khung 30%) — đúng khung\nTiết kiệm: 2tr (10%, khung 20%) — thấp hơn 10%\n\nNhận xét: nhóm Thiết yếu đang cao hơn khung tham khảo, nhóm Tiết kiệm đang thấp hơn — có thể xem lại các khoản thiết yếu.",
+            },
+        },
     },
     {
         "id": "planning-4",
@@ -1607,15 +1754,23 @@ chuyến (không tính vé máy bay).
 Ghi rõ đây là ước tính tham khảo, giá thực tế có thể thay đổi.
 ```
 
-## Ví dụ (rút gọn): Đà Lạt 3 ngày 2 đêm, ngân sách 3 triệu/người, thích ẩm thực
+## Thử trực tiếp: yêu cầu thiếu chi tiết so với đủ ràng buộc
 
-| Ngày | Sáng | Chiều | Tối | Chi phí ước tính |
-|---|---|---|---|---|
-| 1 | Nhận phòng, chợ Đà Lạt | Hồ Xuân Hương | Lẩu bò, chợ đêm | ~500.000đ |
-| 2 | Đồi chè Cầu Đất | Thung lũng Tình Yêu | Nhà hàng đặc sản | ~800.000đ |
-| 3 | Mua đặc sản | Trả phòng, ra sân bay | — | ~300.000đ |
+{{PROMPT_LAB}}
 
 > 💡 Giá cả, giờ mở cửa AI đưa ra có thể đã lỗi thời — luôn kiểm tra lại thông tin quan trọng (giờ mở cửa, giá vé) trước khi khởi hành, đặc biệt với các địa điểm có thể đã thay đổi.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu thiếu chi tiết",
+                "prompt": "Lên kế hoạch đi Đà Lạt 3 ngày giúp tôi.",
+                "reply": "Ngày 1: tham quan trung tâm thành phố. Ngày 2: đi các điểm du lịch nổi tiếng. Ngày 3: mua sắm và về.\n\n(Chung chung — không biết ngân sách bao nhiêu, thích loại hình gì, nên không thể gợi ý địa điểm/chi phí cụ thể)",
+            },
+            "good": {
+                "label": "Yêu cầu đủ ràng buộc",
+                "prompt": "Lên kế hoạch du lịch Đà Lạt trong 3 ngày cho 2 người.\nNgân sách khoảng 6 triệu (không tính vé máy bay).\nSở thích: thích ẩm thực địa phương.\n\nLên lịch trình theo ngày, ước tính chi phí mỗi hoạt động và tổng chi phí.",
+                "reply": "Ngày 1: Nhận phòng, chợ Đà Lạt (sáng) → Hồ Xuân Hương (chiều) → Lẩu bò, chợ đêm (tối) — ~500.000đ\nNgày 2: Đồi chè Cầu Đất → Thung lũng Tình Yêu → Nhà hàng đặc sản — ~800.000đ\nNgày 3: Mua đặc sản → Trả phòng, ra sân bay — ~300.000đ\n\n(Ước tính tham khảo, giá thực tế có thể thay đổi)",
+            },
+        },
     },
     {
         "id": "planning-5",
@@ -1665,14 +1820,23 @@ do xếp vào ô đó. Nếu thiếu thông tin để xếp loại chính xác (
 không rõ mức độ quan trọng), hãy hỏi lại tôi thay vì đoán.
 ```
 
-## Ví dụ
+## Thử trực tiếp: hỏi không kèm danh sách so với liệt kê việc cụ thể
 
-- "Trả lời email khách hàng phàn nàn" → **Làm ngay** (khẩn cấp + quan trọng, ảnh hưởng uy tín).
-- "Học khóa học nâng cao kỹ năng quý sau" → **Lên lịch** (quan trọng nhưng không gấp).
-- "Đặt lịch họp giúp đồng nghiệp" → **Giao việc** (gấp nhưng không cần chính bạn làm).
-- "Dọn hộp thư rác" → **Loại bỏ hoặc làm sau cùng**.
+{{PROMPT_LAB}}
 
 > 💡 Phần lớn giá trị dài hạn nằm ở ô "Lên lịch" — nhưng đây cũng là ô dễ bị bỏ quên nhất vì không có deadline gấp. Chủ động dành thời gian cố định mỗi tuần cho ô này.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Hỏi không kèm danh sách",
+                "prompt": "Tôi có nhiều việc cần làm tuần này, không biết nên ưu tiên cái nào trước. Giúp tôi với.",
+                "reply": "Bạn nên ưu tiên những việc quan trọng và gấp trước, sau đó đến việc ít gấp hơn.\n\n(Lời khuyên chung chung — AI không biết bạn có việc gì cụ thể nên không thể phân loại thật sự)",
+            },
+            "good": {
+                "label": "Liệt kê việc cụ thể",
+                "prompt": "Đây là danh sách việc cần làm tuần này:\n- Trả lời email khách hàng phàn nàn\n- Học khóa học nâng cao kỹ năng quý sau\n- Đặt lịch họp giúp đồng nghiệp\n- Dọn hộp thư rác\n\nHãy phân loại từng việc vào Ma trận Eisenhower (Làm ngay/Lên lịch/Giao việc/Loại bỏ), giải thích lý do.",
+                "reply": "Trả lời email khách hàng phàn nàn → Làm ngay (khẩn cấp + quan trọng, ảnh hưởng uy tín)\nHọc khóa học nâng cao kỹ năng → Lên lịch (quan trọng nhưng không gấp)\nĐặt lịch họp giúp đồng nghiệp → Giao việc (gấp nhưng không cần chính bạn làm)\nDọn hộp thư rác → Loại bỏ hoặc làm sau cùng",
+            },
+        },
     },
     {
         "id": "planning-6",
@@ -1703,18 +1867,23 @@ chỉ là công cụ tham khảo, quyết định cuối vẫn là của tôi.
 Thông tin từng lựa chọn: [mô tả chi tiết mỗi lựa chọn]
 ```
 
-## Ví dụ: Chọn giữa 2 lời mời làm việc
+## Thử trực tiếp: hỏi không tiêu chí so với dùng ma trận có trọng số
 
-| Tiêu chí (trọng số) | Offer A | Offer B |
-|---|---|---|
-| Lương (x3) | 4 → 12 | 5 → 15 |
-| Cơ hội học hỏi (x2) | 5 → 10 | 3 → 6 |
-| Khoảng cách di chuyển (x1) | 3 → 3 | 5 → 5 |
-| **Tổng có trọng số** | **25** | **26** |
-
-→ Sát nút, gần như tương đương — có thể tiêu chí thứ 4 chưa được liệt kê (ví dụ văn hoá công ty) mới là yếu tố quyết định thực sự.
+{{PROMPT_LAB}}
 
 > 💡 Nếu điểm tổng hai lựa chọn quá sát nhau, đó là dấu hiệu bạn nên tìm thêm tiêu chí quan trọng đang bị bỏ sót, thay vì chọn đại theo điểm số.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Hỏi không có tiêu chí",
+                "prompt": "Tôi đang phân vân giữa Offer A (lương thấp hơn nhưng học được nhiều) và Offer B (lương cao hơn, gần nhà). Nên chọn cái nào?",
+                "reply": "Cả hai đều có điểm mạnh riêng. Nếu bạn ưu tiên học hỏi thì chọn A, nếu ưu tiên lương thì chọn B.\n\n(Câu trả lời né tránh — không giúp bạn quyết định vì không biết bạn ưu tiên điều gì hơn, ở mức độ nào)",
+            },
+            "good": {
+                "label": "Dùng ma trận có trọng số",
+                "prompt": "Tôi đang phân vân giữa Offer A và Offer B.\nTiêu chí quan trọng (giảm dần): 1. Lương, 2. Cơ hội học hỏi, 3. Khoảng cách di chuyển.\n\nHãy lập bảng chấm điểm 1-5 mỗi lựa chọn x mỗi tiêu chí, gán trọng số theo thứ tự, tính điểm tổng có trọng số.\n\nOffer A: lương thấp hơn, học được nhiều, xa nhà.\nOffer B: lương cao hơn, ít cơ hội học, gần nhà.",
+                "reply": "Lương (x3): A=4→12, B=5→15\nCơ hội học hỏi (x2): A=5→10, B=3→6\nKhoảng cách (x1): A=3→3, B=5→5\nTổng có trọng số: A=25, B=26\n\n(Sát nút — có thể còn tiêu chí quan trọng khác chưa liệt kê, ví dụ văn hoá công ty)",
+            },
+        },
     },
     {
         "id": "planning-7",
@@ -1740,15 +1909,23 @@ Sau đó, với mỗi nguyên nhân, đề xuất một hành động phòng ng�
 thể có thể làm NGAY BÂY GIỜ để giảm rủi ro đó.
 ```
 
-## Ví dụ (rút gọn): Ra mắt sản phẩm mới
+## Thử trực tiếp: hỏi rủi ro chung chung so với dùng Premortem
 
-| Nguyên nhân thất bại giả định | Hành động phòng ngừa ngay |
-|---|---|
-| Đối tác cung cấp nguyên liệu giao trễ | Ký hợp đồng có điều khoản phạt trễ, tìm thêm nhà cung cấp dự phòng |
-| Đội ngũ bán hàng chưa được đào tạo kịp | Lên lịch đào tạo hoàn tất trước ngày ra mắt ít nhất 1 tuần |
-| Nhu cầu thị trường thấp hơn dự đoán | Chạy khảo sát/pre-order nhỏ trước khi sản xuất số lượng lớn |
+{{PROMPT_LAB}}
 
 > 💡 Premortem hiệu quả nhất khi làm **trước khi bắt đầu** dự án, lúc vẫn còn dễ điều chỉnh kế hoạch — làm giữa chừng vẫn có ích nhưng ít lựa chọn xử lý hơn.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Hỏi rủi ro chung chung",
+                "prompt": "Tôi sắp ra mắt sản phẩm mới. Có rủi ro gì cần lưu ý không?",
+                "reply": "Có thể gặp rủi ro về chất lượng sản phẩm, phản hồi thị trường không như mong đợi, hoặc vấn đề vận hành.\n\n(Rủi ro chung chung, không cụ thể, không có hành động phòng ngừa nào đi kèm)",
+            },
+            "good": {
+                "label": "Dùng kỹ thuật Premortem",
+                "prompt": "Giả sử việc ra mắt sản phẩm mới của tôi đã THẤT BẠI hoàn toàn. Hãy liệt kê 5-7 nguyên nhân có khả năng cao nhất, xét nhiều góc độ (nguồn lực, con người, kỹ thuật, thị trường). Với mỗi nguyên nhân, đề xuất hành động phòng ngừa có thể làm NGAY.",
+                "reply": "Đối tác cung cấp nguyên liệu giao trễ → Ký hợp đồng có điều khoản phạt trễ, tìm nhà cung cấp dự phòng\nĐội bán hàng chưa được đào tạo kịp → Lên lịch đào tạo hoàn tất trước ngày ra mắt 1 tuần\nNhu cầu thị trường thấp hơn dự đoán → Chạy khảo sát/pre-order nhỏ trước khi sản xuất số lượng lớn",
+            },
+        },
     },
     {
         "id": "planning-8",
@@ -1777,15 +1954,23 @@ Hãy lập lịch ôn tập từ hôm nay đến ngày thi, đảm bảo:
 Trình bày dạng lịch theo ngày/tuần.
 ```
 
-## Ví dụ (rút gọn): Ôn thi trong 3 tuần
+## Thử trực tiếp: yêu cầu thiếu chi tiết so với đủ thông tin
 
-| Tuần | Nội dung |
-|---|---|
-| 1 | Học chương 1-3 (mới), cuối tuần ôn lại chương 1 |
-| 2 | Học chương 4-6 (mới), ôn lại chương 2-3, có 1 ngày buffer |
-| 3 | Ôn tổng hợp toàn bộ, làm đề thi thử 2 lần, 2 ngày cuối chỉ xem lại lỗi sai |
+{{PROMPT_LAB}}
 
 > 💡 Sau mỗi tuần, báo lại tiến độ thực tế cho AI (học kịp hay chậm) và xin điều chỉnh lịch tuần sau — lịch ban đầu chỉ là dự kiến, không phải cố định.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu thiếu chi tiết",
+                "prompt": "Tôi có kỳ thi 2 tuần nữa. Giúp tôi lịch ôn tập.",
+                "reply": "Bạn nên dành thời gian ôn tập đều mỗi ngày, tập trung vào những phần yếu, và làm đề thi thử trước ngày thi.\n\n(Lời khuyên chung chung — không có lịch cụ thể theo ngày/tuần, không rõ môn nào cần ôn nội dung gì)",
+            },
+            "good": {
+                "label": "Yêu cầu đủ thông tin",
+                "prompt": "Tôi có kỳ thi môn Giải tích vào 2 tuần nữa.\nNội dung cần ôn: chương 1-5.\nThời gian rảnh: 3 giờ/ngày.\n\nHãy lập lịch ôn tập đảm bảo có thời gian ôn lại, có buffer, và 2-3 ngày cuối ôn tổng hợp.",
+                "reply": "Tuần 1: Học chương 1-3 (mới), cuối tuần ôn lại chương 1, có 1 ngày buffer\nTuần 2: Học chương 4-5, ôn tổng hợp toàn bộ, làm đề thi thử, 2 ngày cuối chỉ xem lại lỗi sai",
+            },
+        },
     },
     {
         "id": "planning-9",
@@ -1814,15 +1999,23 @@ Hãy:
    quá bận/mệt, để không bị đứt chuỗi hoàn toàn
 ```
 
-## Ví dụ
+## Thử trực tiếp: yêu cầu thiếu bối cảnh so với dùng habit stacking
 
-Thói quen: "đọc sách 20 phút/ngày". Lịch trình có sẵn: "luôn uống cà phê sáng lúc 7h trước khi đi làm".
-
-→ Đề xuất: đọc sách ngay trong lúc uống cà phê sáng (gắn vào mốc có sẵn, không cần nhớ thêm mốc mới).
-→ Theo dõi: bảng 7 ô mỗi tuần, tick ✅ nếu đọc, để ở nơi dễ thấy.
-→ Phiên bản tối thiểu ngày bận: chỉ cần đọc 2 trang, miễn không bỏ hẳn — giữ chuỗi liên tục quan trọng hơn số lượng mỗi ngày.
+{{PROMPT_LAB}}
 
 > 💡 Cuối mỗi tuần, báo cáo lại với AI số ngày duy trì được — nếu liên tục bỏ lỡ, thử hỏi AI điều chỉnh mốc gắn hoặc phiên bản tối thiểu, thay vì cố ép bản thân theo kế hoạch không thực tế.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu thiếu bối cảnh",
+                "prompt": "Tôi muốn đọc sách đều đặn hơn. Giúp tôi lập kế hoạch.",
+                "reply": "Bạn nên đặt mục tiêu đọc sách mỗi ngày và cố gắng duy trì thói quen này.\n\n(Lời khuyên chung chung — không gắn vào mốc cụ thể nào trong ngày, không có cách theo dõi, dễ quên/bỏ giữa chừng)",
+            },
+            "good": {
+                "label": "Dùng habit stacking",
+                "prompt": "Tôi muốn xây dựng thói quen: đọc sách 20 phút/ngày.\nLịch trình hiện tại: luôn uống cà phê sáng lúc 7h trước khi đi làm.\n\nHãy đề xuất gắn thói quen mới vào một mốc có sẵn, thiết kế cách theo dõi đơn giản, và một phiên bản tối thiểu cho ngày bận.",
+                "reply": "Đề xuất: đọc sách ngay trong lúc uống cà phê sáng (gắn vào mốc có sẵn).\nTheo dõi: bảng 7 ô mỗi tuần, tick nếu đọc.\nPhiên bản tối thiểu ngày bận: chỉ cần đọc 2 trang, miễn không bỏ hẳn.",
+            },
+        },
     },
     {
         "id": "planning-10",
@@ -1850,14 +2043,22 @@ Hãy lập checklist chia theo 3 giai đoạn:
 nào bắt buộc phải xong trước mới làm được việc tiếp theo.
 ```
 
-## Ví dụ (rút gọn): Tổ chức workshop nội bộ 50 người
+## Thử trực tiếp: yêu cầu thiếu quy mô so với chia rõ 3 giai đoạn
 
-**Trước** (trước 3 tuần): chốt địa điểm & ngày → (trước 2 tuần) gửi lời mời, chốt số lượng tham dự → (trước 3 ngày) chuẩn bị tài liệu, xác nhận lại với địa điểm.
-
-**Trong**: check-in người tham dự, quay video/chụp ảnh, thu phản hồi trực tiếp cuối buổi.
-
-**Sau**: gửi email cảm ơn + tài liệu buổi workshop (trong vòng 2 ngày), tổng hợp phản hồi, thanh toán chi phí phát sinh, lưu trữ tài liệu cho lần tổ chức sau.
+{{PROMPT_LAB}}
 
 > 💡 Giai đoạn "Sau" là nơi dễ bị bỏ quên nhất khi mọi người đã "thở phào" xong sự kiện — nên giao rõ người phụ trách các việc hậu kỳ ngay từ đầu, đừng để "ai rảnh thì làm".""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Yêu cầu thiếu quy mô",
+                "prompt": "Tôi cần tổ chức một buổi workshop. Giúp tôi checklist việc cần làm.",
+                "reply": "Bạn cần chuẩn bị địa điểm, mời người tham dự, chuẩn bị tài liệu, và tổ chức buổi workshop.\n\n(Checklist quá sơ sài — không có mốc thời gian, không chia rõ giai đoạn trước/trong/sau, dễ bỏ sót việc hậu kỳ)",
+            },
+            "good": {
+                "label": "Yêu cầu đủ quy mô, chia giai đoạn",
+                "prompt": "Tôi cần tổ chức workshop nội bộ, quy mô 50 người, dự kiến trong 1 tháng nữa.\n\nHãy lập checklist chia 3 giai đoạn: Trước - Trong - Sau, có mốc thời gian tương đối cho từng việc.",
+                "reply": "Trước (trước 3 tuần): chốt địa điểm & ngày → (trước 2 tuần) gửi lời mời → (trước 3 ngày) chuẩn bị tài liệu.\nTrong: check-in người tham dự, quay video, thu phản hồi cuối buổi.\nSau: gửi email cảm ơn + tài liệu (trong 2 ngày), tổng hợp phản hồi, thanh toán chi phí, lưu trữ tài liệu.",
+            },
+        },
     },
 ]
