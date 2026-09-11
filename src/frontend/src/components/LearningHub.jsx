@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { marked } from 'marked';
-import { BookOpen, ChevronRight, GraduationCap, ArrowLeft } from 'lucide-react';
+import { BookOpen, ChevronDown, ChevronRight, GraduationCap, Menu, X } from 'lucide-react';
 
 // UI-only labels for curriculum levels; the actual lesson content lives in the DB.
 const LEVELS = [
@@ -12,6 +12,8 @@ const LEVELS = [
   { id: 'work', label: 'Làm việc' },
   { id: 'planning', label: 'Lên kế hoạch' },
 ];
+
+const PROMPT_LAB_MARKER = '{{PROMPT_LAB}}';
 
 // Helper to render markdown safely (same pattern as PracticeArea)
 const renderMarkdown = (text) => {
@@ -24,38 +26,112 @@ const renderMarkdown = (text) => {
   }
 };
 
-function LessonDetail({ lesson, onBack }) {
+// Interactive but fully static/simulated prompt demo: lets the reader flip
+// between a weak and a strong prompt and see a canned "AI reply" — no real
+// API call, clearly labeled as a simulation.
+function PromptLab({ data }) {
+  const [variant, setVariant] = useState('bad');
+  const [reply, setReply] = useState(null); // null | 'loading' | string
+
+  const current = data[variant];
+
+  const handleVariant = (v) => {
+    setVariant(v);
+    setReply(null);
+  };
+
+  const handleRun = () => {
+    setReply('loading');
+    setTimeout(() => setReply(current.reply), 700);
+  };
+
   return (
-    <div className="list-container curriculum-section">
-      <button className="curriculum-back-btn" onClick={onBack}>
-        <ArrowLeft size={18} />
-        Quay lại danh sách bài học
-      </button>
-      <h2 className="curriculum-detail-title">{lesson.title}</h2>
-      <p className="curriculum-item-summary curriculum-detail-summary">{lesson.summary}</p>
-      <div
-        className="curriculum-item-content curriculum-detail-content"
-        dangerouslySetInnerHTML={renderMarkdown(lesson.content)}
-      />
-      <button className="curriculum-back-btn curriculum-back-btn-bottom" onClick={onBack}>
-        <ArrowLeft size={18} />
-        Quay lại danh sách bài học
-      </button>
+    <div className="promptlab">
+      <div className="promptlab-head">
+        <div className="promptlab-title">
+          🧪 Prompt Lab <span className="sim-badge">mô phỏng · không gọi AI thật</span>
+        </div>
+        <div className="variant-tabs" role="tablist">
+          <button
+            className="variant-tab"
+            data-variant="bad"
+            aria-selected={variant === 'bad'}
+            onClick={() => handleVariant('bad')}
+          >
+            {data.bad.label}
+          </button>
+          <button
+            className="variant-tab"
+            data-variant="good"
+            aria-selected={variant === 'good'}
+            onClick={() => handleVariant('good')}
+          >
+            {data.good.label}
+          </button>
+        </div>
+      </div>
+      <div className="promptlab-body">
+        <pre className="prompt-box">{current.prompt}</pre>
+        <button className="run-btn" onClick={handleRun} disabled={reply === 'loading'}>
+          ▶ Chạy thử prompt này
+        </button>
+        {reply && (
+          <div className={`ai-reply ${variant}`}>
+            <div className="ai-reply-head">
+              <span>AI trả lời (mô phỏng)</span>
+              {reply === 'loading' && (
+                <span className="typing-dots"><span></span><span></span><span></span></span>
+              )}
+            </div>
+            {reply !== 'loading' && <div className="ai-reply-body">{reply}</div>}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Renders lesson.content as markdown, splicing in a PromptLab component
+// wherever the {{PROMPT_LAB}} marker appears (only a few lessons have one).
+function LessonContent({ lesson }) {
+  if (!lesson.prompt_lab || !lesson.content.includes(PROMPT_LAB_MARKER)) {
+    return <div className="curriculum-item-content" dangerouslySetInnerHTML={renderMarkdown(lesson.content)} />;
+  }
+
+  const [before, after] = lesson.content.split(PROMPT_LAB_MARKER);
+  let labData;
+  try {
+    labData = JSON.parse(lesson.prompt_lab);
+  } catch (e) {
+    console.error('Invalid prompt_lab JSON:', e);
+    return <div className="curriculum-item-content" dangerouslySetInnerHTML={renderMarkdown(lesson.content)} />;
+  }
+
+  return (
+    <div className="curriculum-item-content">
+      <div dangerouslySetInnerHTML={renderMarkdown(before)} />
+      <PromptLab data={labData} />
+      <div dangerouslySetInnerHTML={renderMarkdown(after)} />
     </div>
   );
 }
 
 function CurriculumSection() {
-  const [activeLevel, setActiveLevel] = useState(LEVELS[0].id);
-  const [selectedLessonId, setSelectedLessonId] = useState(null);
   const [curriculum, setCurriculum] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedLessonId, setSelectedLessonId] = useState(null);
+  const [expandedLevels, setExpandedLevels] = useState({});
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const fetchCurriculum = async () => {
       try {
         const response = await axios.get('/api/curriculum');
         setCurriculum(response.data);
+        if (response.data.length > 0) {
+          setSelectedLessonId(response.data[0].id);
+          setExpandedLevels({ [response.data[0].level]: true });
+        }
       } catch (error) {
         console.error("Error fetching curriculum:", error);
       } finally {
@@ -65,52 +141,92 @@ function CurriculumSection() {
     fetchCurriculum();
   }, []);
 
-  const lessons = curriculum.filter((lesson) => lesson.level === activeLevel);
+  const lessonsByLevel = useMemo(() => {
+    const map = {};
+    for (const level of LEVELS) map[level.id] = [];
+    for (const lesson of curriculum) {
+      if (map[lesson.level]) map[lesson.level].push(lesson);
+    }
+    return map;
+  }, [curriculum]);
+
   const selectedLesson = curriculum.find((lesson) => lesson.id === selectedLessonId);
 
-  const handleSelectLevel = (levelId) => {
-    setActiveLevel(levelId);
-    setSelectedLessonId(null);
+  const toggleLevel = (levelId) => {
+    setExpandedLevels((prev) => ({ ...prev, [levelId]: !prev[levelId] }));
   };
 
-  if (selectedLesson) {
-    return <LessonDetail lesson={selectedLesson} onBack={() => setSelectedLessonId(null)} />;
-  }
+  const handleSelectLesson = (levelId, lessonId) => {
+    setSelectedLessonId(lessonId);
+    setExpandedLevels((prev) => ({ ...prev, [levelId]: true }));
+    setMobileMenuOpen(false);
+  };
 
   return (
-    <div className="list-container curriculum-section">
-      <h2><GraduationCap size={22} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />Khóa học AI: Nền tảng & Ứng dụng Thực tế</h2>
+    <div className="curriculum-section">
+      <h2>
+        <GraduationCap size={22} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />
+        Khóa học AI: Nền tảng & Ứng dụng Thực tế
+      </h2>
 
-      <div className="curriculum-tabs">
-        {LEVELS.map((level) => (
-          <button
-            key={level.id}
-            className={`nav-btn curriculum-tab ${activeLevel === level.id ? 'active' : ''}`}
-            onClick={() => handleSelectLevel(level.id)}
-          >
-            {level.label}
-          </button>
-        ))}
-      </div>
+      {loading ? (
+        <p>Đang tải khóa học...</p>
+      ) : (
+        <div className="curriculum-layout">
+          {mobileMenuOpen && <div className="curriculum-sidebar-scrim" onClick={() => setMobileMenuOpen(false)} />}
 
-      {loading && <p>Đang tải khóa học...</p>}
+          <aside className={`curriculum-sidebar ${mobileMenuOpen ? 'open' : ''}`}>
+            <div className="curriculum-sidebar-head">
+              <span className="eyebrow">Mục lục · luôn hiện khi cuộn</span>
+              <button className="curriculum-sidebar-close" onClick={() => setMobileMenuOpen(false)} aria-label="Đóng mục lục">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="curriculum-sidebar-scroll">
+              {LEVELS.map((level) => {
+                const lessons = lessonsByLevel[level.id];
+                const isOpen = !!expandedLevels[level.id];
+                return (
+                  <div className="sidebar-section" key={level.id}>
+                    <div className="sidebar-title" onClick={() => toggleLevel(level.id)} title="Nhấn để ẩn/hiện danh sách bài học">
+                      <span>{level.label} <span className="count">({lessons.length})</span></span>
+                      {isOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+                    </div>
+                    {isOpen && (
+                      <div className="lesson-nav-list">
+                        {lessons.map((lesson, index) => (
+                          <button
+                            key={lesson.id}
+                            className="lesson-nav-item"
+                            aria-current={lesson.id === selectedLessonId}
+                            onClick={() => handleSelectLesson(level.id, lesson.id)}
+                          >
+                            <span className="num">{index + 1}</span>
+                            <span className="title">{lesson.title}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </aside>
 
-      <div className="curriculum-list">
-        {lessons.map((lesson, index) => (
-          <button
-            key={lesson.id}
-            className="curriculum-item-header"
-            onClick={() => setSelectedLessonId(lesson.id)}
-          >
-            <span className="curriculum-item-number">{index + 1}</span>
-            <span className="curriculum-item-title-wrap">
-              <span className="curriculum-item-title">{lesson.title}</span>
-              <span className="curriculum-item-summary">{lesson.summary}</span>
-            </span>
-            <ChevronRight size={20} />
-          </button>
-        ))}
-      </div>
+          <div className="curriculum-main">
+            <button className="curriculum-menu-toggle" onClick={() => setMobileMenuOpen(true)}>
+              <Menu size={16} /> Mục lục bài học
+            </button>
+            {selectedLesson && (
+              <div className="list-container curriculum-lesson-card">
+                <h2 className="curriculum-detail-title">{selectedLesson.title}</h2>
+                <p className="curriculum-item-summary curriculum-detail-summary">{selectedLesson.summary}</p>
+                <LessonContent lesson={selectedLesson} />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

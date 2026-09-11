@@ -274,20 +274,9 @@ Context Window là **số lượng token tối đa** mà mô hình có thể "nh
 3. **Ràng buộc / định dạng (Constraints/Format)**: độ dài, giọng văn, ngôn ngữ, định dạng đầu ra (bảng, bullet, JSON...).
 4. **Ví dụ (nếu cần)**: cho AI 1-2 ví dụ mẫu để nó bắt đúng "tông" bạn muốn (xem bài Few-shot Prompting).
 
-## Ví dụ so sánh
+## Ví dụ so sánh — thử trực tiếp bên dưới
 
-**Prompt kém:**
-```
-Viết về marketing.
-```
-
-**Prompt tốt:**
-```
-Bạn là chuyên gia marketing cho startup công nghệ.
-Hãy viết 3 tiêu đề email quảng cáo (mỗi tiêu đề dưới 60 ký tự)
-cho sản phẩm ứng dụng học AI dành cho người mới bắt đầu.
-Giọng văn: thân thiện, tạo cảm giác cấp bách nhẹ nhàng.
-```
+{{PROMPT_LAB}}
 
 Prompt kém khiến AI phải "đoán" bạn muốn gì — nó có thể trả lời chung chung, sai giọng văn, sai độ dài. Prompt tốt loại bỏ hầu hết sự đoán mò đó.
 
@@ -296,6 +285,18 @@ Prompt kém khiến AI phải "đoán" bạn muốn gì — nó có thể trả 
 - **Càng cụ thể càng tốt** — AI không đọc được suy nghĩ, chỉ dựa vào chữ bạn viết.
 - **Nói AI nên làm gì, thay vì không nên làm gì** ("Trả lời bằng 3 gạch đầu dòng" tốt hơn "Đừng trả lời dài dòng").
 - **Lặp lại và tinh chỉnh**: prompt hiếm khi đúng ngay lần đầu — hãy đọc kết quả rồi bổ sung ràng buộc còn thiếu.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Prompt kém",
+                "prompt": "Viết về marketing.",
+                "reply": "Marketing là hoạt động quảng bá sản phẩm/dịch vụ đến khách hàng thông qua nhiều kênh khác nhau như quảng cáo, mạng xã hội, email... Một chiến lược marketing tốt cần hiểu rõ đối tượng khách hàng...\n\n(AI phải đoán bạn muốn gì — chủ đề nào, độ dài nào, giọng văn ra sao)",
+            },
+            "good": {
+                "label": "Prompt tốt",
+                "prompt": "Bạn là chuyên gia marketing cho startup công nghệ.\nHãy viết 3 tiêu đề email quảng cáo (mỗi tiêu đề dưới 60 ký tự)\ncho sản phẩm ứng dụng học AI dành cho người mới bắt đầu.\nGiọng văn: thân thiện, tạo cảm giác cấp bách nhẹ nhàng.",
+                "reply": "1. \"Học AI từ số 0 — chỉ 10 phút mỗi ngày\"\n2. \"Đừng để AI bỏ bạn lại phía sau — bắt đầu hôm nay\"\n3. \"Ưu đãi mở lớp: học AI dễ như đọc tin nhắn\"",
+            },
+        },
     },
     {
         "id": "prompting-2",
@@ -350,15 +351,9 @@ Là cách **đưa vài ví dụ mẫu (input → output)** trước khi đặt c
 </svg>
 </div>
 
-```
-Phân loại mức độ ưu tiên hỗ trợ khách hàng:
+## Thử trực tiếp: cùng một câu hỏi, có và không có ví dụ mẫu
 
-Câu: "App bị crash không mở được." → Ưu tiên: Cao
-Câu: "Muốn đổi màu giao diện." → Ưu tiên: Thấp
-Câu: "Thanh toán bị trừ tiền 2 lần." → Ưu tiên: Cao
-
-Câu: "Không tìm thấy nút đăng xuất." → Ưu tiên:
-```
+{{PROMPT_LAB}}
 
 ## Khi nào dùng cái nào?
 
@@ -370,6 +365,18 @@ Câu: "Không tìm thấy nút đăng xuất." → Ưu tiên:
 | Muốn tiết kiệm token (few-shot tốn thêm token cho ví dụ) | Zero-shot |
 
 > 💡 2-5 ví dụ chất lượng thường hiệu quả hơn nhiều ví dụ nhưng sơ sài.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Không có ví dụ (Zero-shot)",
+                "prompt": "Phân loại mức độ ưu tiên: \"Không tìm thấy nút đăng xuất.\"",
+                "reply": "Ưu tiên: Trung bình\n\n(Hợp lý, nhưng không biết có khớp với thang đánh giá nội bộ team bạn hay không)",
+            },
+            "good": {
+                "label": "Có 3 ví dụ mẫu (Few-shot)",
+                "prompt": "Câu: \"App bị crash không mở được.\" → Ưu tiên: Cao\nCâu: \"Muốn đổi màu giao diện.\" → Ưu tiên: Thấp\nCâu: \"Thanh toán bị trừ tiền 2 lần.\" → Ưu tiên: Cao\n\nCâu: \"Không tìm thấy nút đăng xuất.\" → Ưu tiên:",
+                "reply": "Ưu tiên: Thấp\n\n(Khớp đúng \"khẩu vị\" phân loại của team — lỗi giao diện nhỏ, không mất tiền/không crash → xếp Thấp, nhất quán với 3 ví dụ)",
+            },
+        },
     },
     {
         "id": "prompting-3",
