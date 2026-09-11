@@ -51,6 +51,7 @@ class CurriculumLesson(Base):
     title = Column(String)
     summary = Column(Text)
     content = Column(Text)
+    prompt_lab = Column(Text, nullable=True)  # JSON string: {"bad": {...}, "good": {...}}, only set for a few lessons
 
 class Project(Base):
     __tablename__ = "projects"
@@ -97,6 +98,16 @@ try:
     with engine.begin() as conn:
         conn.execute(text("ALTER TABLE conversations ADD COLUMN agent_id VARCHAR"))
         print("Successfully added agent_id column to conversations table.")
+except Exception as e:
+    # Column may already exist
+    print(f"Migration check: {e}")
+    pass
+
+# Try to alter curriculum_lessons table if needed (for migrating to prompt_lab column)
+try:
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE curriculum_lessons ADD COLUMN prompt_lab TEXT"))
+        print("Successfully added prompt_lab column to curriculum_lessons table.")
 except Exception as e:
     # Column may already exist
     print(f"Migration check: {e}")

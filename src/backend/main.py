@@ -10,6 +10,7 @@ import os
 from dotenv import load_dotenv
 
 # Import local modules
+import json
 from database import get_db, NewsItem, LearningModule, Project, Conversation, Message, Agent, CurriculumLesson
 from curriculum_seed import CURRICULUM_SEED
 
@@ -66,6 +67,7 @@ def get_curriculum(db: Session = Depends(get_db)):
     # publish content changes, no manual DB work needed.
     existing = {lesson.id: lesson for lesson in db.query(CurriculumLesson).all()}
     for i, item in enumerate(CURRICULUM_SEED):
+        prompt_lab_json = json.dumps(item["prompt_lab"]) if item.get("prompt_lab") else None
         lesson = existing.get(item["id"])
         if lesson is None:
             db.add(CurriculumLesson(
@@ -75,6 +77,7 @@ def get_curriculum(db: Session = Depends(get_db)):
                 title=item["title"],
                 summary=item["summary"],
                 content=item["content"],
+                prompt_lab=prompt_lab_json,
             ))
         else:
             lesson.level = item["level"]
@@ -82,6 +85,7 @@ def get_curriculum(db: Session = Depends(get_db)):
             lesson.title = item["title"]
             lesson.summary = item["summary"]
             lesson.content = item["content"]
+            lesson.prompt_lab = prompt_lab_json
     db.commit()
     return db.query(CurriculumLesson).order_by(CurriculumLesson.order_index.asc()).all()
 
