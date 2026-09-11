@@ -11,6 +11,7 @@ const LEVELS = [
   { id: 'study', label: 'Học tập' },
   { id: 'work', label: 'Làm việc' },
   { id: 'planning', label: 'Lên kế hoạch' },
+  { id: 'vibecoding', label: 'Vibe Coding' },
 ];
 
 const PROMPT_LAB_MARKER = '{{PROMPT_LAB}}';
