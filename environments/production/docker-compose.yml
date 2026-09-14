@@ -8,9 +8,11 @@ services:
       - ../../searxng:/etc/searxng:ro
     restart: always
     networks:
-      - internal
-    # No `ports:`/`expose:` — reachable only from backend on the internal
-    # network, never from nginx/the internet.
+      - egress
+    # No `ports:`/`expose:` — reachable only from backend, over the egress
+    # network. Needs real internet access itself (to query Bing/Yandex/etc),
+    # so it can't sit on `internal` — but it's never on the same network as
+    # `db`, so a compromised SearXNG still can't reach the database.
 
   db:
     image: postgres:15-alpine
@@ -52,7 +54,8 @@ services:
       - "8000"              # không expose trực tiếp ra ngoài, qua nginx
     restart: always
     networks:
-      - internal
+      - internal            # to reach db (db has no other network — stays fully isolated)
+      - egress               # internet access: Gemini API + searxng
     # Giới hạn resource để tránh OOM
     deploy:
       resources:
@@ -83,6 +86,8 @@ volumes:
 networks:
   internal:
     driver: bridge
-    internal: true       # backend & db không trực tiếp ra internet
+    internal: true       # db không bao giờ ra internet / không bị truy cập từ internet
+  egress:
+    driver: bridge        # backend + searxng: cần internet (Gemini API, search) nhưng tách khỏi db
   external:
     driver: bridge
