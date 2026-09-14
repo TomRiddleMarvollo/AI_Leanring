@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { marked } from 'marked';
-import { BookOpen, ChevronDown, ChevronRight, GraduationCap, Menu, X } from 'lucide-react';
+import { BookOpen, ChevronDown, ChevronRight, GraduationCap, Menu, X, Search } from 'lucide-react';
 
 // UI-only labels for curriculum levels; the actual lesson content lives in the DB.
 const LEVELS = [
@@ -15,6 +15,32 @@ const LEVELS = [
 ];
 
 const PROMPT_LAB_MARKER = '{{PROMPT_LAB}}';
+
+// Strip Vietnamese diacritics so search matches regardless of accents
+// (e.g. "hoc tap" still finds "Học tập").
+const normalizeVN = (str) =>
+  (str || '')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase();
+
+// Splits text around the first match of query, for <mark> highlighting.
+// Returns the original text untouched (as a single-element array) if no match.
+const splitForHighlight = (text, query) => {
+  if (!query) return [text];
+  const normText = normalizeVN(text);
+  const idx = normText.indexOf(normalizeVN(query));
+  if (idx === -1) return [text];
+  return [text.slice(0, idx), text.slice(idx, idx + query.length), text.slice(idx + query.length)];
+};
+
+function HighlightedText({ text, query }) {
+  const [before, match, after] = splitForHighlight(text, query);
+  if (match === undefined) return <>{text}</>;
+  return <>{before}<mark>{match}</mark>{after}</>;
+}
 
 // Helper to render markdown safely (same pattern as PracticeArea)
 const renderMarkdown = (text) => {
@@ -123,6 +149,7 @@ function CurriculumSection() {
   const [selectedLessonId, setSelectedLessonId] = useState(null);
   const [expandedLevels, setExpandedLevels] = useState({});
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchCurriculum = async () => {
@@ -153,6 +180,15 @@ function CurriculumSection() {
 
   const selectedLesson = curriculum.find((lesson) => lesson.id === selectedLessonId);
 
+  const trimmedQuery = searchQuery.trim();
+  const searchResults = useMemo(() => {
+    if (!trimmedQuery) return [];
+    const q = normalizeVN(trimmedQuery);
+    return curriculum.filter(
+      (lesson) => normalizeVN(lesson.title).includes(q) || normalizeVN(lesson.summary).includes(q)
+    );
+  }, [curriculum, trimmedQuery]);
+
   const toggleLevel = (levelId) => {
     setExpandedLevels((prev) => ({ ...prev, [levelId]: !prev[levelId] }));
   };
@@ -161,6 +197,10 @@ function CurriculumSection() {
     setSelectedLessonId(lessonId);
     setExpandedLevels((prev) => ({ ...prev, [levelId]: true }));
     setMobileMenuOpen(false);
+  };
+
+  const handleSelectSearchResult = (lesson) => {
+    handleSelectLesson(lesson.level, lesson.id);
   };
 
   return (
@@ -178,13 +218,60 @@ function CurriculumSection() {
 
           <aside className={`curriculum-sidebar ${mobileMenuOpen ? 'open' : ''}`}>
             <div className="curriculum-sidebar-head">
-              <span className="eyebrow">Mục lục · luôn hiện khi cuộn</span>
-              <button className="curriculum-sidebar-close" onClick={() => setMobileMenuOpen(false)} aria-label="Đóng mục lục">
-                <X size={18} />
-              </button>
+              <div className="sidebar-head-top">
+                <span className="eyebrow">Mục lục · luôn hiện khi cuộn</span>
+                <button className="curriculum-sidebar-close" onClick={() => setMobileMenuOpen(false)} aria-label="Đóng mục lục">
+                  <X size={18} />
+                </button>
+              </div>
+              <div className={`search-box ${searchQuery ? 'has-value' : ''}`}>
+                <Search size={15} />
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Tìm bài học..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                {searchQuery && (
+                  <button className="search-clear" onClick={() => setSearchQuery('')} aria-label="Xoá tìm kiếm">
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
             </div>
             <div className="curriculum-sidebar-scroll">
-              {LEVELS.map((level) => {
+              {trimmedQuery ? (
+                searchResults.length === 0 ? (
+                  <div className="search-empty">
+                    Không tìm thấy bài học nào phù hợp với "<strong>{trimmedQuery}</strong>".
+                  </div>
+                ) : (
+                  <>
+                    <div className="search-count">{searchResults.length} bài học phù hợp</div>
+                    <div className="search-results">
+                      {searchResults.map((lesson) => (
+                        <button
+                          key={lesson.id}
+                          className="search-result-item"
+                          onClick={() => handleSelectSearchResult(lesson)}
+                        >
+                          <span className="search-result-level">
+                            {LEVELS.find((l) => l.id === lesson.level)?.label || lesson.level}
+                          </span>
+                          <span className="search-result-title">
+                            <HighlightedText text={lesson.title} query={trimmedQuery} />
+                          </span>
+                          <span className="search-result-summary">
+                            <HighlightedText text={lesson.summary} query={trimmedQuery} />
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )
+              ) : (
+              LEVELS.map((level) => {
                 const lessons = lessonsByLevel[level.id];
                 const isOpen = !!expandedLevels[level.id];
                 return (
@@ -210,7 +297,8 @@ function CurriculumSection() {
                     )}
                   </div>
                 );
-              })}
+              })
+              )}
             </div>
           </aside>
 
