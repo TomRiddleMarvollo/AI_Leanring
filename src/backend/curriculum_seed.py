@@ -86,7 +86,6 @@ Deep Learning dùng **mạng nơ-ron nhiều lớp**, tự động học đặc 
   <line x1="454" y1="61" x2="484" y2="61" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow1)"/>
   <rect x="486" y="38" width="120" height="46" rx="8" fill="#dcfce7" stroke="#22c55e"/>
   <text x="546" y="65" text-anchor="middle" font-size="11" fill="#166534">Kết quả</text>
-
   <text x="10" y="130" font-size="13" font-weight="700" fill="#111827">Deep Learning</text>
   <rect x="10" y="144" width="110" height="46" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
   <text x="65" y="171" text-anchor="middle" font-size="11" fill="#374151">Dữ liệu thô</text>
@@ -141,7 +140,6 @@ Khi bạn hỏi "Thủ đô của Việt Nam là", LLM không "biết" theo các
   <rect x="197" y="90" width="90" height="50" rx="8" fill="#dbeafe" stroke="#2563eb"/>
   <text x="242" y="119" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">LLM</text>
   <line x1="287" y1="115" x2="317" y2="115" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow2)"/>
-
   <text x="400" y="35" text-anchor="middle" font-size="11" fill="#6b7280">Xác suất từ tiếp theo</text>
   <rect x="325" y="150" width="26" height="60" fill="#2563eb"/>
   <text x="338" y="225" text-anchor="middle" font-size="10" fill="#374151">Hà Nội</text>
@@ -154,7 +152,6 @@ Khi bạn hỏi "Thủ đô của Việt Nam là", LLM không "biết" theo các
   <text x="418" y="191" text-anchor="middle" font-size="10" fill="#374151">3%</text>
   <rect x="445" y="204" width="26" height="6" fill="#dbeafe"/>
   <text x="458" y="225" text-anchor="middle" font-size="10" fill="#374151">...</text>
-
   <line x1="480" y1="180" x2="480" y2="115" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="3,3"/>
   <line x1="480" y1="115" x2="510" y2="115" stroke="#22c55e" stroke-width="2" marker-end="url(#arrow2)"/>
   <rect x="490" y="90" width="60" height="50" rx="8" fill="#dcfce7" stroke="#22c55e"/>
@@ -251,19 +248,15 @@ Context Window là **số lượng token tối đa** mà mô hình có thể "nh
   <rect x="10" y="10" width="400" height="42" rx="8" fill="#dbeafe" stroke="#2563eb"/>
   <text x="30" y="36" font-size="12" fill="#1e3a8a">1. Vai trò / Bối cảnh (Role)</text>
   <line x1="210" y1="52" x2="210" y2="66" stroke="#9ca3af" stroke-width="2" marker-end="url(#arrow3)"/>
-
   <rect x="10" y="70" width="400" height="42" rx="8" fill="#dcfce7" stroke="#22c55e"/>
   <text x="30" y="96" font-size="12" fill="#166534">2. Nhiệm vụ cụ thể (Task)</text>
   <line x1="210" y1="112" x2="210" y2="126" stroke="#9ca3af" stroke-width="2" marker-end="url(#arrow3)"/>
-
   <rect x="10" y="130" width="400" height="42" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
   <text x="30" y="156" font-size="12" fill="#92400e">3. Ràng buộc / Định dạng</text>
   <line x1="210" y1="172" x2="210" y2="186" stroke="#9ca3af" stroke-width="2" marker-end="url(#arrow3)"/>
-
   <rect x="10" y="190" width="400" height="42" rx="8" fill="#ede9fe" stroke="#a78bfa"/>
   <text x="30" y="216" font-size="12" fill="#5b21b6">4. Ví dụ mẫu (nếu cần)</text>
   <line x1="210" y1="232" x2="210" y2="246" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow3)"/>
-
   <rect x="60" y="250" width="300" height="42" rx="8" fill="#2563eb"/>
   <text x="210" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Prompt hoàn chỉnh</text>
 </svg>
@@ -336,7 +329,6 @@ Là cách **đưa vài ví dụ mẫu (input → output)** trước khi đặt c
   <line x1="272" y1="50" x2="302" y2="50" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow4)"/>
   <rect x="304" y="30" width="140" height="40" rx="8" fill="#dcfce7" stroke="#22c55e"/>
   <text x="374" y="54" text-anchor="middle" font-size="11" fill="#166534">Trả lời (chung chung)</text>
-
   <text x="10" y="110" font-size="12" font-weight="700" fill="#111827">Few-shot</text>
   <rect x="10" y="120" width="140" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
   <text x="80" y="140" text-anchor="middle" font-size="10" fill="#92400e">2-3 ví dụ mẫu</text>
@@ -407,7 +399,6 @@ Yêu cầu AI **trình bày từng bước suy luận** trước khi đưa ra k�
   <rect x="332" y="30" width="130" height="40" rx="8" fill="#fee2e2" stroke="#ef4444"/>
   <text x="397" y="48" text-anchor="middle" font-size="10" fill="#991b1b">Đáp án</text>
   <text x="397" y="62" text-anchor="middle" font-size="10" fill="#991b1b">(dễ sai)</text>
-
   <text x="10" y="110" font-size="12" font-weight="700" fill="#111827">Có CoT — đi từng bước</text>
   <rect x="10" y="120" width="90" height="40" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
   <text x="55" y="144" text-anchor="middle" font-size="10" fill="#374151">Đề bài</text>
@@ -475,7 +466,6 @@ Với mỗi vị trí, mô hình tính ra một danh sách xác suất cho các 
   <rect x="120" y="123" width="30" height="7" fill="#bfdbfe"/>
   <rect x="160" y="126" width="30" height="4" fill="#dbeafe"/>
   <text x="140" y="145" text-anchor="middle" font-size="10" fill="#6b7280">→ luôn chọn từ "chắc ăn" nhất</text>
-
   <text x="420" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#111827">Temperature cao (0.8 - 1.2+)</text>
   <rect x="320" y="70" width="30" height="60" fill="#2563eb"/>
   <rect x="360" y="80" width="30" height="50" fill="#3b82f6"/>
@@ -550,23 +540,19 @@ LLM chỉ biết những gì có trong dữ liệu huấn luyện, tính đến 
   <text x="55" y="76" text-anchor="middle" font-size="10" fill="#374151">Câu hỏi</text>
   <text x="55" y="90" text-anchor="middle" font-size="10" fill="#374151">người dùng</text>
   <line x1="100" y1="80" x2="128" y2="80" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow6)"/>
-
   <rect x="130" y="55" width="120" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
   <text x="190" y="76" text-anchor="middle" font-size="10" fill="#92400e">Tìm kiếm trong</text>
   <text x="190" y="90" text-anchor="middle" font-size="10" fill="#92400e">Vector Database</text>
   <line x1="250" y1="80" x2="278" y2="80" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow6)"/>
-
   <rect x="280" y="55" width="120" height="50" rx="8" fill="#dcfce7" stroke="#22c55e"/>
   <text x="340" y="76" text-anchor="middle" font-size="10" fill="#166534">Đoạn tài liệu</text>
   <text x="340" y="90" text-anchor="middle" font-size="10" fill="#166534">liên quan nhất</text>
   <line x1="400" y1="80" x2="428" y2="80" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow6)"/>
-
   <rect x="430" y="35" width="80" height="90" rx="8" fill="#dbeafe" stroke="#2563eb"/>
   <text x="470" y="70" text-anchor="middle" font-size="10" fill="#1e3a8a">Prompt =</text>
   <text x="470" y="84" text-anchor="middle" font-size="10" fill="#1e3a8a">Tài liệu +</text>
   <text x="470" y="98" text-anchor="middle" font-size="10" fill="#1e3a8a">Câu hỏi</text>
   <line x1="510" y1="80" x2="538" y2="80" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow6)"/>
-
   <rect x="540" y="55" width="55" height="50" rx="8" fill="#ede9fe" stroke="#a78bfa"/>
   <text x="567" y="84" text-anchor="middle" font-size="12" font-weight="700" fill="#5b21b6">LLM</text>
 </svg>
@@ -630,19 +616,15 @@ Một **Agent** là hệ thống dùng LLM làm "bộ não" trung tâm, lặp đ
   <circle cx="180" cy="180" r="55" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
   <text x="180" y="176" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">Agent</text>
   <text x="180" y="192" text-anchor="middle" font-size="10" fill="#1e3a8a">(LLM)</text>
-
   <rect x="140" y="8" width="100" height="46" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
   <text x="190" y="27" text-anchor="middle" font-size="10" fill="#92400e">1. Lập kế hoạch</text>
   <text x="190" y="41" text-anchor="middle" font-size="10" fill="#92400e">(Plan)</text>
-
   <rect x="290" y="155" width="100" height="46" rx="8" fill="#dcfce7" stroke="#22c55e"/>
   <text x="340" y="174" text-anchor="middle" font-size="10" fill="#166534">2. Dùng công cụ</text>
   <text x="340" y="188" text-anchor="middle" font-size="10" fill="#166534">(Act / Tool)</text>
-
   <rect x="140" y="300" width="100" height="46" rx="8" fill="#ede9fe" stroke="#a78bfa"/>
   <text x="190" y="319" text-anchor="middle" font-size="10" fill="#5b21b6">3. Quan sát</text>
   <text x="190" y="333" text-anchor="middle" font-size="10" fill="#5b21b6">(Observe)</text>
-
   <path d="M 235 45 A 150 150 0 0 1 335 160" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow7)"/>
   <path d="M 335 205 A 150 150 0 0 1 235 315" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow7)"/>
   <path d="M 145 315 A 150 150 0 0 1 145 45" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow7)"/>
@@ -682,13 +664,10 @@ Một **Agent** là hệ thống dùng LLM làm "bộ não" trung tâm, lặp đ
 <svg viewBox="0 0 560 130" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Thang chi phí và độ phức tạp: Prompting thấp nhất, RAG ở giữa, Fine-tuning cao nhất">
   <line x1="30" y1="100" x2="530" y2="100" stroke="#9ca3af" stroke-width="2"/>
   <text x="280" y="122" text-anchor="middle" font-size="10" fill="#6b7280">Chi phí &amp; độ phức tạp tăng dần →</text>
-
   <rect x="50" y="70" width="130" height="30" rx="6" fill="#dcfce7" stroke="#22c55e"/>
   <text x="115" y="90" text-anchor="middle" font-size="11" fill="#166534">Prompt Engineering</text>
-
   <rect x="215" y="50" width="130" height="30" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
   <text x="280" y="70" text-anchor="middle" font-size="11" fill="#92400e">RAG</text>
-
   <rect x="380" y="20" width="130" height="30" rx="6" fill="#fee2e2" stroke="#ef4444"/>
   <text x="445" y="40" text-anchor="middle" font-size="11" fill="#991b1b">Fine-tuning</text>
 </svg>
@@ -1789,19 +1768,15 @@ Không phải việc nào "gấp" cũng "quan trọng", và ngược lại. Ma t
   <text x="305" y="14" text-anchor="middle" font-size="11" fill="#6b7280">Không khẩn cấp</text>
   <text x="12" y="115" text-anchor="middle" font-size="11" fill="#6b7280" transform="rotate(-90 12 115)">Quan trọng</text>
   <text x="12" y="305" text-anchor="middle" font-size="11" fill="#6b7280" transform="rotate(-90 12 305)">Không quan trọng</text>
-
   <rect x="25" y="25" width="180" height="180" fill="#fee2e2" stroke="#ef4444"/>
   <text x="115" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">1. LÀM NGAY</text>
   <text x="115" y="120" text-anchor="middle" font-size="10" fill="#7f1d1d">Khủng hoảng, deadline sát</text>
-
   <rect x="215" y="25" width="180" height="180" fill="#dcfce7" stroke="#22c55e"/>
   <text x="305" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">2. LÊN LỊCH</text>
   <text x="305" y="120" text-anchor="middle" font-size="10" fill="#14532d">Kế hoạch dài hạn, phát triển bản thân</text>
-
   <rect x="25" y="215" width="180" height="180" fill="#fef3c7" stroke="#f59e0b"/>
   <text x="115" y="290" text-anchor="middle" font-size="13" font-weight="700" fill="#92400e">3. GIAO VIỆC</text>
   <text x="115" y="310" text-anchor="middle" font-size="10" fill="#78350f">Gấp nhưng người khác làm được</text>
-
   <rect x="215" y="215" width="180" height="180" fill="#f3f4f6" stroke="#9ca3af"/>
   <text x="305" y="290" text-anchor="middle" font-size="13" font-weight="700" fill="#374151">4. LOẠI BỎ</text>
   <text x="305" y="310" text-anchor="middle" font-size="10" fill="#4b5563">Việc gây xao nhãng, ít giá trị</text>
