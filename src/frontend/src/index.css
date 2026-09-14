@@ -1663,6 +1663,10 @@ h2 {
   margin: 0 !important;
 }
 
+.workspace-sidebar-scrim {
+  display: none;
+}
+
 /* Sidebar header style */
 .sidebar-header {
   display: flex;
@@ -2057,6 +2061,30 @@ h2 {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Practice workspace: sidebar becomes an overlay drawer on narrow screens
+   instead of squeezing the chat panel down to an unusable sliver. */
+@media (max-width: 860px) {
+  .practice-workspace {
+    position: relative;
+  }
+
+  .workspace-sidebar:not(.collapsed) {
+    position: fixed;
+    inset: 0 15% 0 0;
+    z-index: 50;
+    height: 100%;
+    box-shadow: 6px 0 24px rgba(0, 0, 0, 0.18);
+  }
+
+  .workspace-sidebar-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 45;
   }
 }
 

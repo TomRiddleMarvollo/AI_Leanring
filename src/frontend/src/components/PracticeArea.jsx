@@ -90,8 +90,13 @@ function PracticeArea({
   const [agentIcon, setAgentIcon] = useState('Bot');
 
   // 5. Sidebar Collapse States
+  // On mobile, default to collapsed (sidebar becomes an overlay drawer — see
+  // the .workspace-sidebar mobile CSS) so the chat is visible on first load,
+  // unless the user already has an explicit desktop preference stored.
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    return localStorage.getItem('ai_learning_sidebar_collapsed') === 'true';
+    const stored = localStorage.getItem('ai_learning_sidebar_collapsed');
+    if (stored !== null) return stored === 'true';
+    return window.innerWidth <= 860;
   });
 
   // Sync sidebar state to localStorage
@@ -712,6 +717,12 @@ function PracticeArea({
 
   return (
     <div className="practice-workspace">
+      {/* Overlay scrim — only visible on mobile, when the sidebar opens as a
+         drawer over the chat instead of squeezing it (see mobile CSS). */}
+      {!isSidebarCollapsed && (
+        <div className="workspace-sidebar-scrim" onClick={() => setIsSidebarCollapsed(true)} />
+      )}
+
       {/* ==========================================
          SIDEBAR: PROJECT & CONVERSATION PANEL
          ========================================== */}
