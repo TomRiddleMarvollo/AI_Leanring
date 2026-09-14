@@ -1,6 +1,17 @@
 version: '3.8'
 
 services:
+  searxng:
+    image: searxng/searxng:latest
+    container_name: aihub_searxng_prod
+    volumes:
+      - ../../searxng:/etc/searxng:ro
+    restart: always
+    networks:
+      - internal
+    # No `ports:`/`expose:` — reachable only from backend on the internal
+    # network, never from nginx/the internet.
+
   db:
     image: postgres:15-alpine
     container_name: aihub_db_prod
@@ -25,12 +36,16 @@ services:
       dockerfile: Dockerfile
     container_name: aihub_backend_prod
     env_file: .env
+    environment:
+      - SEARXNG_URL=http://searxng:8080
     volumes:
       - ../../config.yaml:/app/config.yaml:ro
       - ../../prompts:/app/prompts:ro
     depends_on:
       db:
         condition: service_healthy
+      searxng:
+        condition: service_started
     extra_hosts:
       - "host.docker.internal:host-gateway"
     expose:

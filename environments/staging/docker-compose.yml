@@ -1,6 +1,15 @@
 version: '3.8'
 
 services:
+  searxng:
+    image: searxng/searxng:latest
+    container_name: aihub_searxng_staging
+    volumes:
+      - ../../searxng:/etc/searxng:ro
+    restart: unless-stopped
+    # No `ports:` — only reachable from other containers on this compose's
+    # network, never exposed to the internet.
+
   db:
     image: postgres:15-alpine
     container_name: aihub_db_staging
@@ -25,12 +34,15 @@ services:
     env_file: .env
     environment:
       - DATABASE_URL=postgresql://stage_user:stage_pass@db:5432/aihub_staging
+      - SEARXNG_URL=http://searxng:8080
     volumes:
       - ../../config.yaml:/app/config.yaml
       - ../../prompts:/app/prompts
     depends_on:
       db:
         condition: service_healthy
+      searxng:
+        condition: service_started
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:

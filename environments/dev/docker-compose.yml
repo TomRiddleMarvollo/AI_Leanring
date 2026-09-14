@@ -1,6 +1,15 @@
 version: '3.8'
 
 services:
+  searxng:
+    image: searxng/searxng:latest
+    container_name: aihub_searxng_dev
+    volumes:
+      - ../../searxng:/etc/searxng:ro
+    ports:
+      - "8888:8080"          # host access for debugging only; backend talks to it over the internal network
+    restart: unless-stopped
+
   backend:
     build:
       context: ../../src/backend
@@ -9,6 +18,7 @@ services:
     env_file: .env
     environment:
       - DATABASE_URL=sqlite:///./data/dev.db
+      - SEARXNG_URL=http://searxng:8080
     volumes:
       - ../../src/backend:/app          # hot-reload source
       - ../../config.yaml:/app/config.yaml
@@ -18,6 +28,8 @@ services:
       - "8001:8000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    depends_on:
+      - searxng
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   frontend:

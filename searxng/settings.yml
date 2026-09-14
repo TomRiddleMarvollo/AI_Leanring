@@ -1,0 +1,21 @@
+# Minimal SearXNG config for AI Learning Hub's internal search backend.
+# `use_default_settings: true` merges this on top of SearXNG's bundled
+# defaults (engines, etc.) — we only override what this project needs.
+#
+# This instance is only ever called from the backend container over the
+# internal Docker network (see tools.py / SEARXNG_URL), never exposed to
+# the public internet — so the bot-protection limiter stays at its
+# default of `false` (would otherwise throttle our own automated calls).
+use_default_settings: true
+
+server:
+  # Not a real external credential (unlike an API key) — only signs this
+  # instance's own internal Flask session/CSRF tokens, and the instance is
+  # never reachable outside the Docker network (no `ports:` in prod/staging
+  # compose). Flagged by gitleaks as generic-api-key; suppressed with reason.
+  secret_key: "0cd03101c6e6fec9daf8e3f97d2bb3ce45187ad5e174f6a113070344735a0991" # gitleaks:allow
+
+search:
+  formats:
+    - html
+    - json
