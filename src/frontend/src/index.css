@@ -869,6 +869,50 @@ h2 {
   .typing-dots span { animation: none; opacity: 0.7; }
 }
 
+/* Header/nav: wrap instead of overflowing on narrow screens */
+@media (max-width: 640px) {
+  .app-container {
+    padding: 1rem 0.75rem;
+  }
+
+  header {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 1rem 1.1rem;
+  }
+
+  .logo {
+    font-size: 1.3rem;
+  }
+
+  nav {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .nav-btn {
+    font-size: 0.85rem;
+    padding: 0.45rem 0.75rem;
+  }
+
+  nav .btn-primary {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  /* Prompt Lab header: stack instead of squeezing the "mô phỏng" badge
+     into a multi-line pill (looks broken at narrow widths). */
+  .promptlab-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sim-badge {
+    border-radius: 6px;
+  }
+}
+
 /* Curriculum sidebar: collapse into a drawer on narrow screens */
 @media (max-width: 860px) {
   .curriculum-layout {
