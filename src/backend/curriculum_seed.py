@@ -2207,7 +2207,7 @@ Trước khi tôi chấp nhận thay đổi này, hãy tóm tắt:
             "bad": {
                 "label": "Chấp nhận ngay không hỏi lại",
                 "prompt": "Cảm ơn, code chạy được rồi, merge luôn nhé.",
-                "reply": "Đã merge.",
+                "reply": "Đã merge nhánh vào main.",
             },
             "good": {
                 "label": "Yêu cầu giải thích trước khi duyệt",
@@ -2283,7 +2283,7 @@ chắc chắn cách sửa đúng.
             "bad": {
                 "label": "Tự copy-paste lỗi qua lại",
                 "prompt": "Sửa hàm này giúp tôi.\n\n[dán code]",
-                "reply": "Đã sửa theo yêu cầu.",
+                "reply": "Tôi đã sửa lại hàm — vấn đề nằm ở việc chưa kiểm tra mảng rỗng trước khi truy cập phần tử đầu tiên. Đây là bản đã sửa (đã thêm điều kiện kiểm tra độ dài mảng > 0 trước dòng truy cập).\n\nBạn chạy thử ứng dụng và cho tôi biết kết quả nhé — nếu vẫn còn lỗi, gửi lại thông báo lỗi để tôi kiểm tra tiếp.",
             },
             "good": {
                 "label": "Để agent tự chạy và tự sửa",
