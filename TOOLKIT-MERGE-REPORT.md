@@ -1,0 +1,128 @@
+# Toolkit Merge Report
+
+Target: /Users/haunp3/Documents/GitHub/AILearning
+Mode: GHI (--apply)
+
+## ✅ Đã thêm (mới)
+- CLAUDE.local.md (harness, layer lên CLAUDE.md của bạn)
+- AGENTS.md
+- CONVENTIONS.md
+- CODEMAP.md
+- docs/GLOSSARY.md
+- docs/EXTRACTION.md
+- docs/STRUCTURE.md
+- v-model/01-requirement/00-HLR.md
+- v-model/01-requirement/review-checklist.md
+- v-model/01-requirement/review-report.md
+- v-model/02-specification/01-SRS.md
+- v-model/02-specification/01b-NFR.md
+- v-model/02-specification/review-checklist.md
+- v-model/02-specification/review-report.md
+- v-model/03-architecture/02-SAD.md
+- v-model/03-architecture/review-checklist.md
+- v-model/03-architecture/review-report.md
+- v-model/04-detailed-design/03-DDD.md
+- v-model/04-detailed-design/review-checklist.md
+- v-model/04-detailed-design/review-report.md
+- v-model/05-code/README.md
+- v-model/05-code/review-checklist.md
+- v-model/05-code/review-report.md
+- v-model/06-unit-test/review-checklist.md
+- v-model/06-unit-test/review-report.md
+- v-model/06-unit-test/test-cases.md
+- v-model/06-unit-test/test-plan.md
+- v-model/06-unit-test/test-report.md
+- v-model/06-unit-test/test-spec.md
+- v-model/06-unit-test/test-strategy.md
+- v-model/07-integration-test/review-checklist.md
+- v-model/07-integration-test/review-report.md
+- v-model/07-integration-test/test-cases.md
+- v-model/07-integration-test/test-plan.md
+- v-model/07-integration-test/test-report.md
+- v-model/07-integration-test/test-spec.md
+- v-model/07-integration-test/test-strategy.md
+- v-model/08-sw-qualification-test/review-checklist.md
+- v-model/08-sw-qualification-test/review-report.md
+- v-model/08-sw-qualification-test/test-cases.md
+- v-model/08-sw-qualification-test/test-plan.md
+- v-model/08-sw-qualification-test/test-report.md
+- v-model/08-sw-qualification-test/test-spec.md
+- v-model/08-sw-qualification-test/test-strategy.md
+- v-model/09-acceptance-test/review-checklist.md
+- v-model/09-acceptance-test/review-report.md
+- v-model/09-acceptance-test/test-cases.md
+- v-model/09-acceptance-test/test-plan.md
+- v-model/09-acceptance-test/test-report.md
+- v-model/09-acceptance-test/test-spec.md
+- v-model/09-acceptance-test/test-strategy.md
+- v-model/10-user-manual/06-USER-MANUAL.md
+- v-model/10-user-manual/review-checklist.md
+- v-model/10-user-manual/review-report.md
+- v-model/11-operations/deploy-guide.md
+- v-model/11-operations/release-notes.md
+- v-model/11-operations/review-checklist.md
+- v-model/11-operations/review-report.md
+- v-model/11-operations/runbook.md
+- v-model/README.md
+- v-model/_traceability/CODE-TRACE.md
+- v-model/_traceability/GROUND-TRUTH.md
+- v-model/_traceability/TRACEABILITY.md
+- scripts/build-lib.sh
+- scripts/check-api-surface.sh
+- scripts/check-circular-deps.sh
+- scripts/check-code-doc-coverage.sh
+- scripts/check-code-size.sh
+- scripts/check-completeness.sh
+- scripts/check-deps-security.sh
+- scripts/check-doc-staleness.sh
+- scripts/check-docs.sh
+- scripts/check-fn-doc.sh
+- scripts/check-grounding.sh
+- scripts/check-i18n.sh
+- scripts/check-lib-boundaries.sh
+- scripts/check-licenses-node.sh
+- scripts/check-licenses-python.sh
+- scripts/check-lint.sh
+- scripts/check-review-checklists.sh
+- scripts/check-sast.sh
+- scripts/check-secrets.sh
+- scripts/check-suppressions.sh
+- scripts/check-test-coverage.sh
+- scripts/check-test-trace.sh
+- scripts/check-traceability.sh
+- scripts/check-types.sh
+- scripts/check_completeness.py
+- scripts/export-docs.sh
+- scripts/export_docs.py
+- scripts/gen-code-trace.sh
+- scripts/gen-commands.sh
+- scripts/gen-ground-truth.sh
+- scripts/gen-review-checklist.sh
+- scripts/gen-traceability.sh
+- scripts/git-hooks/pre-commit
+- scripts/hooks/post-edit-check.sh
+- scripts/hooks/session-journal-reminder.sh
+- scripts/lib.sh
+- scripts/new-feature.sh
+- scripts/new_feature.py
+- scripts/render-mermaid.sh
+- scripts/render_mermaid.py
+- scripts/review-docs-llm.sh
+- scripts/setup-project.sh
+- scripts/verify-all.sh
+- .toolkit-version = 1.5.1
+
+## 🔗 Nối khối (giữ nguyên nội dung của bạn)
+- .claude/settings.json (chèn 2 hook toolkit còn thiếu: bash scripts/hooks/post-edit-check.sh, bash scripts/hooks/session-journal-reminder.sh)
+- .gitignore (nối 15 dòng ignore còn thiếu)
+
+## ⚙️ CI (opt-in)
+- (opt-in, CHƯA cài) code-quality.yml — thêm --with-ci để stage.
+- (opt-in, CHƯA cài) doc-llm-review.yml — thêm --with-ci để stage.
+- (opt-in, CHƯA cài) docs-check.yml — thêm --with-ci để stage.
+- (opt-in, CHƯA cài) license-check.yml — thêm --with-ci để stage.
+- (opt-in, CHƯA cài) security.yml — thêm --with-ci để stage.
+- (opt-in, CHƯA cài) tests.yml — thêm --with-ci để stage.
+
+## 👀 CẦN RÀ / MERGE TAY
+- .git/info/exclude ← CLAUDE.local.md (git sẽ bỏ qua harness)

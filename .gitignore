@@ -23,3 +23,21 @@ dist/
 
 # macOS
 .DS_Store
+
+# >>> toolkit-imported (thêm; đừng xoá mốc) >>>
+.pnp/
+build/
+.next/
+out/
+.env.local
+.env.*.local
+*.pem
+*.log
+npm-debug.log*
+yarn-debug.log*
+coverage/
+v-model/_export/
+.vscode/
+.idea/
+Thumbs.db
+# <<< toolkit-imported <<<

@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+#
+# pre-commit — LỚP 2: Git CHẶN commit nếu trace/tài liệu chưa đủ.
+# Bật cho dự án: `bash scripts/setup-project.sh` (set core.hooksPath).
+#
+# Mặc định CHẶN (block) nếu các check toàn vẹn dưới đây fail. KHÔNG bypass bằng --no-verify.
+#
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+cd "$ROOT" || exit 0
+[[ -f .harness-config ]] && source .harness-config   # opt-in/opt-out theo project (KEY=value)
+fail=0
+
+run_block() { local s="scripts/$1.sh"; [[ -f "$s" ]] || return 0; bash "$s" --strict || fail=1; }
+run_warn()  { local s="scripts/$1.sh"; [[ -f "$s" ]] || return 0; bash "$s" || true; }
+
+# --- CHẶN nếu vi phạm: bảo mật + toàn vẹn tài liệu/trace (tất định) ---
+for c in check-secrets check-i18n check-types check-lib-boundaries check-code-size \
+         check-fn-doc check-api-surface check-circular-deps \
+         check-traceability check-grounding check-completeness check-code-doc-coverage \
+         check-review-checklists check-suppressions check-test-trace; do
+  run_block "$c"
+done
+
+# --- Chỉ CẢNH BÁO: phụ thuộc tool ngoài / heuristic ---
+for c in check-doc-staleness check-lint check-deps-security check-sast; do
+  run_warn "$c"
+done
+# --- Tầng 2 (LLM, tuỳ chọn) — DELTA-review: chỉ soi phần tài liệu v-model VỪA ĐỔI (git diff) ---
+# Bật trong .harness-config:
+#   DOC_REVIEW_ON_COMMIT=1  → cảnh báo nội dung (không chặn; Ollama vắng thì bỏ qua).
+#   LLM_DELTA_GATE=1        → CỔNG NỘI DUNG: chặn commit nếu phần đổi dưới ngưỡng (bắt buộc có Ollama).
+if [[ -f scripts/review-docs-llm.sh ]]; then
+  if [[ "${LLM_DELTA_GATE:-0}" == "1" ]]; then
+    DOC_REVIEW_REQUIRE=1 bash scripts/review-docs-llm.sh --diff --strict || fail=1
+  elif [[ "${DOC_REVIEW_ON_COMMIT:-0}" == "1" ]]; then
+    bash scripts/review-docs-llm.sh --diff || true
+  fi
+fi
+
+if [[ $fail -ne 0 ]]; then
+  cat >&2 <<'MSG'
+
+──────────────────────────────────────────────────────────────────────
+✗ COMMIT BỊ CHẶN — tài liệu/trace chưa đủ hoặc có vi phạm (xem ✗ ở trên).
+
+  Cách sửa:
+   • Đi ĐỦ chuỗi: REQ → SRS(+NFR) → ARC → DD → code (@trace DD-###); test: UT↔DD·IT↔ARC·QT↔SRS·AT↔REQ; NFR→test.
+   • Cập nhật tài liệu/SDLC liên quan, đánh @trace/@version cho hàm mới.
+   • Chạy lại các check (vd: bash scripts/check-traceability.sh) tới khi 0 lỗi.
+
+  ⚠ KHÔNG dùng `git commit --no-verify` / `-n` để bỏ qua — đó là vi phạm quy trình.
+──────────────────────────────────────────────────────────────────────
+MSG
+  exit 1
+fi
+exit 0
