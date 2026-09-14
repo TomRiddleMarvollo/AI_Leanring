@@ -310,7 +310,7 @@ function CurriculumSection() {
               <div className="list-container curriculum-lesson-card">
                 <h2 className="curriculum-detail-title">{selectedLesson.title}</h2>
                 <p className="curriculum-item-summary curriculum-detail-summary">{selectedLesson.summary}</p>
-                <LessonContent lesson={selectedLesson} />
+                <LessonContent key={selectedLesson.id} lesson={selectedLesson} />
               </div>
             )}
           </div>
