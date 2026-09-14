@@ -159,17 +159,17 @@ function App() {
           <Sparkles color="var(--accent-color)" /> <span>AI</span> Learning Hub
         </div>
         <nav>
-          <button 
-            className={`nav-btn ${activeTab === 'news' ? 'active' : ''}`}
-            onClick={() => setActiveTab('news')}
-          >
-            Tin tức AI
-          </button>
-          <button 
+          <button
             className={`nav-btn ${activeTab === 'learning' ? 'active' : ''}`}
             onClick={() => setActiveTab('learning')}
           >
             Bài học
+          </button>
+          <button
+            className={`nav-btn ${activeTab === 'news' ? 'active' : ''}`}
+            onClick={() => setActiveTab('news')}
+          >
+            Tin tức AI
           </button>
           <button 
             className={`nav-btn ${activeTab === 'practice' ? 'active' : ''}`}
