@@ -1,17 +1,45 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import axios from 'axios';
 import { marked } from 'marked';
-import { BookOpen, ChevronDown, ChevronRight, GraduationCap, Menu, X, Search } from 'lucide-react';
+import { BookOpen, ChevronDown, ChevronRight, GraduationCap, Menu, X, Search, Compass } from 'lucide-react';
 
 // UI-only labels for curriculum levels; the actual lesson content lives in the DB.
+// `icon` is only used for levels in the "needs" cluster (see LEVEL_CLUSTERS below).
 const LEVELS = [
   { id: 'basic', label: 'Cơ bản' },
   { id: 'prompting', label: 'Prompting' },
   { id: 'advanced', label: 'Nâng cao' },
-  { id: 'study', label: 'Học tập' },
-  { id: 'work', label: 'Làm việc' },
-  { id: 'planning', label: 'Lên kế hoạch' },
-  { id: 'vibecoding', label: 'Vibe Coding' },
+  { id: 'study', label: 'Học tập', icon: '📘' },
+  { id: 'work', label: 'Làm việc', icon: '💼' },
+  { id: 'planning', label: 'Lên kế hoạch', icon: '🗓️' },
+  { id: 'vibecoding', label: 'Vibe Coding', icon: '🤖' },
+];
+
+// Groups the flat LEVELS list into two sidebar clusters: a sequential
+// foundations path (numbered 1→2→3) vs. a pick-what-you-need set of
+// use-case playbooks (icon badges, no implied order).
+const LEVEL_CLUSTERS = [
+  {
+    id: 'path',
+    title: 'Lộ trình nền tảng',
+    subtitle: 'học theo thứ tự 1→2→3',
+    levelIds: ['basic', 'prompting', 'advanced'],
+  },
+  {
+    id: 'needs',
+    title: 'Ứng dụng theo nhu cầu',
+    subtitle: 'xem bài nào cần, không cần theo thứ tự',
+    levelIds: ['study', 'work', 'planning', 'vibecoding'],
+  },
+];
+
+// "Bạn đang ở đâu?" quick-start picker: jumps straight to the relevant
+// section instead of making the reader hunt through the accordion.
+const QUICK_START = [
+  { label: 'Chưa biết gì về AI', target: 'basic' },
+  { label: 'Biết cơ bản, muốn prompt giỏi hơn', target: 'prompting' },
+  { label: 'Muốn áp dụng vào học tập/công việc', target: 'needs' },
+  { label: 'Code cùng AI (vibe coding)', target: 'vibecoding' },
 ];
 
 const PROMPT_LAB_MARKER = '{{PROMPT_LAB}}';
@@ -150,6 +178,8 @@ function CurriculumSection() {
   const [expandedLevels, setExpandedLevels] = useState({});
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [pickedQuickStart, setPickedQuickStart] = useState(null);
+  const sectionRefs = useRef({});
 
   useEffect(() => {
     const fetchCurriculum = async () => {
@@ -203,6 +233,25 @@ function CurriculumSection() {
     handleSelectLesson(lesson.level, lesson.id);
   };
 
+  // Jumps to the relevant section for a "Bạn đang ở đâu?" quick-start pick.
+  // 'needs' expands the whole use-case cluster instead of a single level.
+  const handleQuickStart = (target) => {
+    setPickedQuickStart(target);
+    setSearchQuery('');
+    if (target === 'needs') {
+      const needsCluster = LEVEL_CLUSTERS.find((c) => c.id === 'needs');
+      setExpandedLevels((prev) => {
+        const next = { ...prev };
+        for (const levelId of needsCluster.levelIds) next[levelId] = true;
+        return next;
+      });
+      sectionRefs.current[needsCluster.levelIds[0]]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      setExpandedLevels((prev) => ({ ...prev, [target]: true }));
+      sectionRefs.current[target]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <div className="curriculum-section">
       <h2>
@@ -223,6 +272,22 @@ function CurriculumSection() {
                 <button className="curriculum-sidebar-close" onClick={() => setMobileMenuOpen(false)} aria-label="Đóng mục lục">
                   <X size={18} />
                 </button>
+              </div>
+              <div className="curriculum-quickstart">
+                <div className="curriculum-quickstart-label">
+                  <Compass size={13} /> Bạn đang ở đâu?
+                </div>
+                <div className="qs-grid">
+                  {QUICK_START.map((qs) => (
+                    <button
+                      key={qs.target}
+                      className={`qs-btn ${pickedQuickStart === qs.target ? 'picked' : ''}`}
+                      onClick={() => handleQuickStart(qs.target)}
+                    >
+                      {qs.label}
+                    </button>
+                  ))}
+                </div>
               </div>
               <div className={`search-box ${searchQuery ? 'has-value' : ''}`}>
                 <Search size={15} />
@@ -271,33 +336,51 @@ function CurriculumSection() {
                   </>
                 )
               ) : (
-              LEVELS.map((level) => {
-                const lessons = lessonsByLevel[level.id];
-                const isOpen = !!expandedLevels[level.id];
-                return (
-                  <div className="sidebar-section" key={level.id}>
-                    <div className="sidebar-title" onClick={() => toggleLevel(level.id)} title="Nhấn để ẩn/hiện danh sách bài học">
-                      <span>{level.label} <span className="count">({lessons.length})</span></span>
-                      {isOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
-                    </div>
-                    {isOpen && (
-                      <div className="lesson-nav-list">
-                        {lessons.map((lesson, index) => (
-                          <button
-                            key={lesson.id}
-                            className="lesson-nav-item"
-                            aria-current={lesson.id === selectedLessonId}
-                            onClick={() => handleSelectLesson(level.id, lesson.id)}
-                          >
-                            <span className="num">{index + 1}</span>
-                            <span className="title">{lesson.title}</span>
-                          </button>
-                        ))}
-                      </div>
-                    )}
+              LEVEL_CLUSTERS.map((cluster) => (
+                <div className={`curriculum-cluster ${cluster.id}`} key={cluster.id}>
+                  <div className={`curriculum-cluster-head ${cluster.id}`}>
+                    <span className="dot"></span>
+                    <h3>{cluster.title} <span className="sub">· {cluster.subtitle}</span></h3>
                   </div>
-                );
-              })
+                  {cluster.levelIds.map((levelId, pathIndex) => {
+                    const level = LEVELS.find((l) => l.id === levelId);
+                    const lessons = lessonsByLevel[level.id];
+                    const isOpen = !!expandedLevels[level.id];
+                    return (
+                      <div
+                        className="sidebar-section"
+                        key={level.id}
+                        ref={(el) => { sectionRefs.current[level.id] = el; }}
+                      >
+                        <div className="sidebar-title" onClick={() => toggleLevel(level.id)} title="Nhấn để ẩn/hiện danh sách bài học">
+                          <span>
+                            <span className={`level-badge ${cluster.id === 'path' ? 'number' : 'icon'}`}>
+                              {cluster.id === 'path' ? pathIndex + 1 : level.icon}
+                            </span>
+                            {level.label} <span className="count">({lessons.length})</span>
+                          </span>
+                          {isOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+                        </div>
+                        {isOpen && (
+                          <div className="lesson-nav-list">
+                            {lessons.map((lesson, index) => (
+                              <button
+                                key={lesson.id}
+                                className="lesson-nav-item"
+                                aria-current={lesson.id === selectedLessonId}
+                                onClick={() => handleSelectLesson(level.id, lesson.id)}
+                              >
+                                <span className="num">{index + 1}</span>
+                                <span className="title">{lesson.title}</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))
               )}
             </div>
           </aside>

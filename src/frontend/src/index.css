@@ -387,6 +387,131 @@ h2 {
   letter-spacing: 0;
 }
 
+/* Quick-start picker: "Bạn đang ở đâu?" */
+.curriculum-quickstart {
+  margin-top: 0.7rem;
+  padding: 0.7rem 0.7rem 0.15rem;
+  background: var(--bg-color);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+}
+
+.curriculum-quickstart-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.qs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  padding-bottom: 0.7rem;
+}
+
+.qs-btn {
+  text-align: left;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 7px;
+  padding: 0.45rem 0.5rem;
+  font-family: inherit;
+  font-size: 0.68rem;
+  line-height: 1.32;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.qs-btn:hover {
+  border-color: var(--accent-color);
+  background: #eff6ff;
+  color: var(--accent-hover);
+}
+
+.qs-btn.picked {
+  border-color: var(--accent-color);
+  background: #dbeafe;
+  color: var(--accent-hover);
+  font-weight: 600;
+}
+
+/* Sidebar clusters: "Lộ trình nền tảng" vs "Ứng dụng theo nhu cầu" */
+.curriculum-cluster {
+  margin-top: 0.4rem;
+}
+
+.curriculum-cluster:first-child {
+  margin-top: 0.6rem;
+}
+
+.curriculum-cluster-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.5rem 0.35rem 0.5rem;
+}
+
+.curriculum-cluster-head .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.curriculum-cluster-head.path .dot {
+  background: var(--accent-color);
+}
+
+.curriculum-cluster-head.needs .dot {
+  background: #b45309;
+}
+
+.curriculum-cluster-head h3 {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-color);
+}
+
+.curriculum-cluster-head h3 .sub {
+  font-size: 0.66rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text-muted);
+}
+
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 0.62rem;
+  font-weight: 700;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+.level-badge.number {
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--accent-hover);
+}
+
+.level-badge.icon {
+  background: rgba(180, 83, 9, 0.12);
+  font-size: 0.72rem;
+}
+
 .lesson-nav-list {
   display: flex;
   flex-direction: column;
