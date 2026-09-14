@@ -687,6 +687,167 @@ Một **Agent** là hệ thống dùng LLM làm "bộ não" trung tâm, lặp đ
 
 > 💡 Trong thực tế, nhiều hệ thống production kết hợp cả ba: prompt tốt + RAG để lấy kiến thức mới + đôi khi fine-tune cho các tác vụ chuyên biệt lặp lại nhiều.""",
     },
+    {
+        "id": "advanced-4",
+        "level": "advanced",
+        "title": "Agentic AI: từ một Agent đơn lẻ đến hệ thống tự chủ theo từng mức độ",
+        "summary": "Phân biệt AI Agent với 'Agentic AI', và thang 5 mức độ tự chủ giúp đánh giá một hệ thống agent an toàn tới đâu.",
+        "content": """## Ôn lại: AI Agent là gì
+
+Ở bài *AI Agents và Tool Use*, ta đã biết Agent là hệ thống dùng LLM làm "bộ não", lặp vòng **Lập kế hoạch → Hành động → Quan sát**. Nhưng "có agent" và "hệ thống thực sự agentic" là hai mức độ khác nhau.
+
+> 🌱 **Ví dụ đời thường**: Một nhân viên mới luôn phải hỏi ý kiến sếp trước mỗi bước nhỏ — đó là "có agent" nhưng chưa "agentic". Một nhân viên senior được giao hẳn một mục tiêu (ví dụ "tăng doanh số quý này"), tự quyết định cách làm, tự điều chỉnh khi kế hoạch không hiệu quả, chỉ báo cáo định kỳ — đó mới là tinh thần **Agentic AI**.
+
+## Agentic AI là gì?
+
+**Agentic AI** không phải một công nghệ cụ thể, mà là **cách tiếp cận thiết kế hệ thống**: trao cho AI quyền tự quyết định chuỗi hành động để đạt một mục tiêu, thay vì chỉ thực hiện đúng một bước được lập trình sẵn. Đặc điểm chính:
+
+- **Tự đặt mục tiêu con (sub-goals)** từ một mục tiêu lớn còn mơ hồ.
+- **Tự chọn công cụ/hành động** phù hợp ở mỗi bước, không cần con người chỉ định trước.
+- **Tự điều chỉnh** khi phát hiện hướng đi hiện tại không hiệu quả (dựa trên bước Quan sát).
+
+## Thang 5 mức độ tự chủ
+
+Không phải hệ thống nào "có AI Agent" cũng nên tự chủ như nhau — mức độ tự chủ nên tăng dần theo độ tin cậy đã được kiểm chứng thực tế:
+
+<div class="curriculum-diagram">
+<svg viewBox="0 0 600 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Thang 5 mức độ tự chủ của AI, từ không tự chủ đến hoàn toàn tự chủ">
+  <text x="20" y="45" font-size="11" font-weight="700" fill="#111827">L0</text>
+  <rect x="20" y="55" width="100" height="55" rx="8" fill="#f3f4f6" stroke="#9ca3af"/>
+  <text x="70" y="76" text-anchor="middle" font-size="9" fill="#374151">Không tự chủ</text>
+  <text x="70" y="90" text-anchor="middle" font-size="9" fill="#374151">(AI chỉ gợi ý)</text>
+  <text x="132" y="45" font-size="11" font-weight="700" fill="#111827">L1</text>
+  <rect x="132" y="55" width="100" height="55" rx="8" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="182" y="76" text-anchor="middle" font-size="9" fill="#1e3a8a">Tự động hoá</text>
+  <text x="182" y="90" text-anchor="middle" font-size="9" fill="#1e3a8a">theo quy tắc cố định</text>
+  <text x="244" y="45" font-size="11" font-weight="700" fill="#111827">L2</text>
+  <rect x="244" y="55" width="100" height="55" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="294" y="76" text-anchor="middle" font-size="9" fill="#92400e">Agent + tool,</text>
+  <text x="294" y="90" text-anchor="middle" font-size="9" fill="#92400e">người duyệt mỗi bước</text>
+  <text x="356" y="45" font-size="11" font-weight="700" fill="#111827">L3</text>
+  <rect x="356" y="55" width="100" height="55" rx="8" fill="#fed7aa" stroke="#ea580c"/>
+  <text x="406" y="76" text-anchor="middle" font-size="9" fill="#7c2d12">Tự chủ trong</text>
+  <text x="406" y="90" text-anchor="middle" font-size="9" fill="#7c2d12">phạm vi giới hạn</text>
+  <text x="468" y="45" font-size="11" font-weight="700" fill="#111827">L4</text>
+  <rect x="468" y="55" width="100" height="55" rx="8" fill="#fee2e2" stroke="#ef4444"/>
+  <text x="518" y="76" text-anchor="middle" font-size="9" fill="#991b1b">Hoàn toàn tự chủ,</text>
+  <text x="518" y="90" text-anchor="middle" font-size="9" fill="#991b1b">tự đặt mục tiêu</text>
+  <line x1="20" y1="140" x2="568" y2="140" stroke="#9ca3af" stroke-width="2"/>
+  <text x="294" y="160" text-anchor="middle" font-size="10" fill="#6b7280">Mức độ tự chủ &amp; rủi ro tăng dần →</text>
+</svg>
+<span class="curriculum-diagram-caption">Phần lớn hệ thống agentic AI hữu ích hiện nay nằm ở L2-L3 — có tự chủ nhưng vẫn trong phạm vi giới hạn rõ và có điểm con người xác nhận.</span>
+</div>
+
+- **L0 — Không tự chủ**: AI chỉ gợi ý, con người làm toàn bộ (ví dụ: gợi ý code khi gõ).
+- **L1 — Tự động hoá theo quy tắc**: chạy đúng quy trình cố định, không tự quyết định gì thêm (ví dụ: chatbot trả lời FAQ theo kịch bản).
+- **L2 — Agent + tool, người duyệt mỗi bước quan trọng**: AI tự chọn hành động nhưng dừng lại xin xác nhận trước khi thực thi (giống Claude Code hỏi bạn trước khi chạy lệnh có thể phá huỷ dữ liệu).
+- **L3 — Tự chủ trong phạm vi giới hạn rõ**: AI tự thực thi nhiều bước liên tiếp trong một phạm vi quyền hạn đã định sẵn, chỉ báo cáo định kỳ thay vì hỏi từng bước.
+- **L4 — Hoàn toàn tự chủ**: tự đặt cả mục tiêu lớn, gần như không cần giám sát — hiện vẫn hiếm gặp trong thực tế vì rủi ro rất cao khi agent hiểu sai bối cảnh.
+
+## ReAct: cách một Agent "vừa nghĩ vừa làm"
+
+Kỹ thuật phổ biến để hiện thực Agentic AI là **ReAct (Reasoning + Acting)**: xen kẽ bước suy luận (giống Chain-of-Thought) với bước hành động thực tế, thay vì suy luận xong mới hành động một lần:
+
+```
+Thought: Cần biết tỷ giá USD/VND hôm nay để tính đơn hàng.
+Action: gọi get_exchange_rate(from="USD", to="VND")
+Observation: 1 USD = 25.450 VND
+Thought: Có tỷ giá rồi, giờ tính tổng đơn hàng 120 USD.
+Action: tính 120 x 25.450 = 3.054.000 VND
+Observation: kết quả hợp lệ, đủ dữ liệu trả lời
+Thought: Đã đủ thông tin, có thể trả lời người dùng.
+Final Answer: Đơn hàng 120 USD tương đương khoảng 3.054.000 VND theo tỷ giá hôm nay.
+```
+
+Mỗi "Thought" giúp agent tự kiểm tra logic trước khi hành động tiếp — giảm hẳn tình trạng agent "hành động bừa" khi gặp tình huống ngoài dự kiến.
+
+## Rủi ro và cách kiểm soát
+
+- Mức tự chủ càng cao, hậu quả của một quyết định sai càng lớn và càng khó phát hiện kịp thời.
+- Luôn **giới hạn phạm vi quyền hạn** rõ ràng (agent chỉ được đọc, không được xoá; chỉ thao tác trong một thư mục/hệ thống cụ thể...).
+- Lưu lại **toàn bộ reasoning trace** (chuỗi Thought/Action/Observation) để có thể truy vết khi có sự cố — không chỉ lưu kết quả cuối cùng.
+- Với hành động không thể hoàn tác (gửi tiền, xoá dữ liệu, gửi email cho khách hàng), luôn giữ **con người xác nhận** dù hệ thống đang ở mức L3.
+
+## Liên hệ thực tế
+
+Claude Code (công cụ dùng để xây dựng chính ứng dụng này) là một ví dụ Agentic AI đang hoạt động ở mức L2-L3: nó tự đọc file, tự quyết định lệnh cần chạy, tự sửa lỗi liên tục qua nhiều bước — nhưng vẫn dừng lại xin xác nhận trước các hành động rủi ro cao (xoá, ghi đè, các lệnh git nguy hiểm), đúng nguyên tắc ở phần *Vibe Coding* của khoá học này.""",
+    },
+    {
+        "id": "advanced-5",
+        "level": "advanced",
+        "title": "Multi-Agent Systems: khi nhiều AI Agent phối hợp thay vì một agent làm tất cả",
+        "summary": "Chia nhỏ vai trò cho nhiều agent chuyên biệt, phối hợp qua một agent điều phối — dễ kiểm soát và mở rộng hơn.",
+        "content": """## Vấn đề: một Agent "ôm" hết mọi việc có giới hạn gì?
+
+Một agent với system prompt phải "biết" quá nhiều vai trò cùng lúc (vừa nghiên cứu, vừa viết code, vừa kiểm thử) dễ gặp:
+
+- **Nhầm lẫn vai trò**: hướng dẫn cho vai trò này vô tình ảnh hưởng đến cách agent xử lý vai trò khác.
+- **Context bị pha loãng**: quá nhiều thông tin không liên quan chiếm chỗ trong cửa sổ ngữ cảnh (context window), làm giảm chất lượng ở từng việc cụ thể.
+- **Khó debug**: khi kết quả cuối sai, không rõ lỗi nằm ở bước suy luận nào trong cả một chuỗi việc dài.
+
+## Multi-Agent System là gì?
+
+Thay vì một agent duy nhất, chia công việc lớn cho **nhiều agent con, mỗi agent có vai trò/system prompt chuyên biệt riêng**, phối hợp với nhau — phổ biến nhất là qua một **agent điều phối (orchestrator)**:
+
+<div class="curriculum-diagram">
+<svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sơ đồ Orchestrator giao việc cho 3 agent con rồi tổng hợp kết quả">
+  <defs>
+    <marker id="arrow8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <rect x="210" y="10" width="180" height="50" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="300" y="31" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">Orchestrator</text>
+  <text x="300" y="47" text-anchor="middle" font-size="10" fill="#1e3a8a">(Agent điều phối)</text>
+  <line x1="300" y1="60" x2="100" y2="108" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow8)"/>
+  <line x1="300" y1="60" x2="300" y2="108" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow8)"/>
+  <line x1="300" y1="60" x2="500" y2="108" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow8)"/>
+  <rect x="20" y="110" width="160" height="55" rx="8" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="100" y="133" text-anchor="middle" font-size="10" fill="#166534">Agent</text>
+  <text x="100" y="147" text-anchor="middle" font-size="10" fill="#166534">Nghiên cứu</text>
+  <rect x="220" y="110" width="160" height="55" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="300" y="133" text-anchor="middle" font-size="10" fill="#92400e">Agent</text>
+  <text x="300" y="147" text-anchor="middle" font-size="10" fill="#92400e">Viết code</text>
+  <rect x="420" y="110" width="160" height="55" rx="8" fill="#ede9fe" stroke="#a78bfa"/>
+  <text x="500" y="133" text-anchor="middle" font-size="10" fill="#5b21b6">Agent</text>
+  <text x="500" y="147" text-anchor="middle" font-size="10" fill="#5b21b6">Kiểm thử</text>
+  <line x1="100" y1="165" x2="280" y2="207" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrow8)"/>
+  <line x1="300" y1="165" x2="300" y2="207" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrow8)"/>
+  <line x1="500" y1="165" x2="320" y2="207" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrow8)"/>
+  <rect x="210" y="210" width="180" height="50" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="2"/>
+  <text x="300" y="231" text-anchor="middle" font-size="12" font-weight="700" fill="#111827">Kết quả</text>
+  <text x="300" y="247" text-anchor="middle" font-size="10" fill="#374151">tổng hợp</text>
+</svg>
+<span class="curriculum-diagram-caption">Orchestrator giao việc cho từng agent chuyên biệt chạy độc lập (có thể song song), rồi tổng hợp kết quả cuối cùng.</span>
+</div>
+
+## Ba mô hình phối hợp phổ biến
+
+| Mô hình | Cách hoạt động | Ưu điểm | Nhược điểm |
+|---|---|---|---|
+| **Orchestrator - Worker** | 1 agent trung tâm giao việc cho các agent con, tổng hợp kết quả cuối | Dễ kiểm soát, dễ debug (biết rõ ai làm gì) | Orchestrator có thể thành điểm nghẽn nếu quá nhiều việc |
+| **Pipeline (dây chuyền)** | Output của agent này là input của agent kế tiếp, theo thứ tự cố định | Đơn giản, dễ hình dung luồng dữ liệu | Cứng nhắc, khó xử lý khi cần quay lại bước trước |
+| **Peer-to-peer (ngang hàng)** | Các agent tự trao đổi trực tiếp, không qua trung gian | Linh hoạt, không bị nghẽn ở 1 điểm | Khó kiểm soát/debug, dễ xảy ra vòng lặp vô hạn giữa các agent |
+
+Phần lớn hệ thống production hiện nay dùng **Orchestrator - Worker** vì dễ kiểm soát và audit nhất.
+
+## Vì sao chia nhỏ lại thường tốt hơn?
+
+- Mỗi agent có system prompt **ngắn, tập trung đúng một vai trò** → ít nhầm lẫn hơn, chất lượng output cao hơn cho từng việc cụ thể.
+- Các việc **độc lập chạy song song được** → nhanh hơn nhiều so với làm tuần tự trong một agent.
+- **Dễ debug**: biết chính xác agent nào, bước nào tạo ra kết quả sai, thay vì phải dò trong một luồng suy luận dài và lẫn lộn.
+
+## Liên hệ thực tế
+
+- Tính năng **Custom Agent** trong không gian *Thực hành* của ứng dụng này chính là bước đầu của ý tưởng này: mỗi Agent bạn tạo có system prompt và model riêng cho một vai trò cụ thể, thay vì dùng chung một agent cho mọi việc.
+- Bài *Song song hoá việc lớn với nhiều agent con (subagent)* ở phần Vibe Coding mô tả đúng mô hình Orchestrator - Worker này khi áp dụng vào Claude Code: bạn (hoặc agent chính) đóng vai orchestrator, giao các việc độc lập cho các subagent chạy song song.
+
+## Rủi ro cần lưu ý
+
+- **Chi phí tăng theo số lượng agent**: mỗi agent con thường là một lượt gọi API riêng — nhiều agent đồng nghĩa chi phí và độ trễ tổng thể cao hơn nếu không cần thiết.
+- **Cần cơ chế chặn vòng lặp**: nhất là ở mô hình peer-to-peer, hai agent có thể liên tục "hỏi qua hỏi lại" nhau mà không tiến triển — nên luôn giới hạn số lượt trao đổi tối đa.
+- **Một điểm chịu trách nhiệm rõ ràng**: khi có nhiều agent tham gia, kết quả tổng hợp cuối cùng nên có một agent (thường là orchestrator) chịu trách nhiệm rà soát và xác nhận, tránh tình trạng lỗi xảy ra mà không ai "sở hữu" bước cuối cùng.""",
+    },
 
     # ── Học tập (study) ──────────────────────────────────────────
     {
