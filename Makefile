@@ -50,10 +50,19 @@ prod-logs:
 lint-backend:
 	cd src/backend && python3 -m py_compile *.py && echo "All backend files OK"
 
+# Chạy pipeline cập nhật dữ liệu (news + best-practices) độc lập với server,
+# dùng được với cron/CI thay vì chỉ qua nút "Cập nhật DL" trên web.
+update-data:
+	cd environments/dev && docker compose exec backend python update_data.py
+
+update-data-local:
+	@cp environments/dev/.env src/backend/.env
+	cd src/backend && python update_data.py
+
 status:
 	@echo "=== Dev ===" && (cd environments/dev && docker compose ps 2>/dev/null || echo "stopped")
 	@echo "=== Test ===" && (cd environments/test && docker compose ps 2>/dev/null || echo "stopped")
 	@echo "=== Staging ===" && (cd environments/staging && docker compose ps 2>/dev/null || echo "stopped")
 	@echo "=== Production ===" && (cd environments/production && docker compose ps 2>/dev/null || echo "stopped")
 
-.PHONY: dev dev-down dev-local test test-local staging staging-down staging-logs prod prod-down prod-logs lint-backend status
+.PHONY: dev dev-down dev-local test test-local staging staging-down staging-logs prod prod-down prod-logs lint-backend status update-data update-data-local
