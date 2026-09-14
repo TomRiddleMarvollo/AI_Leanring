@@ -433,13 +433,13 @@ Toán học, logic, debug code, lập kế hoạch nhiều bước, phân tích 
         "prompt_lab": {
             "bad": {
                 "label": "Không có CoT",
-                "prompt": "Một cửa hàng có 23 quả táo. Bán 8 quả sáng nay, nhập thêm 15 quả buổi trưa.\nChiều bán tiếp 12 quả. Hỏi cửa hàng còn bao nhiêu quả táo?",
-                "reply": "Cửa hàng còn 22 quả táo.",
+                "prompt": "Một chiếc áo giá gốc 500.000đ. Cửa hàng giảm giá 30%, sau đó vì còn tồn kho nên giảm thêm 20% trên giá đã giảm. Cuối cùng cộng thêm 10% thuế VAT trên giá sau khi đã giảm 2 lần.\nHỏi khách phải trả bao nhiêu?",
+                "reply": "Giảm tổng cộng 30% + 20% = 50%, còn 250.000đ. Cộng thêm 10% thuế: 250.000 x 1.1 = 275.000đ. Vậy khách phải trả 275.000đ.",
             },
             "good": {
                 "label": "Có CoT",
-                "prompt": "Một cửa hàng có 23 quả táo. Bán 8 quả sáng nay, nhập thêm 15 quả buổi trưa.\nChiều bán tiếp 12 quả. Hỏi cửa hàng còn bao nhiêu quả táo?\n\nHãy giải từng bước một, ghi rõ phép tính ở mỗi bước, rồi mới kết luận.",
-                "reply": "Bước 1: 23 - 8 = 15 quả (sau khi bán buổi sáng)\nBước 2: 15 + 15 = 30 quả (sau khi nhập thêm buổi trưa)\nBước 3: 30 - 12 = 18 quả (sau khi bán buổi chiều)\n\nVậy cửa hàng còn lại 18 quả táo.",
+                "prompt": "Một chiếc áo giá gốc 500.000đ. Cửa hàng giảm giá 30%, sau đó vì còn tồn kho nên giảm thêm 20% trên giá đã giảm. Cuối cùng cộng thêm 10% thuế VAT trên giá sau khi đã giảm 2 lần.\nHỏi khách phải trả bao nhiêu?\n\nHãy giải từng bước một, ghi rõ phép tính ở mỗi bước, rồi mới kết luận.",
+                "reply": "Bước 1 — Giảm giá lần 1 (30% trên giá gốc):\n500.000 x (1 - 0.3) = 500.000 x 0.7 = 350.000đ\n\nBước 2 — Giảm giá lần 2 (20% trên giá ĐÃ GIẢM ở bước 1, không phải giá gốc):\n350.000 x (1 - 0.2) = 350.000 x 0.8 = 280.000đ\n\nBước 3 — Cộng thuế VAT 10% trên giá sau 2 lần giảm:\n280.000 x 1.1 = 308.000đ\n\nVậy khách phải trả 308.000đ.\n\nLưu ý: giảm 30% rồi giảm tiếp 20% KHÔNG bằng giảm 50% một lần (sẽ ra 275.000đ trước thuế, sai gần 6% so với kết quả đúng). Lý do là lần giảm thứ hai tính trên giá đã giảm ở bước 1, chứ không tính trên giá gốc ban đầu — hai mức giảm không được cộng dồn tuyến tính với nhau.",
             },
         },
     },
@@ -868,7 +868,7 @@ Chủ đề trọng tâm: [liệt kê 2-3 chủ đề bạn muốn được hỏ
             "good": {
                 "label": "Đóng vai giám khảo",
                 "prompt": "Đóng vai giám khảo tuyển dụng vị trí Backend Developer.\nHỏi tôi lần lượt từng câu, mỗi lần CHỈ một câu. Sau mỗi câu trả lời, chấm điểm /10 và chỉ rõ thiếu sót trước khi hỏi tiếp.\nChủ đề trọng tâm: SQL vs NoSQL, REST API, xử lý lỗi",
-                "reply": "Câu 1: Sự khác biệt giữa SQL và NoSQL là gì, và khi nào bạn sẽ chọn dùng loại nào cho một dự án thực tế?\n\n(Tôi sẽ chấm điểm câu trả lời của bạn trên thang 10 sau khi bạn trả lời, rồi mới chuyển sang câu 2.)",
+                "reply": "Câu 1: Sự khác biệt giữa SQL và NoSQL là gì, và khi nào bạn sẽ chọn dùng loại nào cho một dự án thực tế?",
             },
         },
     },
@@ -912,7 +912,7 @@ Bắt đầu hội thoại đi.
             "good": {
                 "label": "Đóng vai tình huống thực tế",
                 "prompt": "Hãy đóng vai một nhân viên phục vụ tại quán cà phê ở London, chỉ nói tiếng Anh. Nếu tôi viết sai ngữ pháp, thêm dòng \"📝 Sửa: [câu đúng]\" sau câu trả lời trong vai.\n\nBắt đầu hội thoại đi.",
-                "reply": "\"Hi there! What can I get for you today?\"\n\n(Chờ bạn trả lời trong vai khách hàng — nếu câu bạn viết có lỗi ngữ pháp hoặc cách diễn đạt không tự nhiên, tôi sẽ thêm dòng 📝 Sửa ngay sau câu trả lời trong vai.)",
+                "reply": "\"Hi there! What can I get for you today?\"",
             },
         },
     },
@@ -1471,7 +1471,7 @@ Hãy đóng vai một người nghe khó tính, hoài nghi. Đặt ra:
             "good": {
                 "label": "Dùng prompt phản biện khó tính",
                 "prompt": "Tôi sắp trình bày kế hoạch \"ra mắt tính năng mới trong 2 tháng\" cho ban giám đốc.\n\nHãy đóng vai người nghe khó tính, hoài nghi. Đặt ra 3-5 câu hỏi hóc búa nhất có thể bị hỏi, chỉ rõ điểm yếu mỗi câu nhắm vào. Đừng khen, đừng trả lời hộ.",
-                "reply": "1. \"Nếu đối tác cung cấp dữ liệu chậm trễ như đợt trước, kế hoạch 2 tháng còn khả thi không? Phương án dự phòng là gì?\"\n2. \"Ngân sách marketing dựa trên giả định tỷ lệ chuyển đổi 5% — con số này lấy từ đâu, đủ tin cậy không?\"\n3. \"Nếu tính năng ra mắt nhưng tỷ lệ dùng thấp hơn kỳ vọng, tiêu chí nào để quyết định dừng hay tiếp tục đầu tư?\"",
+                "reply": "1. \"Nếu đối tác cung cấp dữ liệu/API chậm trễ như đợt trước, mốc 2 tháng còn khả thi không, và buffer dự phòng ở đâu trong lịch trình?\"\n→ Điểm yếu nhắm vào: lịch trình có vẻ giả định mọi bên liên quan đều đúng hẹn, không thấy khoảng đệm cho rủi ro bên ngoài.\n\n2. \"Ngân sách marketing đang tính trên tỷ lệ chuyển đổi 5% — con số này lấy từ đâu, và nếu thực tế chỉ đạt 2% thì kế hoạch thay đổi ra sao?\"\n→ Điểm yếu nhắm vào: chưa thấy phân tích độ nhạy cho giả định tài chính then chốt; một con số lạc quan không kiểm chứng có thể làm sai lệch cả bài toán ROI.\n\n3. \"Ai là người quyết định dừng hay tiếp tục nếu kết quả thử nghiệm ban đầu không đạt kỳ vọng, và tiêu chí cụ thể để dừng là gì?\"\n→ Điểm yếu nhắm vào: thiếu tiêu chí thoát (exit criteria) rõ ràng — dễ dẫn đến tình trạng tiếp tục đầu tư dù dấu hiệu đã xấu, vì không ai được giao quyền/căn cứ để dừng lại.\n\n4. \"Tính năng này có phụ thuộc vào đội ngũ nào khác ngoài team hiện tại không? Nếu họ có ưu tiên khác trong 2 tháng tới thì sao?\"\n→ Điểm yếu nhắm vào: kế hoạch dường như coi nguồn lực liên đội là cố định, trong khi thực tế ưu tiên của đội khác có thể thay đổi ngoài tầm kiểm soát của bạn.\n\n5. \"So với việc không làm gì cả, tính năng này giải quyết vấn đề gì đủ cấp bách để ưu tiên ngay bây giờ thay vì việc khác trong roadmap?\"\n→ Điểm yếu nhắm vào: nếu câu trả lời không rõ ràng, nghĩa là mức độ ưu tiên chưa được lập luận chắc chắn — dễ bị hỏi ngược \"tại sao là bây giờ, tại sao là cái này\".",
             },
         },
     },
@@ -1856,7 +1856,7 @@ Thông tin từng lựa chọn: [mô tả chi tiết mỗi lựa chọn]
             "good": {
                 "label": "Dùng ma trận có trọng số",
                 "prompt": "Tôi đang phân vân giữa Offer A và Offer B.\nTiêu chí quan trọng (giảm dần): 1. Lương, 2. Cơ hội học hỏi, 3. Khoảng cách di chuyển.\n\nHãy lập bảng chấm điểm 1-5 mỗi lựa chọn x mỗi tiêu chí, gán trọng số theo thứ tự, tính điểm tổng có trọng số.\n\nOffer A: lương thấp hơn, học được nhiều, xa nhà.\nOffer B: lương cao hơn, ít cơ hội học, gần nhà.",
-                "reply": "Lương (x3): A=4→12, B=5→15\nCơ hội học hỏi (x2): A=5→10, B=3→6\nKhoảng cách (x1): A=3→3, B=5→5\nTổng có trọng số: A=25, B=26\n\n(Sát nút — có thể còn tiêu chí quan trọng khác chưa liệt kê, ví dụ văn hoá công ty)",
+                "reply": "Lương (trọng số 3): Offer A = 4 điểm → 12; Offer B = 5 điểm → 15\nCơ hội học hỏi (trọng số 2): Offer A = 5 điểm → 10; Offer B = 3 điểm → 6\nKhoảng cách di chuyển (trọng số 1): Offer A = 3 điểm → 3; Offer B = 5 điểm → 5\n\nTổng điểm có trọng số: Offer A = 25, Offer B = 26\n\nOffer B nhỉnh hơn theo khung này, nhưng chênh lệch chỉ 1/30 điểm — quá sát để coi là kết luận chắc chắn. Trước khi quyết định, bạn nên: (1) kiểm tra xem có tiêu chí quan trọng nào bị bỏ sót không (văn hoá công ty, cơ hội thăng tiến dài hạn...) — chỉ cần thêm một tiêu chí nữa cũng đủ đổi kết quả; (2) tự hỏi trọng số bạn gán có thực sự phản ánh ưu tiên hiện tại, hay đang bị ảnh hưởng bởi cảm xúc nhất thời (ví dụ đang chán công việc cũ nên vô tình hạ thấp trọng số lương). Đây là công cụ để nhìn vấn đề có cấu trúc hơn, quyết định cuối cùng vẫn nên là của bạn.",
             },
         },
     },
