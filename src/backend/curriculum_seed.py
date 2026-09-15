@@ -976,6 +976,60 @@ Toolkit vừa được áp dụng cho chính ứng dụng AI Learning Hub là m�
             },
         },
     },
+    {
+        "id": "advanced-8",
+        "level": "advanced",
+        "title": "Mẹo tiết kiệm token khi làm việc với AI",
+        "summary": "Token tính cả input lẫn output — cách bạn đưa tài liệu vào ảnh hưởng chi phí/tốc độ nhiều hơn bạn nghĩ.",
+        "content": """## Vấn đề: mọi người chỉ để ý output dài, quên mất input mới thường là thủ phạm
+
+Token được tính trên **cả những gì bạn gửi (input) lẫn những gì AI trả lời (output)**. Nhiều người cố viết prompt ngắn gọn nhưng lại dán nguyên một file PDF 50 trang hoặc cả một trang web đầy quảng cáo/menu vào — phần input đó thường chiếm phần lớn token của cả lượt hỏi, nhiều hơn hẳn phần câu hỏi thật sự.
+
+> 🌱 **Ví dụ đời thường**: Giống việc bạn muốn hỏi ai đó một chi tiết ở trang 10 của cuốn sách 500 trang — thay vì chụp đúng trang 10 gửi đi, bạn lại gửi nguyên cả cuốn sách kèm câu "xem giúp mình trang 10". Người nhận (và AI cũng vậy) phải "tải" cả cuốn sách trước khi trả lời được, dù chỉ cần đúng 1 trang.
+
+## 5 mẹo tiết kiệm token thiết thực
+
+### 1. Chuyển file nặng sang văn bản/Markdown sạch trước khi đưa cho AI
+
+PDF dạng ảnh scan hoặc trang web đầy giao diện (menu, quảng cáo, script) khi đưa thẳng cho AI thường tốn token gấp nhiều lần so với văn bản thuần cùng nội dung — vì phải xử lý thêm lớp ảnh/mã HTML rác không mang thông tin thật.
+
+<div class="curriculum-diagram">
+<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="So sánh minh hoạ số token cần dùng khi gửi thẳng PDF quét so với đã convert sang văn bản Markdown sạch">
+  <text x="10" y="30" font-size="11" font-weight="700" fill="#111827">PDF quét (đưa thẳng, chưa xử lý)</text>
+  <rect x="10" y="40" width="440" height="34" rx="6" fill="#fee2e2" stroke="#ef4444"/>
+  <text x="460" y="62" font-size="11" fill="#991b1b" font-weight="700">~15.000 token</text>
+  <text x="10" y="112" font-size="11" font-weight="700" fill="#111827">Đã convert sang Markdown sạch</text>
+  <rect x="10" y="122" width="70" height="34" rx="6" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="90" y="144" font-size="11" fill="#166534" font-weight="700">~2.000 token</text>
+</svg>
+<span class="curriculum-diagram-caption">Số liệu chỉ mang tính minh hoạ tỉ lệ, con số thật tuỳ tài liệu — nhưng chênh lệch theo hướng này gần như luôn đúng.</span>
+</div>
+
+Vài công cụ **miễn phí, mã nguồn mở** để convert trước khi hỏi AI:
+
+- **MarkItDown** (Microsoft, giấy phép MIT) — thư viện Python chạy local, chuyển PDF/Word/Excel/PowerPoint sang Markdown. Chỉ giữ lại nội dung chữ (mất định dạng phức tạp như bảng biểu tinh vi), nhưng thế là đủ cho việc hỏi AI.
+- **Jina Reader** — chỉ cần thêm tiền tố `https://r.jina.ai/` trước một URL bất kỳ (ví dụ `https://r.jina.ai/https://vidudulieu.com/bai-viet`) là nhận lại ngay bản Markdown sạch, đã bỏ menu/quảng cáo. Miễn phí, giới hạn tốc độ (khoảng 20 lượt/phút không cần đăng ký, nhiều hơn nếu đăng ký key miễn phí).
+
+### 2. Chỉ đưa đúng đoạn cần, đừng dán cả tài liệu
+
+Nếu chỉ cần hỏi về một chương sách hoặc một hàm trong file code 2000 dòng, hãy trích đúng đoạn đó ra thay vì dán nguyên cả file — AI không cần phần còn lại để trả lời câu hỏi cụ thể của bạn.
+
+### 3. Đừng để một cuộc hội thoại phình to mãi
+
+Mỗi lượt hỏi tiếp trong cùng một cuộc trò chuyện, AI phải "đọc lại" **toàn bộ lịch sử hội thoại từ đầu**, không chỉ câu hỏi mới nhất — hội thoại càng dài, mỗi lượt hỏi tiếp theo càng tốn token dù câu hỏi mới có ngắn đến đâu. Khi chuyển sang chủ đề khác hẳn, hãy mở cuộc trò chuyện mới thay vì hỏi tiếp trong cuộc cũ.
+
+### 4. Giới hạn độ dài câu trả lời khi không cần dài
+
+AI có xu hướng trả lời dài dòng hơn cần thiết theo mặc định. Nếu chỉ cần ý chính, hãy yêu cầu rõ ("trả lời trong 3 gạch đầu dòng", "tối đa 100 từ") — vừa tiết kiệm token output, vừa nhận được câu trả lời nhanh hơn và dễ đọc hơn.
+
+### 5. Chọn đúng "cỡ" model cho đúng việc
+
+Việc đơn giản (phân loại, tóm tắt ngắn, format lại dữ liệu) dùng model nhỏ/rẻ là đủ; chỉ việc phức tạp (suy luận nhiều bước, code khó) mới cần model mạnh nhất, thường cũng đắt hơn theo token.
+
+## Liên hệ thực tế: chính ứng dụng bạn đang học cũng áp dụng nguyên tắc này
+
+Trong không gian *Thực hành* của app này, khi bạn đính kèm một file văn bản vào cuộc trò chuyện, backend chủ động **cắt nội dung file ở 12.000 ký tự** (`_MAX_FILE_TEXT_CHARS` trong `agent.py`) trước khi gửi cho model — tránh việc một file quá dài chiếm hết ngân sách token của cả cuộc hội thoại chỉ vì người dùng lỡ đính kèm nhầm một tài liệu khổng lồ.""",
+    },
 
     # ── Học tập (study) ──────────────────────────────────────────
     {
