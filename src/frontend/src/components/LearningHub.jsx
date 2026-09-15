@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import axios from 'axios';
 import { marked } from 'marked';
 import { BookOpen, ChevronDown, ChevronRight, GraduationCap, Menu, X, Search, Compass } from 'lucide-react';
+import LessonWelcome from './LessonWelcome';
 
 // UI-only labels for curriculum levels; the actual lesson content lives in the DB.
 // `icon` is only used for levels in the "needs" cluster (see LEVEL_CLUSTERS below).
@@ -35,12 +36,16 @@ const LEVEL_CLUSTERS = [
 
 // "Bạn đang ở đâu?" quick-start picker: jumps straight to the relevant
 // section instead of making the reader hunt through the accordion.
+// `icon`/`desc` are only used by the LessonWelcome screen's richer cards;
+// the compact sidebar version just shows `label`.
 const QUICK_START = [
-  { label: 'Chưa biết gì về AI', target: 'basic' },
-  { label: 'Biết cơ bản, muốn prompt giỏi hơn', target: 'prompting' },
-  { label: 'Muốn áp dụng vào học tập/công việc', target: 'needs' },
-  { label: 'Code cùng AI (vibe coding)', target: 'vibecoding' },
+  { icon: '🌱', label: 'Chưa biết gì về AI', desc: 'Bắt đầu từ khái niệm cơ bản: AI, LLM, Token...', target: 'basic' },
+  { icon: '✍️', label: 'Biết cơ bản, muốn prompt giỏi hơn', desc: 'Kỹ thuật prompt hiệu quả: cấu trúc, Chain-of-Thought...', target: 'prompting' },
+  { icon: '🎯', label: 'Muốn áp dụng vào học tập/công việc', desc: 'Playbook thực tế: học tập, làm việc, lên kế hoạch', target: 'needs' },
+  { icon: '💻', label: 'Code cùng AI (vibe coding)', desc: 'Làm việc hiệu quả với Claude Code và các AI agent', target: 'vibecoding' },
 ];
+
+const LAST_LESSON_STORAGE_KEY = 'ai_learning_last_lesson_id';
 
 const PROMPT_LAB_MARKER = '{{PROMPT_LAB}}';
 
@@ -186,9 +191,14 @@ function CurriculumSection() {
       try {
         const response = await axios.get('/api/curriculum');
         setCurriculum(response.data);
-        if (response.data.length > 0) {
-          setSelectedLessonId(response.data[0].id);
-          setExpandedLevels({ [response.data[0].level]: true });
+        // Resume the last lesson the reader had open, instead of always
+        // dropping first-time visitors straight into a full lesson before
+        // they've had a chance to orient (see LessonWelcome).
+        const lastId = localStorage.getItem(LAST_LESSON_STORAGE_KEY);
+        const lastLesson = response.data.find((lesson) => lesson.id === lastId);
+        if (lastLesson) {
+          setSelectedLessonId(lastLesson.id);
+          setExpandedLevels({ [lastLesson.level]: true });
         }
       } catch (error) {
         console.error("Error fetching curriculum:", error);
@@ -210,6 +220,12 @@ function CurriculumSection() {
 
   const selectedLesson = curriculum.find((lesson) => lesson.id === selectedLessonId);
 
+  const clusterLessonCount = (clusterId) =>
+    LEVEL_CLUSTERS.find((c) => c.id === clusterId).levelIds.reduce(
+      (sum, levelId) => sum + lessonsByLevel[levelId].length,
+      0
+    );
+
   const trimmedQuery = searchQuery.trim();
   const searchResults = useMemo(() => {
     if (!trimmedQuery) return [];
@@ -227,6 +243,7 @@ function CurriculumSection() {
     setSelectedLessonId(lessonId);
     setExpandedLevels((prev) => ({ ...prev, [levelId]: true }));
     setMobileMenuOpen(false);
+    localStorage.setItem(LAST_LESSON_STORAGE_KEY, lessonId);
   };
 
   const handleSelectSearchResult = (lesson) => {
@@ -249,6 +266,27 @@ function CurriculumSection() {
     } else {
       setExpandedLevels((prev) => ({ ...prev, [target]: true }));
       sectionRefs.current[target]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  // Same targets as the quick-start picker, but triggered from the welcome
+  // screen (no lesson selected yet) — so unlike handleQuickStart, this also
+  // opens the first lesson of the target instead of just expanding the
+  // sidebar, since there's no lesson content behind it yet to fall back on.
+  const handleWelcomeStart = (target) => {
+    if (target === 'needs') {
+      const needsCluster = LEVEL_CLUSTERS.find((c) => c.id === 'needs');
+      setExpandedLevels((prev) => {
+        const next = { ...prev };
+        for (const levelId of needsCluster.levelIds) next[levelId] = true;
+        return next;
+      });
+      const firstLevelId = needsCluster.levelIds[0];
+      const firstLesson = lessonsByLevel[firstLevelId]?.[0];
+      if (firstLesson) handleSelectLesson(firstLevelId, firstLesson.id);
+    } else {
+      const firstLesson = lessonsByLevel[target]?.[0];
+      if (firstLesson) handleSelectLesson(target, firstLesson.id);
     }
   };
 
@@ -389,11 +427,21 @@ function CurriculumSection() {
             <button className="curriculum-menu-toggle" onClick={() => setMobileMenuOpen(true)}>
               <Menu size={16} /> Mục lục bài học
             </button>
-            {selectedLesson && (
+            {selectedLesson ? (
               <div className="list-container curriculum-lesson-card">
                 <h2 className="curriculum-detail-title">{selectedLesson.title}</h2>
                 <p className="curriculum-item-summary curriculum-detail-summary">{selectedLesson.summary}</p>
                 <LessonContent key={selectedLesson.id} lesson={selectedLesson} />
+              </div>
+            ) : (
+              <div className="list-container">
+                <LessonWelcome
+                  quickStart={QUICK_START}
+                  pathCount={clusterLessonCount('path')}
+                  needsCount={clusterLessonCount('needs')}
+                  totalLessons={curriculum.length}
+                  onStart={handleWelcomeStart}
+                />
               </div>
             )}
           </div>
