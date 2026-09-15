@@ -848,6 +848,134 @@ Phần lớn hệ thống production hiện nay dùng **Orchestrator - Worker** 
 - **Cần cơ chế chặn vòng lặp**: nhất là ở mô hình peer-to-peer, hai agent có thể liên tục "hỏi qua hỏi lại" nhau mà không tiến triển — nên luôn giới hạn số lượt trao đổi tối đa.
 - **Một điểm chịu trách nhiệm rõ ràng**: khi có nhiều agent tham gia, kết quả tổng hợp cuối cùng nên có một agent (thường là orchestrator) chịu trách nhiệm rà soát và xác nhận, tránh tình trạng lỗi xảy ra mà không ai "sở hữu" bước cuối cùng.""",
     },
+    {
+        "id": "advanced-6",
+        "level": "advanced",
+        "title": "Xu hướng xây dựng ứng dụng AI: từ chatbot hỏi-đáp đến agent tự vận hành",
+        "summary": "Ứng dụng AI đang chuyển dịch nhanh — nắm được xu hướng để biết nên đầu tư kỹ năng/kiến trúc nào cho giai đoạn tới.",
+        "content": """## Vì sao cần biết xu hướng, không chỉ biết kỹ thuật hiện tại
+
+Các kỹ thuật ở những bài trước (Prompting, RAG, Agent, Multi-Agent) đã có sẵn — nhưng cách người ta **kết hợp** chúng thành sản phẩm thực tế đang thay đổi rất nhanh qua từng năm. Hiểu xu hướng giúp bạn không đầu tư thời gian vào cách làm sắp lỗi thời.
+
+> 🌱 **Ví dụ đời thường**: Giống như ngành làm web từng đi từ "trang tĩnh" → "web động" → "ứng dụng một trang (SPA)" → giờ là "ứng dụng full-stack chạy trên edge". Mỗi giai đoạn không phủ định giai đoạn trước, mà xây chồng lên — hiểu được dòng chảy đó giúp bạn học đúng thứ cần học tiếp theo, thay vì học lại từ đầu mỗi khi có công nghệ mới.
+
+## Ba giai đoạn của ứng dụng AI
+
+<div class="curriculum-diagram">
+<svg viewBox="0 0 600 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ba giai đoạn ứng dụng AI: chatbot hỏi-đáp năm 2023, RAG và tool use với agent đơn năm 2024-2025, multi-agent tự vận hành từ năm 2026">
+  <text x="100" y="55" text-anchor="middle" font-size="11" font-weight="700" fill="#111827">2023</text>
+  <rect x="20" y="112" width="160" height="48" rx="8" fill="#f3f4f6" stroke="#9ca3af"/>
+  <text x="100" y="132" text-anchor="middle" font-size="10" fill="#374151">Chatbot hỏi-đáp</text>
+  <text x="100" y="146" text-anchor="middle" font-size="10" fill="#374151">chỉ trả lời khi được hỏi</text>
+  <text x="300" y="55" text-anchor="middle" font-size="11" font-weight="700" fill="#111827">2024 - 2025</text>
+  <rect x="220" y="82" width="160" height="78" rx="8" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="300" y="105" text-anchor="middle" font-size="10" fill="#1e3a8a">RAG + Tool Use</text>
+  <text x="300" y="119" text-anchor="middle" font-size="10" fill="#1e3a8a">Agent đơn, tự tra cứu</text>
+  <text x="300" y="133" text-anchor="middle" font-size="10" fill="#1e3a8a">tài liệu, tự gọi công cụ</text>
+  <text x="500" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#111827">2026+</text>
+  <rect x="420" y="47" width="160" height="113" rx="8" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="500" y="80" text-anchor="middle" font-size="10" fill="#166534">Multi-Agent</text>
+  <text x="500" y="94" text-anchor="middle" font-size="10" fill="#166534">Tự vận hành cả quy trình</text>
+  <text x="500" y="108" text-anchor="middle" font-size="10" fill="#166534">nhiều agent phối hợp,</text>
+  <text x="500" y="122" text-anchor="middle" font-size="10" fill="#166534">tự kiểm tra kết quả</text>
+  <line x1="20" y1="178" x2="580" y2="178" stroke="#9ca3af" stroke-width="2"/>
+  <text x="300" y="196" text-anchor="middle" font-size="10" fill="#6b7280">Mức độ tự chủ &amp; phạm vi công việc AI đảm nhiệm tăng dần →</text>
+</svg>
+<span class="curriculum-diagram-caption">Mỗi giai đoạn xây chồng lên giai đoạn trước — một ứng dụng agentic năm 2026 vẫn cần nền tảng prompting + RAG của các giai đoạn trước đó.</span>
+</div>
+
+## 5 xu hướng đáng chú ý nhất
+
+1. **Agentic app thay thế chatbot đơn thuần**: người dùng ngày càng mong đợi AI *hoàn thành việc* (đặt lịch, sửa bug, tổng hợp báo cáo) chứ không chỉ *trả lời câu hỏi về việc đó*. Xem lại bài *Agentic AI* và *Multi-Agent Systems*.
+2. **Spec-driven / "vibe coding" trở thành cách viết phần mềm phổ biến**: thay vì gõ từng dòng code, người phát triển mô tả rõ yêu cầu/ràng buộc rồi để AI agent viết code, con người tập trung vào review và ra quyết định kiến trúc. Xem phần *Vibe Coding* của khoá học này.
+3. **Context Engineering / Harness Engineering trở thành kỹ năng cốt lõi mới**: khi agent làm việc lâu dài, phức tạp hơn, việc "viết một câu prompt hay" không còn đủ — cần thiết kế cả **hệ thống** ngữ cảnh, bộ nhớ, luật lệ, quyền hạn xung quanh agent. Đây là chủ đề của bài tiếp theo.
+4. **Multi-modal & on-device AI**: ứng dụng xử lý trực tiếp ảnh/âm thanh/video (không chỉ văn bản), và một phần mô hình chạy ngay trên thiết bị người dùng (điện thoại, laptop) thay vì luôn gọi API — nhanh hơn, riêng tư hơn, chi phí thấp hơn cho các tác vụ đơn giản.
+5. **Đánh giá AI (evals) trở thành bắt buộc, giống unit test**: một sản phẩm AI nghiêm túc cần bộ câu hỏi/kịch bản kiểm thử cố định để đo chất lượng mỗi khi đổi prompt/model, thay vì chỉ "thử vài câu thấy ổn là xong".
+
+## Liên hệ thực tế: chính ứng dụng bạn đang học
+
+AI Learning Hub — app bạn đang dùng để học — chính là một minh hoạ sống cho quá trình này: ban đầu chỉ là nơi *chat* với Gemini/Ollama (giai đoạn 1), sau đó thêm tính năng "Cập nhật DL" tự tìm kiếm qua SearXNG rồi tóm tắt (giai đoạn 2 — RAG + tool use), và có nền tảng Custom Agent để mở rộng thành nhiều agent chuyên biệt phối hợp (hướng tới giai đoạn 3).
+
+## Nên đầu tư học gì tiếp theo?
+
+- Nếu bạn mới bắt đầu: vẫn nên chắc nền tảng Prompting trước — mọi xu hướng trên đều xây trên đó.
+- Nếu đã quen prompting cơ bản: học tiếp RAG, Agent, rồi đến Harness Engineering (bài kế) — đây là thứ tự tự nhiên phản ánh đúng lộ trình ngành đang đi.""",
+    },
+    {
+        "id": "advanced-7",
+        "level": "advanced",
+        "title": "Harness Engineering: xây 'bộ khung' để AI Agent làm việc đáng tin cậy",
+        "summary": "Một agent giỏi vẫn có thể làm sai nếu thiếu khung rõ ràng — kỹ năng thiết kế luật lệ, quyền hạn, và vòng kiểm tra xung quanh nó.",
+        "content": """## Vấn đề: agent giỏi vẫn có thể làm sai việc
+
+LLM đứng sau một agent có thể rất mạnh, nhưng nếu không có gì ràng buộc, nó dễ: tự đoán bừa khi thiếu thông tin, sửa nhầm phần không được yêu cầu, hoặc báo cáo "đã xong" mà chưa thực sự kiểm tra lại. Vấn đề không nằm ở việc mô hình "chưa đủ thông minh" — mà ở việc **thiếu một bộ khung buộc nó làm việc có kỷ luật**.
+
+> 🌱 **Ví dụ đời thường**: Một con ngựa khoẻ vẫn cần yên cương (harness) để người cưỡi điều khiển được hướng đi — không phải để "trói buộc" cho ngựa yếu đi, mà để sức mạnh đó được dùng đúng chỗ, đúng lúc. **Harness Engineering** là việc thiết kế bộ yên cương đó cho một AI agent: luật chơi rõ ràng, quyền hạn có giới hạn, và cách kiểm tra trước khi tin kết quả.
+
+## 4 thành phần của một harness tốt
+
+<div class="curriculum-diagram">
+<svg viewBox="0 0 600 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bốn thành phần harness xoay quanh AI Agent: luật chơi, quyền công cụ giới hạn, bộ nhớ bền vững, vòng lặp kiểm tra">
+  <defs>
+    <marker id="arrow9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9ca3af"/>
+    </marker>
+  </defs>
+  <circle cx="300" cy="190" r="62" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="300" y="186" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a8a">AI Agent</text>
+  <text x="300" y="202" text-anchor="middle" font-size="10" fill="#1e3a8a">(LLM)</text>
+  <rect x="20" y="15" width="170" height="55" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="105" y="38" text-anchor="middle" font-size="10" fill="#92400e">1. Luật chơi</text>
+  <text x="105" y="52" text-anchor="middle" font-size="10" fill="#92400e">(rule file / system prompt)</text>
+  <line x1="140" y1="70" x2="255" y2="150" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrow9)"/>
+  <rect x="410" y="15" width="170" height="55" rx="8" fill="#fee2e2" stroke="#ef4444"/>
+  <text x="495" y="38" text-anchor="middle" font-size="10" fill="#991b1b">2. Quyền công cụ</text>
+  <text x="495" y="52" text-anchor="middle" font-size="10" fill="#991b1b">giới hạn theo tác vụ</text>
+  <line x1="460" y1="70" x2="345" y2="150" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrow9)"/>
+  <rect x="20" y="308" width="170" height="55" rx="8" fill="#ede9fe" stroke="#a78bfa"/>
+  <text x="105" y="331" text-anchor="middle" font-size="10" fill="#5b21b6">3. Bộ nhớ bền vững</text>
+  <text x="105" y="345" text-anchor="middle" font-size="10" fill="#5b21b6">(context / memory)</text>
+  <line x1="140" y1="308" x2="255" y2="228" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrow9)"/>
+  <rect x="410" y="308" width="170" height="55" rx="8" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="495" y="331" text-anchor="middle" font-size="10" fill="#166534">4. Vòng lặp kiểm tra</text>
+  <text x="495" y="345" text-anchor="middle" font-size="10" fill="#166534">(test / verify trước khi tin)</text>
+  <line x1="460" y1="308" x2="345" y2="228" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrow9)"/>
+</svg>
+<span class="curriculum-diagram-caption">Bốn thành phần này không thay thế lẫn nhau — thiếu một, agent vẫn có thể "trông có vẻ hoạt động tốt" nhưng âm thầm sai lệch khi gặp tình huống ngoài dự kiến.</span>
+</div>
+
+1. **Luật chơi (rule file)**: một file mô tả rõ nguyên tắc làm việc — style code, việc gì phải hỏi trước khi làm, việc gì được tự quyết. Không phải một câu prompt, mà một tài liệu sống được agent đọc mỗi lần bắt đầu việc.
+2. **Quyền công cụ giới hạn theo tác vụ**: agent chỉ nên có đúng quyền cần cho việc đang làm (đọc file được, xoá file thì phải hỏi; gọi API nội bộ được, gọi API thanh toán thì luôn cần xác nhận).
+3. **Bộ nhớ bền vững**: ghi lại quyết định/lỗi từng gặp để không lặp lại — nếu mỗi lần bắt đầu agent đều "quên sạch", nó sẽ mắc lại đúng lỗi cũ.
+4. **Vòng lặp kiểm tra**: bắt buộc có bước xác minh (chạy test, lint, review) *trước khi* coi một việc là "xong" — không tin lời agent tự báo cáo mà không có bằng chứng kiểm chứng được.
+
+## Thử trực tiếp: giao việc có harness so với không có harness
+
+{{PROMPT_LAB}}
+
+## Liên hệ thực tế: đây chính là thứ vừa được cài cho dự án này
+
+Toolkit vừa được áp dụng cho chính ứng dụng AI Learning Hub là một ví dụ harness hoàn chỉnh, sống ngay trong repo: `CLAUDE.local.md`/`AGENTS.md` là **luật chơi**; hook trong `.claude/settings.json` tự kiểm tra cú pháp mỗi lần sửa file là một phần của **vòng lặp kiểm tra** (chạy ngay lúc sửa, gọi là "Tầng 0" — sớm hơn cả lúc commit); git pre-commit hook + các script `check-*.sh` là lớp **vòng lặp kiểm tra** thứ hai, chặn hẳn việc commit nếu thiếu tài liệu/test; thư mục `v-model/` đóng vai trò **bộ nhớ bền vững** có cấu trúc về yêu cầu và thiết kế đã thống nhất.
+
+## Nguyên tắc thực hành khi tự xây harness
+
+- Bắt đầu nhỏ: 3-5 luật quan trọng nhất trong một file, không cần hoàn chỉnh ngay từ đầu — thêm dần khi thấy agent lặp lại lỗi nào đó.
+- Quyền hạn nên **mặc định hẹp, mở rộng khi cần** — dễ nới quyền sau này hơn là thu hồi quyền đã trót cấp.
+- Vòng lặp kiểm tra càng *tự động* càng tốt (hook, CI) — nhắc miệng "nhớ chạy test nhé" rất dễ bị bỏ qua khi công việc dồn dập.
+- Với hệ thống nhiều agent (xem lại bài *Multi-Agent Systems*), mỗi agent con nên có harness *riêng*, thu hẹp đúng phạm vi vai trò của nó — một harness chung chung cho tất cả thường quá lỏng lẻo với agent chuyên biệt.""",
+        "prompt_lab": {
+            "bad": {
+                "label": "Giao việc không có harness",
+                "prompt": "Sửa lỗi bug này giúp tôi.",
+                "reply": "Được, chắc là do biến bị null. Tôi đã sửa bằng cách thêm kiểm tra if (x != null) trước dòng gây lỗi. Giờ nó sẽ chạy ổn.",
+            },
+            "good": {
+                "label": "Giao việc có harness (luật + quyền + kiểm tra)",
+                "prompt": "Trước khi sửa, đọc kỹ file utils/parser.py để hiểu hàm parse_date() đang làm gì. Bug: parse_date('2026-13-01') trả về None thay vì báo lỗi rõ ràng.\n\nChỉ sửa đúng hàm parse_date, không đổi các hàm khác. Sau khi sửa, tự chạy lại test tests/test_parser.py. Nếu test vẫn fail, dừng lại và báo tôi biết chính xác dòng nào fail, đừng tự đoán tiếp sửa bừa.",
+                "reply": "Đã đọc utils/parser.py. Hàm parse_date() dùng datetime.strptime với format cố định '%Y-%m-%d', nhưng không validate tháng nằm trong khoảng 1-12 trước khi parse — với input '2026-13-01', strptime ném ValueError, và đoạn code đang bắt exception này rồi âm thầm return None thay vì báo lỗi.\n\nĐã sửa: thay vì bắt ValueError rồi return None, giờ hàm raise lại lỗi kèm thông báo rõ 'Invalid date: tháng 13 không hợp lệ' để người gọi biết ngay input sai, thay vì nhận về None và tưởng nhầm là 'không có dữ liệu'.\n\nĐã chạy tests/test_parser.py: 8/8 test pass, bao gồm 2 test case mới tôi thêm cho input tháng/ngày không hợp lệ. Không đụng đến hàm nào khác trong file như đã yêu cầu.",
+            },
+        },
+    },
 
     # ── Học tập (study) ──────────────────────────────────────────
     {
