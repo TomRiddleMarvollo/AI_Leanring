@@ -143,7 +143,7 @@ function PromptLab({ data }) {
                 <span className="typing-dots"><span></span><span></span><span></span></span>
               )}
             </div>
-            {reply !== 'loading' && <div className="ai-reply-body">{reply}</div>}
+            {reply !== 'loading' && <div className="ai-reply-body" dangerouslySetInnerHTML={renderMarkdown(reply)} />}
           </div>
         )}
       </div>

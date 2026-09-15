@@ -1075,14 +1075,57 @@ h2 {
 }
 
 .ai-reply-body {
-  padding: 0.8rem 0.9rem;
+  padding: 0.85rem 1rem;
   font-size: 0.86rem;
   line-height: 1.65;
-  white-space: pre-wrap;
+  color: var(--text-color);
 }
 
-.ai-reply.bad .ai-reply-body { color: #991b1b; }
-.ai-reply.good .ai-reply-body { color: #166534; }
+.ai-reply-body > *:first-child { margin-top: 0; }
+.ai-reply-body > *:last-child { margin-bottom: 0; }
+
+.ai-reply-body p {
+  margin: 0 0 0.65rem;
+}
+
+.ai-reply-body ul,
+.ai-reply-body ol {
+  margin: 0 0 0.65rem;
+  padding-left: 1.3rem;
+}
+
+.ai-reply-body li {
+  margin-bottom: 0.25rem;
+}
+
+.ai-reply-body strong {
+  color: #111827;
+}
+
+.ai-reply-body code {
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+/* Bad/good status shown via a left accent + faint tint on the card,
+   not by tinting the whole reply text — reads more like a real chat
+   reply and less like an error/success log message. */
+.ai-reply.bad {
+  border-left: 3px solid #ef4444;
+  background: #fef2f2;
+}
+
+.ai-reply.good {
+  border-left: 3px solid #22c55e;
+  background: #f0fdf4;
+}
+
+.ai-reply.bad .ai-reply-body code,
+.ai-reply.good .ai-reply-body code {
+  background: rgba(0, 0, 0, 0.05);
+}
 
 .typing-dots span {
   display: inline-block;
