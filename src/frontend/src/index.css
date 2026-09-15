@@ -174,6 +174,45 @@ h2 {
   overflow: hidden;
 }
 
+/* AI-generated learning module content, rendered as markdown — unlike
+   .news-summary this isn't line-clamped, since it's structured content
+   (headings/lists), not a single truncatable paragraph. */
+.community-module-content {
+  color: #4b5563;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.community-module-content h1,
+.community-module-content h2,
+.community-module-content h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0.75rem 0 0.4rem;
+}
+
+.community-module-content h1:first-child,
+.community-module-content h2:first-child,
+.community-module-content h3:first-child {
+  margin-top: 0;
+}
+
+.community-module-content ul,
+.community-module-content ol {
+  padding-left: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.community-module-content p {
+  margin-bottom: 0.5rem;
+}
+
+.community-module-content strong {
+  color: #1f2937;
+}
+
 .news-meta {
   display: flex;
   align-items: center;

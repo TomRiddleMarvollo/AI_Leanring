@@ -435,7 +435,7 @@ function CommunityFeed() {
               <div className="news-thumbnail learning">AI GUIDE</div>
               <div className="news-content">
                 <div className="news-title">{mod.title}</div>
-                <div className="news-summary" style={{ whiteSpace: 'pre-line' }}>{mod.content}</div>
+                <div className="community-module-content" dangerouslySetInnerHTML={renderMarkdown(mod.content)} />
                 <div className="news-meta">
                   <span className="badge learning">{mod.category}</span>
                   <span>{new Date(mod.created_at).toLocaleDateString()}</span>
